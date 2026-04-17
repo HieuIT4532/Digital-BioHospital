@@ -25,8 +25,9 @@ async function askGemini(prompt) {
     const response = await result.response;
     return response.text();
   } catch (error) {
-    console.error('Gemini API Error:', error);
-    throw new Error('Không thể kết nối AI, vui lòng thử lại sau.');
+    console.error('Gemini API Error details:', error);
+    // Trả về thông báo lỗi chi tiết hơn từ Google để dễ fix
+    throw new Error(`Lỗi AI: ${error.message || 'Không thể kết nối'}`);
   }
 }
 
@@ -40,23 +41,24 @@ async function askGeminiJSON(prompt) {
 
 QUAN TRỌNG: Chỉ trả về JSON hợp lệ, không có markdown, không có backtick, không có giải thích thêm.`;
 
-  const text = await askGemini(fullPrompt);
-
-  // Làm sạch response để parse JSON
-  const cleaned = text
-    .replace(/```json/gi, '')
-    .replace(/```/g, '')
-    .trim();
-
   try {
+    const text = await askGemini(fullPrompt);
+    
+    // Làm sạch response để parse JSON
+    const cleaned = text
+      .replace(/```json/gi, '')
+      .replace(/```/g, '')
+      .trim();
+
     return JSON.parse(cleaned);
   } catch (e) {
-    // Thử tìm JSON trong text
-    const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
-    if (jsonMatch) {
-      return JSON.parse(jsonMatch[0]);
-    }
-    throw new Error('AI trả về định dạng không hợp lệ');
+    // Thử tìm JSON trong text nếu parse trực tiếp thất bại
+    try {
+      const jsonMatch = e.message.match(/\{[\s\S]*\}/);
+      if (jsonMatch) return JSON.parse(jsonMatch[0]);
+    } catch (innerIgnore) {}
+    
+    throw e; // Ném lỗi gốc ra ngoài để backend bắt được
   }
 }
 
@@ -64,6 +66,11 @@ QUAN TRỌNG: Chỉ trả về JSON hợp lệ, không có markdown, không có 
  * Build system context cho các prompt y tế
  */
 function buildMedicalContext(patientData) {
+  // Đảm bảo medicalHistory luôn là string trước khi vào prompt
+  const historyStr = Array.isArray(patientData.medicalHistory) 
+    ? patientData.medicalHistory.join(', ') 
+    : (typeof patientData.medicalHistory === 'string' ? patientData.medicalHistory : 'Không có');
+
   return `Bạn là AI trợ lý y tế giáo dục của Bệnh Viện Sinh Học Thông Minh – Đồng Điệu Sống.
 QUAN TRỌNG: Đây là hệ thống GIÁO DỤC, không phải chẩn đoán y tế thực sự.
 Luôn nhắc người dùng gặp bác sĩ thực sự khi có vấn đề nghiêm trọng.
@@ -79,7 +86,7 @@ Thông tin bệnh nhân:
 - Hút thuốc: ${patientData.smokingStatus}
 - Uống rượu: ${patientData.alcoholStatus}
 - Mức stress: ${patientData.stressLevel}/10
-- Tiền sử: ${patientData.medicalHistory?.join(', ') || 'Không có'}`;
+- Tiền sử: ${historyStr}`;
 }
 
 module.exports = { askGemini, askGeminiJSON, buildMedicalContext };
