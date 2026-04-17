@@ -6,7 +6,7 @@
 // ── Cấu hình API ──────────────────────────────────────────────────────────
 const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
   ? 'http://localhost:5000'
-  : 'https://bio-ai-hospital-api.onrender.com'; // Thay bằng URL Render thật sau deploy
+  : 'https://digital-biohospital.onrender.com'; // URL Render thật
 
 // ── Helper: Fetch với error handling ─────────────────────────────────────
 async function apiFetch(endpoint, options = {}) {
