@@ -130,6 +130,24 @@ const PersonalizeAPI = {
 };
 
 // ════════════════════════════════════════════════════════════════════════════
+// CHAT API
+// ════════════════════════════════════════════════════════════════════════════
+
+const ChatAPI = {
+  /**
+   * Nhắn tin với AI, lấy thông tin từ PDF hoặc kiến thức ngoài
+   * @param {Object} patientData
+   * @param {string} message
+   */
+  async send(patientData, message) {
+    return apiFetch('/api/chat', {
+      method: 'POST',
+      body: JSON.stringify({ patient: patientData, message })
+    });
+  }
+};
+
+// ════════════════════════════════════════════════════════════════════════════
 // UPTIME / HEALTH CHECK
 // ════════════════════════════════════════════════════════════════════════════
 
@@ -150,5 +168,6 @@ window.API = {
   Analyze: AnalyzeAPI,
   Predict: PredictAPI,
   Personalize: PersonalizeAPI,
+  Chat: ChatAPI,
   checkHealth: checkAPIHealth
 };
