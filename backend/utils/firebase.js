@@ -3,9 +3,11 @@ require('dotenv').config();
 
 // ── Cấu hình Firebase Admin ──────────────────────────────────────────────────
 // Lưu ý: private_key cần được format đúng (thay các ký tự \n nếu cần)
-const privateKey = process.env.FIREBASE_PRIVATE_KEY 
-  ? process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n') 
-  : undefined;
+let privateKey = process.env.FIREBASE_PRIVATE_KEY;
+if (privateKey) {
+  privateKey = privateKey.trim().replace(/^["']|["']$/g, '');
+  privateKey = privateKey.replace(/\\n/g, '\n');
+}
 
 if (!process.env.FIREBASE_PROJECT_ID || !process.env.FIREBASE_CLIENT_EMAIL || !privateKey) {
   console.warn('⚠️ Cảnh báo: Thiếu thông tin cấu hình Firebase trong .env');
