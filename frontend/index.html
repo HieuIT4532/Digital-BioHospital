@@ -3,267 +3,182 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Bệnh Viện Sinh Học Thông Minh – Digital BioHospital</title>
-  <meta name="description" content="Hệ thống AI phòng khám thông minh: phân tích sức khỏe, khám chuyên khoa, dự đoán tương lai và kế hoạch cá nhân hóa." />
+  <title>Bệnh Viện Sinh Học Thông Minh – Digital BioHospital v2.0</title>
+  <meta name="description" content="Hệ thống AI phòng khám thông minh v2.0: phân tích sức khỏe, khám chuyên khoa, dự đoán tương lai và kế hoạch cá nhân hóa." />
   <link rel="stylesheet" href="css/global.css" />
   <link rel="stylesheet" href="css/components.css" />
   <link rel="stylesheet" href="css/animations.css" />
   <style>
     /* ── Hero ── */
     .hero-section {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      padding: 120px 0 80px;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
+      min-height: 100vh; display: flex; align-items: center;
+      padding: 120px 0 80px; text-align: center; position: relative; overflow: hidden;
     }
-
     .hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
+      display: inline-flex; align-items: center; gap: 8px;
       padding: 6px 20px;
-      background: rgba(124, 58, 237, 0.15);
-      border: 1px solid rgba(167, 139, 250, 0.4);
-      border-radius: 999px;
-      font-size: 0.8rem;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--color-primary-light);
-      margin-bottom: 2rem;
+      background: linear-gradient(135deg, rgba(124,58,237,0.18), rgba(236,72,153,0.1));
+      border: 1px solid rgba(167,139,250,0.45);
+      border-radius: 999px; font-size: 0.78rem; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--color-primary-light); margin-bottom: 2rem;
+      box-shadow: 0 0 20px rgba(124,58,237,0.15);
     }
-
+    .hero-badge .badge-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: #10B981; box-shadow: 0 0 8px #10B981;
+      animation: pulse 2s ease-in-out infinite;
+    }
     .hero-title {
-      font-size: clamp(2.5rem, 6vw, 4.5rem);
-      font-weight: 900;
-      line-height: 1.1;
-      margin-bottom: 1.5rem;
+      font-family: var(--font-heading);
+      font-size: clamp(2.8rem, 7vw, 5rem);
+      font-weight: 900; line-height: 1.05; margin-bottom: 1.5rem;
     }
-
     .hero-desc {
-      font-size: 1.2rem;
-      color: rgba(255,255,255,0.7);
-      max-width: 640px;
-      margin: 0 auto 2.5rem;
+      font-size: 1.2rem; color: rgba(255,255,255,0.72);
+      max-width: 620px; margin: 0 auto 2.5rem; line-height: 1.8;
     }
-
-    .hero-actions {
-      display: flex;
-      gap: 1rem;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-
+    .hero-actions { display:flex; gap:1rem; justify-content:center; flex-wrap:wrap; }
     .hero-scroll-indicator {
-      position: absolute;
-      bottom: 2rem;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.5rem;
-      color: rgba(255,255,255,0.4);
-      font-size: 0.75rem;
-      animation: float 2s ease-in-out infinite;
+      position:absolute; bottom:2.5rem; left:50%; transform:translateX(-50%);
+      display:flex; flex-direction:column; align-items:center; gap:0.5rem;
+      color:rgba(255,255,255,0.35); font-size:0.72rem; letter-spacing:0.12em;
+      text-transform:uppercase; animation: float 2.5s ease-in-out infinite;
     }
-
     .hero-scroll-indicator::before {
-      content: '';
-      width: 1px;
-      height: 40px;
-      background: linear-gradient(180deg, transparent, rgba(167,139,250,0.6));
+      content:''; width:1px; height:40px;
+      background:linear-gradient(180deg, transparent, rgba(167,139,250,0.7));
     }
 
-    /* ── Stats Bar ── */
-    .stats-bar {
-      padding: 2rem 0;
-      background: rgba(255,255,255,0.03);
-      border-top: 1px solid rgba(255,255,255,0.06);
-      border-bottom: 1px solid rgba(255,255,255,0.06);
+    /* DNA Helix decoration */
+    .dna-visual {
+      position: absolute; right: 6%; top: 50%; transform: translateY(-50%);
+      opacity: 0.18; pointer-events: none;
+      animation: float 6s ease-in-out infinite;
     }
+    @media(max-width:900px){ .dna-visual { display:none; } }
 
-    .stats-inner {
-      display: flex;
-      justify-content: center;
-      gap: 3rem;
-      flex-wrap: wrap;
+    /* ── Stats Bar v2.0 ── */
+    .stats-bar-v2 {
+      padding: 1.5rem 0;
+      background: rgba(6,2,16,0.5);
+      border-top: 1px solid rgba(167,139,250,0.12);
+      border-bottom: 1px solid rgba(167,139,250,0.12);
+      backdrop-filter: blur(20px);
     }
-
-    .stat-item {
-      text-align: center;
+    .stats-inner-v2 {
+      display: flex; justify-content: center; align-items: center;
+      gap: 1rem; flex-wrap: wrap;
     }
-
-    .stat-item .num {
-      font-size: 2rem;
-      font-weight: 900;
-      background: linear-gradient(135deg, var(--color-primary-light), var(--color-accent-light));
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-      display: block;
-      line-height: 1;
-    }
-
-    .stat-item .lbl {
-      font-size: 0.75rem;
-      color: rgba(255,255,255,0.5);
-      font-weight: 500;
-      margin-top: 4px;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-    }
+    .stat-sep { width:1px; height:40px; background:rgba(255,255,255,0.08); }
 
     /* ── Features ── */
-    .features-section {
-      padding: 6rem 0;
-    }
-
+    .features-section { padding: 6rem 0; }
     .features-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 1.5rem;
     }
+    .feature-link { text-decoration:none; color:inherit; display:block; }
 
-    .feature-link {
-      text-decoration: none;
-      color: inherit;
-      display: block;
-    }
+    /* Colored top accent per feature */
+    .feat-circ::before { background: linear-gradient(90deg,#EF4444,#F97316) !important; }
+    .feat-dept::before { background: linear-gradient(90deg,#7C3AED,#A78BFA) !important; }
+    .feat-anat::before { background: linear-gradient(90deg,#06B6D4,#67E8F9) !important; }
+    .feat-anal::before { background: linear-gradient(90deg,#EC4899,#F9A8D4) !important; }
+    .feat-pred::before { background: linear-gradient(90deg,#F59E0B,#FCD34D) !important; }
+    .feat-pers::before { background: linear-gradient(90deg,#10B981,#6EE7B7) !important; }
+    .feat-lib::before  { background: linear-gradient(90deg,#3B82F6,#93C5FD) !important; }
+    .feat-chat::before { background: linear-gradient(90deg,#8B5CF6,#C4B5FD) !important; }
 
-    /* ── AI Features Highlight ── */
+    /* ── AI Highlight ── */
     .ai-highlight {
       padding: 6rem 0;
-      background: rgba(124, 58, 237, 0.05);
+      background: linear-gradient(180deg, rgba(124,58,237,0.04) 0%, transparent 100%);
       border-top: 1px solid rgba(255,255,255,0.05);
       border-bottom: 1px solid rgba(255,255,255,0.05);
     }
-
-    .wow-features {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 1.5rem;
-    }
-
+    .wow-features { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:1.5rem; }
     .wow-card {
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 1.5rem;
-      padding: 2rem;
-      position: relative;
-      overflow: hidden;
-      transition: all 0.3s ease;
+      background: rgba(8,3,22,0.6); border:1px solid rgba(255,255,255,0.08);
+      border-radius: 1.5rem; padding: 2rem; position:relative; overflow:hidden;
+      transition: all 0.35s cubic-bezier(0.34,1.56,0.64,1);
+      backdrop-filter: blur(40px);
     }
-
     .wow-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 3px;
+      content:''; position:absolute; top:0; left:0; right:0; height:3px;
     }
-
-    .wow-card.card-purple::before { background: linear-gradient(90deg, var(--color-primary), var(--color-primary-light)); }
-    .wow-card.card-pink::before   { background: linear-gradient(90deg, var(--color-accent), var(--color-accent-light)); }
-    .wow-card.card-green::before  { background: linear-gradient(90deg, #10B981, #6EE7B7); }
-
-    .wow-card:hover {
-      transform: translateY(-6px);
-      border-color: rgba(167,139,250,0.3);
-      box-shadow: 0 16px 48px rgba(124,58,237,0.25);
+    .wow-card::after {
+      content:''; position:absolute; bottom:-50%; right:-30%;
+      width:250px; height:250px; border-radius:50%;
+      opacity:0; filter:blur(60px); transition:opacity 0.4s;
     }
-
+    .wow-card:hover::after { opacity:1; }
+    .wow-card:hover { transform:translateY(-10px); border-color:rgba(167,139,250,0.3); }
+    .wow-card.card-purple::before { background:linear-gradient(90deg,var(--color-primary),var(--color-primary-light)); }
+    .wow-card.card-purple::after  { background:rgba(124,58,237,0.25); }
+    .wow-card.card-purple:hover   { box-shadow:0 20px 60px rgba(124,58,237,0.3); }
+    .wow-card.card-pink::before   { background:linear-gradient(90deg,var(--color-accent),var(--color-accent-light)); }
+    .wow-card.card-pink::after    { background:rgba(236,72,153,0.2); }
+    .wow-card.card-pink:hover     { box-shadow:0 20px 60px rgba(236,72,153,0.25); }
+    .wow-card.card-green::before  { background:linear-gradient(90deg,#10B981,#6EE7B7); }
+    .wow-card.card-green::after   { background:rgba(16,185,129,0.2); }
+    .wow-card.card-green:hover    { box-shadow:0 20px 60px rgba(16,185,129,0.25); }
     .wow-badge {
-      display: inline-block;
-      padding: 3px 10px;
-      background: rgba(124,58,237,0.2);
-      border-radius: 999px;
-      font-size: 0.7rem;
-      font-weight: 700;
-      color: var(--color-primary-light);
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      margin-bottom: 1rem;
+      display:inline-block; padding:3px 10px; background:rgba(124,58,237,0.2);
+      border-radius:999px; font-size:0.68rem; font-weight:800;
+      color:var(--color-primary-light); text-transform:uppercase;
+      letter-spacing:0.1em; margin-bottom:1rem; border:1px solid rgba(167,139,250,0.3);
     }
+    .wow-icon-wrap { display:inline-block; animation:float 3s ease-in-out infinite; }
 
     /* ── Disclaimer Banner ── */
     .disclaimer-banner {
-      padding: 1.5rem;
-      background: rgba(245, 158, 11, 0.08);
-      border: 1px solid rgba(245, 158, 11, 0.3);
-      border-radius: 1rem;
-      display: flex;
-      gap: 1rem;
-      align-items: flex-start;
-      margin: 2rem 0;
+      padding:1.5rem; background:rgba(245,158,11,0.07);
+      border:1px solid rgba(245,158,11,0.25); border-radius:1rem;
+      display:flex; gap:1rem; align-items:flex-start; margin:2rem 0;
     }
+    .disclaimer-banner .icon { font-size:1.5rem; flex-shrink:0; }
 
-    .disclaimer-banner .icon { font-size: 1.5rem; flex-shrink: 0; }
+    /* ── Social Proof Strip ── */
+    .proof-strip {
+      display: flex; align-items: center; justify-content: center;
+      gap: 2rem; flex-wrap: wrap;
+      padding: 1rem;
+      background: rgba(255,255,255,0.025);
+      border-radius: var(--radius-xl);
+      border: 1px solid rgba(255,255,255,0.06);
+      margin-top: 2rem;
+    }
+    .proof-item {
+      display: flex; align-items: center; gap: 0.5rem;
+      font-size: 0.82rem; font-weight: 600; color: rgba(255,255,255,0.6);
+    }
+    .proof-item .proof-icon { font-size: 1.1rem; }
 
     /* ── CTA Section ── */
-    .cta-section {
-      padding: 6rem 0;
-      text-align: center;
-    }
-
+    .cta-section { padding: 6rem 0; text-align:center; }
     .cta-card {
-      background: linear-gradient(135deg, rgba(124,58,237,0.2), rgba(236,72,153,0.1));
-      border: 1px solid rgba(167,139,250,0.3);
-      border-radius: 2rem;
-      padding: 4rem;
-      max-width: 700px;
-      margin: 0 auto;
-      position: relative;
-      overflow: hidden;
+      background: linear-gradient(135deg, rgba(124,58,237,0.18), rgba(236,72,153,0.08), rgba(6,182,212,0.05));
+      border: 1px solid rgba(167,139,250,0.35);
+      border-radius: 2rem; padding: 4rem;
+      max-width: 700px; margin: 0 auto;
+      position: relative; overflow: hidden;
+      backdrop-filter: blur(40px);
+      box-shadow: 0 0 80px rgba(124,58,237,0.15), inset 0 1px 0 rgba(255,255,255,0.08);
     }
-
     .cta-card::before {
-      content: '';
-      position: absolute;
-      inset: -1px;
-      background: linear-gradient(135deg, rgba(124,58,237,0.4), rgba(236,72,153,0.2));
-      border-radius: inherit;
-      z-index: -1;
+      content:''; position:absolute; top:0; left:0; right:0; height:2px;
+      background:linear-gradient(90deg, rgba(124,58,237,0.8), rgba(236,72,153,0.8), rgba(6,182,212,0.8));
     }
 
-    @media (max-width: 600px) {
-      .hero-title { font-size: 2.2rem; }
-      .cta-card   { padding: 2rem; }
-    }
-
-    /* ── Counter Animation ── */
-    .num[data-count] { transition: none; }
-
-    /* ── Feature Card Micro-Animations ── */
-    .feature-card { position: relative; overflow: hidden; }
-    .feature-icon {
-      display: inline-block;
-      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-    .feature-card:hover .feature-icon { transform: scale(1.2) rotate(-5deg); }
-
-    /* Shimmer on feature card hover */
-    .feature-card::after {
-      content: '';
-      position: absolute;
-      top: -50%; left: -60%;
-      width: 40%; height: 200%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent);
-      transform: skewX(-20deg);
-      transition: left 0.6s ease;
-      pointer-events: none;
-    }
-    .feature-card:hover::after { left: 130%; }
-
-    /* Wow card icon pulse */
-    .wow-card .wow-icon-wrap {
-      display: inline-block;
-      animation: float 3s ease-in-out infinite;
+    @media(max-width:600px) {
+      .hero-title { font-size:2.3rem; }
+      .cta-card   { padding:2rem; }
+      .proof-strip{ gap:1rem; }
     }
   </style>
 </head>
 <body class="page-enter">
-  <!-- ♿ Skip to main -->
   <a href="#main" style="position:absolute;left:-9999px;z-index:999;" id="skip-link">Bỏ qua điều hướng</a>
 
   <!-- NAVBAR -->
@@ -273,100 +188,180 @@
         <div class="brand-icon" aria-hidden="true">🏥</div>
         <span>Digital BioHospital</span>
       </a>
-
       <ul class="navbar-nav" role="list">
-        <li><a href="index.html"        class="active"  id="nav-home">🏠 Trang chủ</a></li>
-        <li><a href="departments.html"              id="nav-dept">🏥 Chuyên khoa</a></li>
-        <li><a href="anatomy.html"                  id="nav-anatomy">🧬 Giải phẫu</a></li>
-        <li><a href="analysis.html"                 id="nav-analysis">🔬 Phân tích</a></li>
-        <li><a href="prediction.html"               id="nav-predict">🔮 Dự đoán</a></li>
-        <li><a href="personalize.html"              id="nav-personal">🌱 Kế hoạch</a></li>
-        <li><a href="library.html"                  id="nav-lib">📚 Thư viện</a></li>
-        <li><a href="chatbot.html"                  id="nav-chatbot">🤖 Tư vấn AI</a></li>
+        <li><a href="index.html"         class="active"  id="nav-home">🏠 Trang chủ</a></li>
+        <li><a href="departments.html"                   id="nav-dept">🏥 Chuyên khoa</a></li>
+        <li><a href="anatomy.html"                       id="nav-anatomy">🧬 Giải phẫu</a></li>
+        <li><a href="analysis.html"                      id="nav-analysis">🔬 Phân tích</a></li>
+        <li><a href="prediction.html"                    id="nav-predict">🔮 Dự đoán</a></li>
+        <li><a href="library.html"                       id="nav-lib">📚 Thư viện</a></li>
+        <li><a href="chatbot.html"                       id="nav-chatbot">🤖 Tư vấn AI</a></li>
       </ul>
-
       <a href="reception.html" class="navbar-patient-btn btn btn-sm" id="btn-start-exam">
         🧑‍⚕️ Bắt đầu khám
       </a>
     </div>
   </nav>
 
-  <!-- MAIN CONTENT -->
   <main id="main">
-
-    <!-- ══ HERO ══════════════════════════════════════════════════════════ -->
+    <!-- ══ HERO ══════════════════════════════════════════════════════════════ -->
     <section class="hero-section" aria-labelledby="hero-title">
       <!-- Ambient orbs -->
       <div class="hero-orb hero-orb-1" aria-hidden="true"></div>
       <div class="hero-orb hero-orb-2" aria-hidden="true"></div>
+      <div class="hero-orb hero-orb-3" aria-hidden="true"></div>
+
+      <!-- DNA Helix Decoration -->
+      <div class="dna-visual" aria-hidden="true">
+        <svg width="90" height="400" viewBox="0 0 90 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="dnaGrad1" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="#7C3AED"/>
+              <stop offset="100%" stop-color="#EC4899"/>
+            </linearGradient>
+          </defs>
+          <!-- Left helix strand -->
+          <path d="M10,0 Q80,50 10,100 Q-60,150 10,200 Q80,250 10,300 Q-60,350 10,400"
+                stroke="url(#dnaGrad1)" stroke-width="2.5" fill="none" opacity="0.9"/>
+          <!-- Right strand -->
+          <path d="M80,0 Q10,50 80,100 Q150,150 80,200 Q10,250 80,300 Q150,350 80,400"
+                stroke="url(#dnaGrad1)" stroke-width="2.5" fill="none" opacity="0.9"/>
+          <!-- Rungs -->
+          <line x1="10" y1="25" x2="80" y2="25" stroke="#A78BFA" stroke-width="1.5" opacity="0.6"/>
+          <line x1="18" y1="50" x2="72" y2="50" stroke="#A78BFA" stroke-width="1.5" opacity="0.5"/>
+          <line x1="10" y1="75" x2="80" y2="75" stroke="#EC4899" stroke-width="1.5" opacity="0.6"/>
+          <line x1="18" y1="100" x2="72" y2="100" stroke="#A78BFA" stroke-width="1.5" opacity="0.5"/>
+          <line x1="10" y1="125" x2="80" y2="125" stroke="#06B6D4" stroke-width="1.5" opacity="0.6"/>
+          <line x1="18" y1="150" x2="72" y2="150" stroke="#A78BFA" stroke-width="1.5" opacity="0.5"/>
+          <line x1="10" y1="175" x2="80" y2="175" stroke="#EC4899" stroke-width="1.5" opacity="0.6"/>
+          <line x1="18" y1="200" x2="72" y2="200" stroke="#A78BFA" stroke-width="1.5" opacity="0.5"/>
+          <line x1="10" y1="225" x2="80" y2="225" stroke="#7C3AED" stroke-width="1.5" opacity="0.6"/>
+          <line x1="18" y1="250" x2="72" y2="250" stroke="#A78BFA" stroke-width="1.5" opacity="0.5"/>
+          <line x1="10" y1="275" x2="80" y2="275" stroke="#06B6D4" stroke-width="1.5" opacity="0.6"/>
+          <line x1="18" y1="300" x2="72" y2="300" stroke="#A78BFA" stroke-width="1.5" opacity="0.5"/>
+          <line x1="10" y1="325" x2="80" y2="325" stroke="#EC4899" stroke-width="1.5" opacity="0.6"/>
+          <line x1="18" y1="350" x2="72" y2="350" stroke="#A78BFA" stroke-width="1.5" opacity="0.5"/>
+          <line x1="10" y1="375" x2="80" y2="375" stroke="#7C3AED" stroke-width="1.5" opacity="0.6"/>
+          <!-- Base dots -->
+          <circle cx="10"  cy="25"  r="4" fill="#A78BFA"/>
+          <circle cx="80"  cy="25"  r="4" fill="#EC4899"/>
+          <circle cx="10"  cy="75"  r="4" fill="#EC4899"/>
+          <circle cx="80"  cy="75"  r="4" fill="#A78BFA"/>
+          <circle cx="10"  cy="125" r="4" fill="#06B6D4"/>
+          <circle cx="80"  cy="125" r="4" fill="#A78BFA"/>
+          <circle cx="10"  cy="175" r="4" fill="#A78BFA"/>
+          <circle cx="80"  cy="175" r="4" fill="#EC4899"/>
+          <circle cx="10"  cy="225" r="4" fill="#7C3AED"/>
+          <circle cx="80"  cy="225" r="4" fill="#06B6D4"/>
+          <circle cx="10"  cy="275" r="4" fill="#EC4899"/>
+          <circle cx="80"  cy="275" r="4" fill="#7C3AED"/>
+          <circle cx="10"  cy="325" r="4" fill="#06B6D4"/>
+          <circle cx="80"  cy="325" r="4" fill="#EC4899"/>
+        </svg>
+      </div>
 
       <div class="container" style="width:100%">
+        <!-- Badge -->
         <div class="hero-badge animate-fadeInUp" aria-label="Nhãn hệ thống">
-          <span>🤖</span> Hệ Thống AI Y Tế Giáo Dục · v1.0
+          <span class="badge-dot"></span>
+          🤖 Hệ Thống AI Y Tế Giáo Dục · v2.0
         </div>
 
         <h1 class="hero-title gradient-animated" id="hero-title">
-          Bệnh Viện Sinh Học<br />Thông Minh
+          Bệnh Viện Sinh Học<br/>Thông Minh
         </h1>
 
-        <p class="hero-desc animate-fadeInUp delay-200">
-          Trải nghiệm như bệnh nhân thực tế — AI phân tích sức khoẻ,
+        <p class="hero-desc animate-slideInUp2 delay-200">
+          Trải nghiệm như bệnh nhân thực — AI phân tích sức khoẻ,
           dự đoán tương lai và tạo kế hoạch cá nhân hóa dành riêng cho bạn.
+          Dữ liệu từ <strong style="color:var(--color-primary-light)">SGK Sinh 11</strong>.
         </p>
 
-        <div class="hero-actions animate-fadeInUp delay-400">
+        <div class="hero-actions animate-slideInUp2 delay-400">
           <a href="reception.html" class="btn btn-primary btn-lg btn-ripple" id="hero-btn-exam">
             🧑‍⚕️ Bắt Đầu Khám
           </a>
           <a href="anatomy.html" class="btn btn-outline btn-lg" id="hero-btn-anatomy">
             🧬 Khám Phá Cơ Thể
           </a>
-          <a href="library.html" class="btn btn-glass btn-lg" id="hero-btn-library">
-            📚 Thư Viện
+          <a href="chatbot.html" class="btn btn-glass btn-lg" id="hero-btn-chat">
+            🤖 Hỏi AI Ngay
           </a>
+        </div>
+
+        <!-- Social Proof -->
+        <div class="proof-strip animate-fadeIn delay-600">
+          <div class="proof-item"><span class="proof-icon">⭐</span> 100% Miễn phí</div>
+          <div class="proof-item"><span class="proof-icon">🔒</span> Không lưu dữ liệu</div>
+          <div class="proof-item"><span class="proof-icon">🤖</span> Gemini AI thực</div>
+          <div class="proof-item"><span class="proof-icon">📚</span> SGK Sinh 11 chuẩn</div>
+          <div class="proof-item"><span class="proof-icon">⚡</span> Phản hồi tức thì</div>
         </div>
       </div>
 
-      <div class="hero-scroll-indicator" aria-hidden="true">Khám phá</div>
+      <div class="hero-scroll-indicator" aria-hidden="true">Khám Phá</div>
     </section>
 
-    <!-- ══ STATS BAR ══════════════════════════════════════════════════════ -->
-    <div class="stats-bar" aria-label="Thống kê hệ thống">
+    <!-- ══ STATS BAR v2.0 ═══════════════════════════════════════════════════ -->
+    <div class="stats-bar-v2" aria-label="Thống kê hệ thống">
       <div class="container">
-        <div class="stats-inner">
-          <div class="stat-item">
-            <span class="num" id="stat-depts">6</span>
-            <span class="lbl">Chuyên khoa</span>
+        <div class="stats-inner-v2">
+          <div class="stat-item-v2 reveal">
+            <span class="stat-icon">🏥</span>
+            <div class="stat-body">
+              <span class="num" id="stat-depts">6</span>
+              <span class="lbl">Chuyên khoa</span>
+            </div>
           </div>
-          <div class="stat-item">
-            <span class="num">3</span>
-            <span class="lbl">Tính năng AI độc quyền</span>
+          <div class="stat-sep"></div>
+          <div class="stat-item-v2 reveal delay-100">
+            <span class="stat-icon">🤖</span>
+            <div class="stat-body">
+              <span class="num">3</span>
+              <span class="lbl">AI độc quyền</span>
+            </div>
           </div>
-          <div class="stat-item">
-            <span class="num">5</span>
-            <span class="lbl">Cơ quan giải phẫu</span>
+          <div class="stat-sep"></div>
+          <div class="stat-item-v2 reveal delay-200">
+            <span class="stat-icon">🧬</span>
+            <div class="stat-body">
+              <span class="num">6</span>
+              <span class="lbl">Hệ cơ quan</span>
+            </div>
           </div>
-          <div class="stat-item">
-            <span class="num">100%</span>
-            <span class="lbl">Miễn phí</span>
+          <div class="stat-sep"></div>
+          <div class="stat-item-v2 reveal delay-300">
+            <span class="stat-icon">📚</span>
+            <div class="stat-body">
+              <span class="num">5</span>
+              <span class="lbl">PDF Sinh 11</span>
+            </div>
+          </div>
+          <div class="stat-sep"></div>
+          <div class="stat-item-v2 reveal delay-400">
+            <span class="stat-icon">✅</span>
+            <div class="stat-body">
+              <span class="num">100</span>
+              <span class="lbl">% Miễn phí</span>
+            </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- ══ FEATURES ════════════════════════════════════════════════════════ -->
+    <!-- ══ FEATURES ═══════════════════════════════════════════════════════════ -->
     <section class="features-section" aria-labelledby="features-title">
       <div class="container">
         <div class="section-header">
-          <div class="section-tag">Tính Năng</div>
-          <h2 id="features-title">Đầy Đủ Từ A → Z</h2>
-          <p>Mọi công cụ bạn cần để hiểu và chăm sóc sức khoẻ</p>
+          <div class="section-tag animate-fadeInUp">✨ Tính Năng v2.0</div>
+          <h2 id="features-title" class="animate-fadeInUp delay-100">Đầy Đủ Từ A → Z</h2>
+          <p class="animate-fadeInUp delay-200">Mọi công cụ bạn cần để hiểu và chăm sóc sức khoẻ</p>
         </div>
 
-        <div class="features-grid stagger" role="list">
+        <div class="features-grid" role="list">
 
           <a href="reception.html" class="feature-link" id="feat-reception">
-            <article class="feature-card" role="listitem">
+            <article class="feature-card feat-circ reveal card-holographic" role="listitem">
               <span class="feature-icon">🧑‍⚕️</span>
               <h3>Tiếp Nhận Bệnh Nhân</h3>
               <p>Nhập thông tin, AI tính BMI và cho điểm sức khoẻ 0–100 ngay lập tức.</p>
@@ -375,65 +370,65 @@
           </a>
 
           <a href="departments.html" class="feature-link" id="feat-dept">
-            <article class="feature-card" role="listitem">
+            <article class="feature-card feat-dept reveal delay-100 card-holographic" role="listitem">
               <span class="feature-icon">🏥</span>
               <h3>Khám Chuyên Khoa</h3>
-              <p>6 chuyên khoa với AI riêng: Tim mạch, Hô hấp, TMH, Tiêu hóa, Thần kinh, Xương khớp.</p>
-              <div class="badge badge-purple" style="margin-top:1rem">6 Khoa</div>
+              <p>6 khoa: Tim mạch, Hô hấp, TMH, Tiêu hóa, Thần kinh, Xương khớp. AI phân tích triệu chứng.</p>
+              <div class="badge badge-purple" style="margin-top:1rem">AI phân tích</div>
             </article>
           </a>
 
           <a href="anatomy.html" class="feature-link" id="feat-anatomy">
-            <article class="feature-card" role="listitem">
+            <article class="feature-card feat-anat reveal delay-200 card-holographic" role="listitem">
               <span class="feature-icon">🧬</span>
-              <h3>Giải Phẫu Tương Tác</h3>
-              <p>Hình cơ thể người 3D — click vào từng cơ quan để xem chức năng và bệnh liên quan.</p>
-              <div class="badge badge-blue" style="margin-top:1rem">WOW Factor</div>
+              <h3>Giải Phẫu Học 3D</h3>
+              <p>Khám phá tim, phổi, não, gan và thận theo từng lớp. Click để xem AI giải thích.</p>
+              <div class="badge badge-cyan" style="margin-top:1rem">Interactive</div>
             </article>
           </a>
 
           <a href="analysis.html" class="feature-link" id="feat-analysis">
-            <article class="feature-card" role="listitem">
+            <article class="feature-card feat-anal reveal delay-300 card-holographic" role="listitem">
               <span class="feature-icon">🔬</span>
-              <h3>Liên Kết Cơ Quan</h3>
-              <p>AI vẽ chuỗi ảnh hưởng: Ngủ ít → Não → Tim → Thận. Tư duy sinh học hệ thống.</p>
-              <div class="badge badge-yellow" style="margin-top:1rem">AI Gemini</div>
+              <h3>Phân Tích Chỉ Số</h3>
+              <p>Nhập xét nghiệm máu, AI giải thích từng chỉ số và cho khuyến nghị.</p>
+              <div class="badge badge-blue" style="margin-top:1rem">Lab AI</div>
             </article>
           </a>
 
           <a href="prediction.html" class="feature-link" id="feat-predict">
-            <article class="feature-card" role="listitem">
+            <article class="feature-card feat-pred reveal delay-400 card-holographic" role="listitem">
               <span class="feature-icon">🔮</span>
               <h3>Dự Đoán Tương Lai</h3>
-              <p>AI dự đoán sức khỏe sau 30 ngày, 3 tháng, 1 năm nếu tiếp tục thói quen hiện tại.</p>
-              <div class="badge badge-red" style="margin-top:1rem">Độc Quyền</div>
+              <p>AI dự đoán xu hướng sức khỏe 30 ngày, cảnh báo nguy cơ tiềm ẩn.</p>
+              <div class="badge badge-yellow" style="margin-top:1rem">Độc quyền</div>
             </article>
           </a>
 
           <a href="personalize.html" class="feature-link" id="feat-personal">
-            <article class="feature-card" role="listitem">
+            <article class="feature-card feat-pers reveal delay-500 card-holographic" role="listitem">
               <span class="feature-icon">🌱</span>
               <h3>Kế Hoạch Cá Nhân</h3>
-              <p>AI tạo lịch sinh hoạt 7 ngày + menu ăn uống + bài tập phù hợp riêng cho bạn.</p>
-              <div class="badge badge-green" style="margin-top:1rem">Cá Nhân Hóa</div>
+              <p>AI tạo lịch 7 ngày hoàn toàn cá nhân hóa: ăn gì, tập gì, ngủ ra sao.</p>
+              <div class="badge badge-green" style="margin-top:1rem">Cá nhân hóa</div>
             </article>
           </a>
 
           <a href="library.html" class="feature-link" id="feat-library">
-            <article class="feature-card" role="listitem">
+            <article class="feature-card feat-lib reveal delay-600 card-holographic" role="listitem">
               <span class="feature-icon">📚</span>
-              <h3>Thư Viện Sinh Học 11</h3>
-              <p>6 hệ cơ quan × 5 phần: Khái niệm, Cấu tạo, Chức năng, Kiến thức SGK 11, Liên hệ thực tế.</p>
-              <div class="badge badge-blue" style="margin-top:1rem">SGK 11</div>
+              <h3>Thư Viện Sinh Học<span class="badge-new">NEW</span></h3>
+              <p>Drill-down 2 cấp: hệ cơ quan → từng bộ phận. AI giải thích từ PDF SGK 11.</p>
+              <div class="badge badge-blue" style="margin-top:1rem">AI từ SGK</div>
             </article>
           </a>
 
           <a href="chatbot.html" class="feature-link" id="feat-chatbot">
-            <article class="feature-card" role="listitem">
+            <article class="feature-card feat-chat reveal delay-700 card-holographic" role="listitem">
               <span class="feature-icon">🤖</span>
-              <h3>Tư Vấn AI BioAI</h3>
-              <p>Hỏi bất kỳ điều gì về sức khỏe — AI phân tích liên hệ các hệ cơ quan dựa trên Sinh học 11.</p>
-              <div class="badge badge-purple" style="margin-top:1rem">BioAI</div>
+              <h3>Tư Vấn AI<span class="badge-new">NEW</span></h3>
+              <p>Chatbot multi-turn nhớ ngữ cảnh, topic chips gợi ý, Markdown render đẹp.</p>
+              <div class="badge badge-purple" style="margin-top:1rem">Multi-turn</div>
             </article>
           </a>
 
@@ -441,13 +436,13 @@
       </div>
     </section>
 
-    <!-- ══ AI WOW FEATURES ════════════════════════════════════════════════ -->
+    <!-- ══ AI HIGHLIGHT ════════════════════════════════════════════════════════ -->
     <section class="ai-highlight" aria-labelledby="ai-title">
       <div class="container">
         <div class="section-header">
-          <div class="section-tag">🤖 AI Đa Tầng</div>
-          <h2 id="ai-title">Điểm Khác Biệt Hoàn Toàn</h2>
-          <p>3 tính năng AI độc quyền không nhóm nào có</p>
+          <div class="section-tag animate-fadeInUp">🔮 AI Độc Quyền</div>
+          <h2 id="ai-title" class="animate-fadeInUp delay-100">Sức Mạnh Từ Gemini AI</h2>
+          <p class="animate-fadeInUp delay-200">Ba tính năng độc quyền mà không nơi nào có — powered by Google Gemini</p>
         </div>
 
         <div class="wow-features reveal">
@@ -458,57 +453,65 @@
             <p style="margin-bottom:1.5rem">Không chỉ phân tích hiện tại — AI dự đoán xu hướng sức khỏe theo thời gian và cảnh báo nguy cơ.<br/><br/>
               <em style="color:var(--color-primary-light)">"Ngủ 4h/ngày — sau 30 ngày nguy cơ suy giảm trí nhớ tăng 40%..."</em>
             </p>
-            <a href="prediction.html" class="btn btn-outline btn-sm" id="wow-btn-predict">Khám phá →</a>
+            <a href="prediction.html" class="btn btn-outline btn-sm" id="wow-btn-predict">Xem Dự Đoán →</a>
           </div>
 
           <div class="wow-card card-pink" id="wow-organs">
             <div class="wow-badge">🔬 AI Hệ Thống</div>
             <div style="font-size:2.5rem; margin-bottom:1rem" class="wow-icon-wrap" style="animation-delay:0.5s">🔬</div>
-            <h3 style="margin-bottom:0.75rem">Liên Kết Cơ Quan</h3>
-            <p style="margin-bottom:1.5rem">AI vẽ đồ thị nhân-quả giữa các hệ cơ quan. Tư duy sinh học hệ thống — cực ăn điểm.<br/><br/>
+            <h3 style="margin-bottom:0.75rem">Thư Viện Drill-Down</h3>
+            <p style="margin-bottom:1.5rem">Click hệ cơ quan → chọn bộ phận → AI sinh tài liệu 5-tab từ PDF SGK. Cache thông minh, mở lần 2 tức thì.<br/><br/>
               <em style="color:var(--color-accent-light)">"Thiếu ngủ → Não mệt → Tim quá tải → Huyết áp tăng..."</em>
             </p>
-            <a href="analysis.html" class="btn btn-outline btn-sm" id="wow-btn-organs">Khám phá →</a>
+            <a href="library.html" class="btn btn-outline btn-sm" id="wow-btn-lib" style="border-color:rgba(249,168,212,0.4); color:var(--color-accent-light)">Mở Thư Viện →</a>
           </div>
 
           <div class="wow-card card-green" id="wow-plan">
-            <div class="wow-badge" style="background:rgba(16,185,129,0.2);color:#6EE7B7">🌱 Cá Nhân Hóa</div>
+            <div class="wow-badge" style="background:rgba(16,185,129,0.2);color:#6EE7B7;border-color:rgba(16,185,129,0.4)">🌱 Cá Nhân Hóa</div>
             <div style="font-size:2.5rem; margin-bottom:1rem" class="wow-icon-wrap" style="animation-delay:1s">🌱</div>
             <h3 style="margin-bottom:0.75rem">Kế Hoạch Cá Nhân</h3>
             <p style="margin-bottom:1.5rem">AI Gemini tạo lịch sinh hoạt 7 ngày hoàn toàn cá nhân hóa: ăn gì, tập gì, ngủ ra sao.<br/><br/>
               <em style="color:#6EE7B7">"Dành riêng cho bạn — không kế hoạch nào giống nhau."</em>
             </p>
-            <a href="personalize.html" class="btn btn-outline btn-sm" id="wow-btn-plan">Khám phá →</a>
+            <a href="personalize.html" class="btn btn-outline btn-sm" id="wow-btn-plan" style="border-color:rgba(110,231,183,0.4);color:#6EE7B7">Tạo Kế Hoạch →</a>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ══ DISCLAIMER ══════════════════════════════════════════════════════════ -->
+    <section style="padding: 2rem 0">
+      <div class="container">
+        <div class="disclaimer-banner animate-fadeIn">
+          <div class="icon" aria-hidden="true">⚠️</div>
+          <div>
+            <strong>Tuyên bố miễn trách nhiệm:</strong>
+            <p style="margin-top:0.25rem; font-size:0.875rem">
+              Đây là nền tảng <em>giáo dục và mô phỏng</em>. Nội dung do AI tạo ra không thay thế chẩn đoán, tư vấn hoặc điều trị y tế chuyên nghiệp.
+              Mọi thông tin nhập vào <strong>không được lưu trữ</strong>. <a href="disclaimer.html">Đọc toàn bộ →</a>
+            </p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ══ CTA ════════════════════════════════════════════════════════════ -->
+    <!-- ══ CTA ════════════════════════════════════════════════════════════════ -->
     <section class="cta-section" aria-labelledby="cta-title">
       <div class="container">
-        <div class="cta-card reveal">
-          <div class="section-tag" style="margin-bottom:2rem">🚀 Bắt Đầu Ngay</div>
-          <h2 id="cta-title" style="margin-bottom:1rem">Sẵn Sàng Trải Nghiệm?</h2>
-          <p style="font-size:1.1rem; margin-bottom:2rem">
-            Chỉ mất 2 phút nhập thông tin — AI sẽ phân tích và đưa ra
-            kế hoạch chăm sóc sức khoẻ dành riêng cho bạn.
+        <div class="cta-card animate-scaleIn">
+          <div class="section-tag" style="margin:0 auto 1.5rem">🚀 Bắt Đầu Ngay</div>
+          <h2 id="cta-title" style="font-size:2.2rem; margin-bottom:1rem">Sẵn Sàng Trải Nghiệm?</h2>
+          <p style="font-size:1.05rem; margin-bottom:2rem; max-width:480px; margin-left:auto; margin-right:auto">
+            Tạo hồ sơ bệnh nhân miễn phí để mở khóa toàn bộ tính năng AI cá nhân hóa.
           </p>
-          <a href="reception.html" class="btn btn-primary btn-xl btn-ripple" id="cta-btn-exam">
-            🧑‍⚕️ Bắt Đầu Khám Miễn Phí
-          </a>
-        </div>
-
-        <!-- Disclaimer -->
-        <div class="disclaimer-banner reveal delay-200">
-          <span class="icon">⚠️</span>
-          <div>
-            <strong style="color:rgba(255,255,255,0.9)">Lưu ý quan trọng:</strong>
-            <p style="margin:0; font-size:0.9rem">
-              Hệ thống này chỉ mang tính chất <strong>giáo dục và tham khảo</strong>, không thay thế chẩn đoán y tế chuyên nghiệp.
-              Khi có triệu chứng nghiêm trọng, hãy gặp bác sĩ ngay.
-              <a href="disclaimer.html" style="color:var(--color-warning)">Xem nội quy đầy đủ →</a>
-            </p>
+          <div style="display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;">
+            <a href="reception.html" class="btn btn-primary btn-lg btn-ripple" id="cta-btn-start">
+              🧑‍⚕️ Tạo Hồ Sơ Miễn Phí
+            </a>
+            <a href="chatbot.html" class="btn btn-glass btn-lg" id="cta-btn-chat">
+              🤖 Hỏi AI Trước
+            </a>
           </div>
         </div>
       </div>
@@ -516,32 +519,29 @@
 
   </main>
 
-  <!-- FOOTER -->
-  <footer role="contentinfo">
+  <footer>
     <div class="container">
-      <p>
-        🏥 <strong>Bệnh Viện Sinh Học Thông Minh – Digital BioHospital</strong>
-        · Dự án STEM · Powered by Google Gemini AI
+      <p style="margin-bottom:0.5rem">
+        <a href="index.html" style="font-weight:700; color:var(--color-primary-light)">Digital BioHospital</a>
+        &nbsp;·&nbsp; v2.0 &nbsp;·&nbsp;
+        Powered by <strong>Google Gemini AI</strong>
+        &nbsp;·&nbsp; <a href="disclaimer.html">Nội quy & Miễn trách</a>
       </p>
-      <p style="margin-top:0.5rem">
-        <a href="disclaimer.html" id="footer-disclaimer">Nội quy & Điều khoản</a>
-        · <a href="library.html" id="footer-library">Thư viện sức khỏe</a>
-      </p>
+      <p>🏥 Nền tảng giáo dục sinh học — Không lưu dữ liệu · 100% Miễn phí · <span style="color:rgba(255,255,255,0.3)">Made with ❤️</span></p>
     </div>
   </footer>
 
   <script src="js/api.js"></script>
   <script src="js/patient.js"></script>
   <script>
-    // ── Counter animation on scroll ──────────────────────────────────────────
-    function animateCounter(el, target, duration = 1500) {
+    /* ── Counter animation on scroll ────────────────────────────────────── */
+    function animateCounter(el, target, duration = 1800) {
       const start = performance.now();
       const isPercent = String(target).includes('%');
       const numTarget = parseInt(target);
       function frame(now) {
         const elapsed = now - start;
         const progress = Math.min(elapsed / duration, 1);
-        // Ease out cubic
         const eased = 1 - Math.pow(1 - progress, 3);
         const current = Math.round(eased * numTarget);
         el.textContent = current + (isPercent ? '%' : '');
@@ -554,8 +554,8 @@
       entries.forEach(entry => {
         if (entry.isIntersecting && !entry.target.dataset.animated) {
           entry.target.dataset.animated = '1';
-          const raw = entry.target.dataset.count;
-          animateCounter(entry.target, raw);
+          const raw = entry.target.dataset.count || entry.target.textContent;
+          animateCounter(entry.target, raw.replace('%',''));
         }
       });
     }, { threshold: 0.5 });
@@ -564,31 +564,37 @@
       const val = el.textContent.trim();
       el.dataset.count = val;
       el.textContent = '0';
-      if (val.includes('%')) el.dataset.count = val.replace('%','');
       counterObserver.observe(el);
     });
 
-    // Particles background
+    /* ── Scroll reveal ───────────────────────────────────────────────────── */
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('revealed'); revealObserver.unobserve(e.target); }
+      });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+    /* ── Particles background ────────────────────────────────────────────── */
     (function() {
       const canvas = document.createElement('canvas');
       canvas.id = 'particles-canvas';
       document.body.prepend(canvas);
       const ctx = canvas.getContext('2d');
 
-      function resize() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-      }
+      function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
       resize();
       window.addEventListener('resize', resize);
 
-      const particles = Array.from({ length: 60 }, () => ({
+      const colors = ['167,139,250', '236,72,153', '6,182,212', '124,58,237'];
+      const particles = Array.from({ length: 80 }, () => ({
         x: Math.random() * window.innerWidth,
         y: Math.random() * window.innerHeight,
         r: Math.random() * 2 + 0.5,
-        dx: (Math.random() - 0.5) * 0.4,
-        dy: (Math.random() - 0.5) * 0.4,
-        alpha: Math.random() * 0.5 + 0.1
+        dx: (Math.random() - 0.5) * 0.45,
+        dy: (Math.random() - 0.5) * 0.45,
+        alpha: Math.random() * 0.6 + 0.15,
+        color: colors[Math.floor(Math.random() * colors.length)]
       }));
 
       function draw() {
@@ -596,24 +602,32 @@
         particles.forEach(p => {
           ctx.beginPath();
           ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(167, 139, 250, ${p.alpha})`;
+          ctx.fillStyle = `rgba(${p.color}, ${p.alpha})`;
           ctx.fill();
-
           p.x += p.dx; p.y += p.dy;
-          if (p.x < 0) p.x = canvas.width;
-          if (p.x > canvas.width) p.x = 0;
-          if (p.y < 0) p.y = canvas.height;
-          if (p.y > canvas.height) p.y = 0;
+          if (p.x < 0) p.x = canvas.width; if (p.x > canvas.width) p.x = 0;
+          if (p.y < 0) p.y = canvas.height; if (p.y > canvas.height) p.y = 0;
         });
         requestAnimationFrame(draw);
       }
       draw();
     })();
 
-    // Check API on load
-    window.addEventListener('load', () => {
-      API.checkHealth();
+    /* ── Ripple effect ───────────────────────────────────────────────────── */
+    document.querySelectorAll('.btn-ripple').forEach(btn => {
+      btn.addEventListener('click', e => {
+        const ripple = document.createElement('span');
+        ripple.className = 'ripple-effect';
+        const rect = btn.getBoundingClientRect();
+        const size = Math.max(rect.width, rect.height);
+        ripple.style.cssText = `width:${size}px;height:${size}px;left:${e.clientX-rect.left-size/2}px;top:${e.clientY-rect.top-size/2}px`;
+        btn.appendChild(ripple);
+        setTimeout(() => ripple.remove(), 700);
+      });
     });
+
+    /* ── API health check ────────────────────────────────────────────────── */
+    window.addEventListener('load', () => { API.checkHealth(); });
   </script>
 </body>
 </html>
