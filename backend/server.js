@@ -1,6 +1,5 @@
 require('dotenv').config();
 const express = require('express');
-const { db } = require('./utils/firebase');
 const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
@@ -46,8 +45,7 @@ app.use(cors({
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
-// Firebase already initialized in ./utils/firebase.js
-// No connection pool management needed here for setup
+// No database connection needed
 
 // ── Routes ────────────────────────────────────────────────────────────────────
 app.use('/api/patients', require('./routes/patients'));
