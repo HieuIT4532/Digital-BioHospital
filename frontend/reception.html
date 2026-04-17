@@ -1,0 +1,540 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tiếp Nhận Bệnh Nhân – Bệnh Viện Sinh Học Thông Minh</title>
+  <meta name="description" content="Nhập thông tin sức khoẻ để AI phân tích và tạo hồ sơ bệnh nhân cá nhân." />
+  <link rel="stylesheet" href="css/global.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/animations.css" />
+  <style>
+    .reception-layout {
+      display: grid;
+      grid-template-columns: 1fr 400px;
+      gap: 2rem;
+      align-items: start;
+      padding: 2rem 0 4rem;
+    }
+
+    .form-steps {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .step {
+      flex: 1;
+      height: 4px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.1);
+      transition: background 0.4s ease;
+    }
+
+    .step.active   { background: var(--color-primary); }
+    .step.done     { background: var(--color-success); }
+
+    .form-section-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--color-primary-light);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Result Panel */
+    .result-panel {
+      position: sticky;
+      top: 100px;
+    }
+
+    .profile-card {
+      text-align: center;
+      padding: 2rem;
+    }
+
+    .patient-avatar {
+      width: 80px; height: 80px;
+      background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      margin: 0 auto 1rem;
+      box-shadow: 0 0 30px rgba(124,58,237,0.4);
+    }
+
+    .bmi-display {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      padding: 1rem 0;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      margin: 1rem 0;
+    }
+
+    .bmi-item { text-align: center; }
+    .bmi-value { font-size: 1.5rem; font-weight: 800; color: var(--color-primary-light); display: block; }
+    .bmi-label { font-size: 0.7rem; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.06em; }
+
+    .recommendation-list {
+      list-style: none;
+      text-align: left;
+      margin-top: 1rem;
+    }
+
+    .recommendation-list li {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.6rem 0;
+      font-size: 0.875rem;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .recommendation-list li:last-child { border-bottom: none; }
+
+    .empty-profile {
+      text-align: center;
+      padding: 3rem 1.5rem;
+      opacity: 0.6;
+    }
+
+    .shortcut-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 1.5rem;
+    }
+
+    @media (max-width: 968px) {
+      .reception-layout { grid-template-columns: 1fr; }
+      .result-panel { position: static; }
+    }
+  </style>
+</head>
+<body class="page-enter">
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="container navbar-inner">
+      <a href="index.html" class="navbar-brand" id="nav-brand">
+        <div class="brand-icon">🏥</div>
+        <span>Digital BioHospital</span>
+      </a>
+      <ul class="navbar-nav">
+        <li><a href="index.html" id="nav-home">🏠 Trang chủ</a></li>
+        <li><a href="departments.html" id="nav-dept">🏥 Chuyên khoa</a></li>
+        <li><a href="anatomy.html" id="nav-anatomy">🧬 Giải phẫu</a></li>
+        <li><a href="analysis.html" id="nav-analysis">🔬 Phân tích</a></li>
+        <li><a href="prediction.html" id="nav-predict">🔮 Dự đoán</a></li>
+        <li><a href="library.html" id="nav-lib">📚 Thư viện</a></li>
+      </ul>
+      <a href="reception.html" class="navbar-patient-btn btn btn-sm active" id="btn-active-page">
+        🧑‍⚕️ Tiếp nhận
+      </a>
+    </div>
+  </nav>
+
+  <main id="main">
+    <!-- Page Header -->
+    <div class="page-header" style="background: linear-gradient(180deg, rgba(124,58,237,0.08) 0%, transparent 100%); border-bottom: 1px solid rgba(255,255,255,0.05);">
+      <div class="container">
+        <div class="section-tag animate-fadeInUp">🧑‍⚕️ Khu Tiếp Nhận</div>
+        <h1 class="animate-fadeInUp delay-100">Hồ Sơ Bệnh Nhân</h1>
+        <p class="animate-fadeInUp delay-200">Nhập thông tin của bạn — AI sẽ phân tích và tạo hồ sơ sức khoẻ trong vài giây</p>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="reception-layout">
+
+        <!-- ────── FORM ────── -->
+        <div class="animate-slideLeft">
+          <!-- Step Indicators -->
+          <div class="form-steps" id="form-steps" aria-label="Tiến trình điền form">
+            <div class="step active" id="step-1" title="Thông tin cơ bản"></div>
+            <div class="step" id="step-2" title="Chỉ số cơ thể"></div>
+            <div class="step" id="step-3" title="Lối sống"></div>
+            <div class="step" id="step-4" title="Tiền sử bệnh"></div>
+          </div>
+
+          <form id="patient-form" novalidate>
+
+            <!-- SECTION 1: Thông tin cơ bản -->
+            <div class="card" style="margin-bottom:1.5rem">
+              <div class="form-section-title">👤 Thông tin cơ bản</div>
+
+              <div class="grid-2">
+                <div class="form-group">
+                  <label class="form-label" for="input-name">Họ và tên <span class="required">*</span></label>
+                  <input type="text" id="input-name" class="form-input" placeholder="Nguyễn Văn A" required autocomplete="name" />
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="input-age">Tuổi <span class="required">*</span></label>
+                  <input type="number" id="input-age" class="form-input" placeholder="25" min="1" max="120" required />
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="input-gender">Giới tính <span class="required">*</span></label>
+                <select id="input-gender" class="form-select" required>
+                  <option value="">-- Chọn giới tính --</option>
+                  <option value="Nam">Nam</option>
+                  <option value="Nữ">Nữ</option>
+                  <option value="Khác">Khác</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- SECTION 2: Chỉ số cơ thể -->
+            <div class="card" style="margin-bottom:1.5rem">
+              <div class="form-section-title">📏 Chỉ số cơ thể</div>
+
+              <div class="grid-2">
+                <div class="form-group">
+                  <label class="form-label" for="input-height">Chiều cao (cm) <span class="required">*</span></label>
+                  <input type="number" id="input-height" class="form-input" placeholder="170" min="50" max="250" required />
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="input-weight">Cân nặng (kg) <span class="required">*</span></label>
+                  <input type="number" id="input-weight" class="form-input" placeholder="65" min="10" max="300" required />
+                </div>
+              </div>
+
+              <!-- Live BMI Preview -->
+              <div id="bmi-preview" style="display:none; padding:1rem; background:rgba(124,58,237,0.1); border-radius:0.75rem; text-align:center;">
+                <span style="font-size:0.85rem; color:rgba(255,255,255,0.6)">BMI của bạn</span><br/>
+                <span id="bmi-val" style="font-size:2rem; font-weight:900; color:var(--color-primary-light)">--</span>
+                <span id="bmi-cat" style="margin-left:0.5rem; font-size:0.85rem; color:rgba(255,255,255,0.7)"></span>
+              </div>
+            </div>
+
+            <!-- SECTION 3: Lối sống -->
+            <div class="card" style="margin-bottom:1.5rem">
+              <div class="form-section-title">🏃 Lối sống & Thói quen</div>
+
+              <div class="form-group">
+                <label class="form-label" for="input-sleep">
+                  Giấc ngủ: <span id="sleep-display" style="color:var(--color-primary-light); font-weight:700">7</span> giờ/đêm
+                </label>
+                <div class="form-range-group">
+                  <span style="font-size:0.8rem;color:rgba(255,255,255,0.4)">0h</span>
+                  <input type="range" id="input-sleep" class="form-range" min="0" max="12" value="7" step="0.5" />
+                  <span style="font-size:0.8rem;color:rgba(255,255,255,0.4)">12h</span>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="input-exercise">
+                  Vận động: <span id="exercise-display" style="color:var(--color-primary-light); font-weight:700">3</span> buổi/tuần
+                </label>
+                <div class="form-range-group">
+                  <span style="font-size:0.8rem;color:rgba(255,255,255,0.4)">0</span>
+                  <input type="range" id="input-exercise" class="form-range" min="0" max="14" value="3" />
+                  <span style="font-size:0.8rem;color:rgba(255,255,255,0.4)">14</span>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="input-stress">
+                  Mức độ stress: <span id="stress-display" style="color:var(--color-primary-light); font-weight:700">5</span>/10
+                </label>
+                <div class="form-range-group">
+                  <span style="font-size:0.8rem;color:rgba(255,255,255,0.4)">😌</span>
+                  <input type="range" id="input-stress" class="form-range" min="1" max="10" value="5" />
+                  <span style="font-size:0.8rem;color:rgba(255,255,255,0.4)">😰</span>
+                </div>
+              </div>
+
+              <div class="grid-2" style="margin-top:0.5rem">
+                <div class="form-group">
+                  <label class="form-label" for="input-smoking">Hút thuốc</label>
+                  <select id="input-smoking" class="form-select">
+                    <option value="Không hút">Không hút</option>
+                    <option value="Đã bỏ">Đã bỏ</option>
+                    <option value="Hút ít">Hút ít (&lt;5 điếu/ngày)</option>
+                    <option value="Hút nhiều">Hút nhiều</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="input-alcohol">Uống rượu bia</label>
+                  <select id="input-alcohol" class="form-select">
+                    <option value="Không uống">Không uống</option>
+                    <option value="Hiếm khi">Hiếm khi</option>
+                    <option value="Thỉnh thoảng">Thỉnh thoảng</option>
+                    <option value="Thường xuyên">Thường xuyên</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- SECTION 4: Tiền sử -->
+            <div class="card" style="margin-bottom:2rem">
+              <div class="form-section-title">📋 Tiền sử & Triệu chứng hiện tại</div>
+              <p style="font-size:0.875rem; margin-bottom:1rem">Chọn nếu bạn có (có thể chọn nhiều):</p>
+              <div class="form-checkbox-group" id="medical-history-group">
+                <label class="checkbox-item" id="check-diabetes">
+                  <input type="checkbox" value="Tiểu đường" />
+                  🩸 Tiểu đường
+                </label>
+                <label class="checkbox-item" id="check-heart">
+                  <input type="checkbox" value="Tim mạch" />
+                  ❤️ Tim mạch
+                </label>
+                <label class="checkbox-item" id="check-bp">
+                  <input type="checkbox" value="Cao huyết áp" />
+                  📈 Cao huyết áp
+                </label>
+                <label class="checkbox-item" id="check-lung">
+                  <input type="checkbox" value="Bệnh phổi" />
+                  🫁 Bệnh phổi
+                </label>
+                <label class="checkbox-item" id="check-digest">
+                  <input type="checkbox" value="Tiêu hóa" />
+                  🍽️ Tiêu hóa
+                </label>
+                <label class="checkbox-item" id="check-joint">
+                  <input type="checkbox" value="Xương khớp" />
+                  🦴 Xương khớp
+                </label>
+                <label class="checkbox-item" id="check-allergy">
+                  <input type="checkbox" value="Dị ứng" />
+                  🌸 Dị ứng
+                </label>
+                <label class="checkbox-item" id="check-none">
+                  <input type="checkbox" value="Không có" />
+                  ✅ Không có
+                </label>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-xl btn-ripple" id="btn-submit-form" style="width:100%">
+              🤖 Phân Tích Sức Khoẻ – AI
+            </button>
+
+          </form>
+        </div>
+
+        <!-- ────── RESULT PANEL ────── -->
+        <div class="result-panel animate-slideRight">
+
+          <!-- Empty state (before submit) -->
+          <div class="card profile-card" id="panel-empty">
+            <div class="empty-state">
+              <div class="empty-state-icon">🏥</div>
+              <h3>Hồ Sơ Bệnh Nhân</h3>
+              <p>Điền thông tin bên trái để AI phân tích sức khoẻ của bạn.</p>
+            </div>
+          </div>
+
+          <!-- Result (after submit) -->
+          <div class="card profile-card" id="panel-result" style="display:none">
+            <div class="patient-avatar pulse-shadow" id="result-avatar">👤</div>
+            <h2 id="result-name" style="font-size:1.3rem; margin-bottom:0.25rem">--</h2>
+            <p id="result-code" style="font-size:0.8rem; color:rgba(255,255,255,0.4); margin-bottom:1rem">--</p>
+
+            <!-- Health Score Ring -->
+            <div class="health-score-ring" id="health-score-ring">
+              <svg width="160" height="160" viewBox="0 0 160 160">
+                <circle cx="80" cy="80" r="54" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="12"/>
+                <circle class="score-circle" cx="80" cy="80" r="54" fill="none"
+                  stroke="#10B981" stroke-width="12" stroke-linecap="round"
+                  style="transition: stroke-dashoffset 1.5s ease; transform-origin:center; transform:rotate(-90deg)"/>
+              </svg>
+              <div class="health-score-value">
+                <div class="score-number">0</div>
+                <div class="score-label">Health Score</div>
+              </div>
+            </div>
+
+            <div style="margin: 1rem 0;">
+              <span id="result-risk-badge" class="badge badge-green">--</span>
+            </div>
+
+            <div class="bmi-display">
+              <div class="bmi-item">
+                <span class="bmi-value" id="result-bmi">--</span>
+                <span class="bmi-label">BMI</span>
+              </div>
+              <div class="bmi-item">
+                <span class="bmi-value" id="result-bmi-cat" style="font-size:1rem">--</span>
+                <span class="bmi-label">Phân loại</span>
+              </div>
+            </div>
+
+            <!-- AI Summary -->
+            <div class="ai-result" style="text-align:left; margin-bottom:1rem">
+              <p id="result-summary" style="font-size:0.875rem; margin:0; color:rgba(255,255,255,0.85)">...</p>
+            </div>
+
+            <!-- Recommended Departments -->
+            <div style="text-align:left">
+              <p style="font-size:0.75rem; font-weight:700; color:rgba(255,255,255,0.5); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:0.5rem">
+                Nên khám:
+              </p>
+              <div id="result-departments" class="flex" style="flex-wrap:wrap; gap:0.5rem"></div>
+            </div>
+
+            <!-- Quick actions -->
+            <div class="shortcut-bar">
+              <a href="departments.html" class="btn btn-outline btn-sm" style="flex:1" id="result-btn-dept">🏥 Khám khoa</a>
+              <a href="prediction.html" class="btn btn-glass btn-sm" style="flex:1" id="result-btn-predict">🔮 Dự đoán</a>
+            </div>
+            <a href="personalize.html" class="btn btn-primary btn-sm" style="width:100%; margin-top:0.5rem" id="result-btn-plan">
+              🌱 Tạo kế hoạch cá nhân
+            </a>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer role="contentinfo">
+    <div class="container">
+      <p>🏥 Bệnh Viện Sinh Học Thông Minh · <a href="disclaimer.html">Nội quy & Tuyên bố miễn trách</a></p>
+    </div>
+  </footer>
+
+  <script src="js/api.js"></script>
+  <script src="js/patient.js"></script>
+  <script>
+    // ── Live BMI Calculator ───────────────────────────────────────────────
+    function updateBMIPreview() {
+      const h = parseFloat(document.getElementById('input-height').value);
+      const w = parseFloat(document.getElementById('input-weight').value);
+      const preview = document.getElementById('bmi-preview');
+      if (h > 0 && w > 0) {
+        const bmi = (w / ((h/100)**2)).toFixed(1);
+        const cats = [[18.5,'Gầy'],[25,'Bình thường'],[30,'Thừa cân'],[Infinity,'Béo phì']];
+        const cat = cats.find(([limit]) => bmi < limit)[1];
+        document.getElementById('bmi-val').textContent = bmi;
+        document.getElementById('bmi-cat').textContent = `(${cat})`;
+        preview.style.display = 'block';
+      } else {
+        preview.style.display = 'none';
+      }
+    }
+
+    // ── Sliders ───────────────────────────────────────────────────────────
+    ['sleep','exercise','stress'].forEach(id => {
+      const el = document.getElementById(`input-${id}`);
+      const disp = document.getElementById(`${id}-display`);
+      if (el && disp) {
+        el.addEventListener('input', () => { disp.textContent = el.value; });
+      }
+    });
+
+    // ── Checkbox toggle ───────────────────────────────────────────────────
+    document.querySelectorAll('.checkbox-item').forEach(item => {
+      item.addEventListener('click', () => {
+        const cb = item.querySelector('input[type="checkbox"]');
+        cb.checked = !cb.checked;
+        item.classList.toggle('checked', cb.checked);
+      });
+    });
+
+    // ── Height/Weight input → BMI ─────────────────────────────────────────
+    ['input-height','input-weight'].forEach(id => {
+      document.getElementById(id)?.addEventListener('input', updateBMIPreview);
+    });
+
+    // ── Form Submit ───────────────────────────────────────────────────────
+    document.getElementById('patient-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const name = document.getElementById('input-name').value.trim();
+      const age  = parseInt(document.getElementById('input-age').value);
+      const gender = document.getElementById('input-gender').value;
+      const height = parseFloat(document.getElementById('input-height').value);
+      const weight = parseFloat(document.getElementById('input-weight').value);
+
+      if (!name || !age || !gender || !height || !weight) {
+        showToast('Vui lòng điền đầy đủ các trường bắt buộc (*)', 'error');
+        return;
+      }
+
+      const medHistory = Array.from(
+        document.querySelectorAll('#medical-history-group input:checked')
+      ).map(el => el.value).filter(v => v !== 'Không có');
+
+      const formData = {
+        name, age, gender, height, weight,
+        sleepHours: parseFloat(document.getElementById('input-sleep').value),
+        exerciseDaysPerWeek: parseInt(document.getElementById('input-exercise').value),
+        stressLevel: parseInt(document.getElementById('input-stress').value),
+        smokingStatus: document.getElementById('input-smoking').value,
+        alcoholStatus: document.getElementById('input-alcohol').value,
+        medicalHistory: medHistory
+      };
+
+      showLoading('AI đang phân tích sức khoẻ của bạn...', 'Đang xử lý dữ liệu sinh học...');
+
+      try {
+        const res = await API.Patients.create(formData);
+        const { patient, aiAnalysis } = res;
+
+        // Lưu hồ sơ
+        PatientManager.save(patient);
+
+        // Hiển thị kết quả
+        document.getElementById('panel-empty').style.display = 'none';
+        document.getElementById('panel-result').style.display = 'block';
+
+        document.getElementById('result-name').textContent = patient.name;
+        document.getElementById('result-code').textContent = `Mã: ${patient.patientCode}`;
+        document.getElementById('result-bmi').textContent = patient.bmi;
+        document.getElementById('result-bmi-cat').textContent = patient.bmiCategory;
+        document.getElementById('result-summary').textContent =
+          aiAnalysis.summary || patient.aiSummary || 'Đang tải...';
+
+        // Risk badge
+        const riskBadge = document.getElementById('result-risk-badge');
+        riskBadge.textContent = patient.riskLevel;
+        riskBadge.className = 'badge ' + Format.riskBadgeClass(patient.riskLevel);
+
+        // Health score animation
+        animateHealthScore(patient.healthScore, 'health-score-ring');
+
+        // Departments
+        const deptContainer = document.getElementById('result-departments');
+        deptContainer.innerHTML = '';
+        (patient.recommendedDepartments || []).forEach(d => {
+          const tag = document.createElement('span');
+          tag.className = 'badge badge-purple';
+          tag.textContent = d;
+          deptContainer.appendChild(tag);
+        });
+
+        // Update steps
+        document.querySelectorAll('.step').forEach(s => s.classList.replace('active','done'));
+
+        showToast(`Hồ sơ bệnh nhân đã được tạo! Mã: ${patient.patientCode}`, 'success');
+        hideLoading();
+
+        // Scroll to result on mobile
+        if (window.innerWidth < 968) {
+          document.getElementById('panel-result').scrollIntoView({ behavior:'smooth' });
+        }
+
+      } catch (err) {
+        hideLoading();
+        showToast('Lỗi: ' + err.message + '. Vui lòng thử lại.', 'error');
+      }
+    });
+
+    // ── Load existing patient if any ──────────────────────────────────────
+    const existing = PatientManager.get();
+    if (existing) {
+      showToast(`Chào lại, ${existing.name}! Hồ sơ đã được tải.`, 'info', 3000);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,520 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Khám Chuyên Khoa – Bệnh Viện Sinh Học Thông Minh</title>
+  <meta name="description" content="Khám theo 6 chuyên khoa: Tim mạch, Hô hấp, TMH, Tiêu hóa, Thần kinh, Xương khớp với AI phân tích triệu chứng." />
+  <link rel="stylesheet" href="css/global.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/animations.css" />
+  <style>
+    .dept-tabs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.75rem;
+      margin-bottom: 2rem;
+    }
+
+    .dept-tab-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 1rem 0.75rem;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 1rem;
+      cursor: pointer;
+      font-family: var(--font-family);
+      color: rgba(255,255,255,0.6);
+      transition: all 0.25s ease;
+      font-size: 0.875rem;
+      font-weight: 600;
+    }
+
+    .dept-tab-btn .dept-icon { font-size: 1.75rem; }
+
+    .dept-tab-btn:hover {
+      border-color: rgba(167,139,250,0.4);
+      color: white;
+    }
+
+    .dept-tab-btn.active {
+      background: linear-gradient(135deg, rgba(124,58,237,0.3), rgba(124,58,237,0.1));
+      border-color: var(--color-primary-light);
+      color: white;
+    }
+
+    .dept-panel { display: none; }
+    .dept-panel.active { display: block; animation: fadeIn 0.4s ease; }
+
+    .dept-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .dept-icon-big {
+      width: 64px; height: 64px;
+      border-radius: 1rem;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2rem;
+      background: linear-gradient(135deg, rgba(124,58,237,0.3), rgba(236,72,153,0.1));
+    }
+
+    .analysis-result {
+      animation: scaleIn 0.4s ease;
+    }
+
+    .risk-indicator {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+      padding: 1.25rem;
+      background: rgba(255,255,255,0.03);
+      border-radius: 1rem;
+    }
+
+    .risk-circle {
+      width: 72px; height: 72px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      font-weight: 800;
+      flex-shrink: 0;
+      text-align: center;
+      line-height: 1.2;
+    }
+
+    .risk-circle.low    { background: rgba(16,185,129,0.2); border: 2px solid #10B981; color: #10B981; }
+    .risk-circle.medium { background: rgba(245,158,11,0.2); border: 2px solid #F59E0B; color: #F59E0B; }
+    .risk-circle.high   { background: rgba(239,68,68,0.2);  border: 2px solid #EF4444; color: #EF4444; }
+
+    .recommendation-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+    }
+
+    .dept-layout {
+      display: grid;
+      grid-template-columns: 1fr 360px;
+      gap: 2rem;
+      align-items: start;
+    }
+
+    @media (max-width: 900px) {
+      .dept-layout  { grid-template-columns: 1fr; }
+      .dept-tabs    { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 500px) {
+      .dept-tabs { grid-template-columns: repeat(3, 1fr); }
+      .dept-tab-btn { font-size: 0.7rem; padding: 0.75rem 0.5rem; }
+      .dept-tab-btn .dept-icon { font-size: 1.4rem; }
+    }
+  </style>
+</head>
+<body class="page-enter">
+
+  <nav class="navbar">
+    <div class="container navbar-inner">
+      <a href="index.html" class="navbar-brand">
+        <div class="brand-icon">🏥</div>
+        <span>Digital BioHospital</span>
+      </a>
+      <ul class="navbar-nav">
+        <li><a href="index.html">🏠 Trang chủ</a></li>
+        <li><a href="departments.html" class="active">🏥 Chuyên khoa</a></li>
+        <li><a href="anatomy.html">🧬 Giải phẫu</a></li>
+        <li><a href="analysis.html">🔬 Phân tích</a></li>
+        <li><a href="prediction.html">🔮 Dự đoán</a></li>
+        <li><a href="library.html">📚 Thư viện</a></li>
+      </ul>
+      <a href="reception.html" class="navbar-patient-btn btn btn-sm">🧑‍⚕️ Hồ sơ</a>
+    </div>
+  </nav>
+
+  <main id="main">
+    <div class="page-header" style="background: linear-gradient(180deg, rgba(124,58,237,0.08) 0%, transparent 100%); border-bottom: 1px solid rgba(255,255,255,0.05);">
+      <div class="container">
+        <div class="section-tag animate-fadeInUp">🏥 Chuyên Khoa</div>
+        <h1 class="animate-fadeInUp delay-100">Khám Theo Chuyên Khoa</h1>
+        <p class="animate-fadeInUp delay-200">Chọn chuyên khoa phù hợp, đánh dấu triệu chứng và AI sẽ phân tích ngay</p>
+      </div>
+    </div>
+
+    <div class="container" style="padding-top: 2rem; padding-bottom: 4rem;">
+
+      <!-- Patient Context Banner -->
+      <div id="patient-banner" style="display:none; margin-bottom:1.5rem;" class="animate-fadeInDown">
+        <div class="card" style="background: rgba(16,185,129,0.08); border-color: rgba(16,185,129,0.3); display:flex; align-items:center; gap:1rem; flex-wrap:wrap;">
+          <div style="font-size:1.5rem">✅</div>
+          <div>
+            <strong id="banner-name">--</strong> — Mã: <span id="banner-code" style="color:var(--color-primary-light)">--</span>
+            <br/><span style="font-size:0.85rem; color:rgba(255,255,255,0.6)">AI sẽ kết hợp hồ sơ của bạn để phân tích chính xác hơn</span>
+          </div>
+          <a href="reception.html" class="btn btn-glass btn-sm" style="margin-left:auto">Xem hồ sơ</a>
+        </div>
+      </div>
+
+      <div class="dept-layout animate-fadeInUp">
+        <!-- LEFT: Symptom Input -->
+        <div>
+          <!-- Department Tabs -->
+          <div class="dept-tabs" id="dept-tabs" role="tablist">
+            <button class="dept-tab-btn active" role="tab" id="tab-heart" data-dept="Tim mạch" aria-selected="true">
+              <span class="dept-icon">❤️</span>Tim mạch
+            </button>
+            <button class="dept-tab-btn" role="tab" id="tab-lung" data-dept="Hô hấp" aria-selected="false">
+              <span class="dept-icon">🫁</span>Hô hấp
+            </button>
+            <button class="dept-tab-btn" role="tab" id="tab-ent" data-dept="Tai Mũi Họng" aria-selected="false">
+              <span class="dept-icon">👂</span>TMH
+            </button>
+            <button class="dept-tab-btn" role="tab" id="tab-digest" data-dept="Tiêu hóa" aria-selected="false">
+              <span class="dept-icon">🍽️</span>Tiêu hóa
+            </button>
+            <button class="dept-tab-btn" role="tab" id="tab-neuro" data-dept="Thần kinh" aria-selected="false">
+              <span class="dept-icon">🧠</span>Thần kinh
+            </button>
+            <button class="dept-tab-btn" role="tab" id="tab-bone" data-dept="Cơ xương khớp" aria-selected="false">
+              <span class="dept-icon">🦴</span>Xương khớp
+            </button>
+          </div>
+
+          <!-- Department Panels -->
+          <div id="dept-panels">
+
+            <!-- ❤️ Tim mạch -->
+            <div class="dept-panel active card" id="panel-heart">
+              <div class="dept-header">
+                <div class="dept-icon-big">❤️</div>
+                <div>
+                  <h2 style="font-size:1.5rem">Khoa Tim Mạch</h2>
+                  <p style="font-size:0.875rem">Đánh giá nguy cơ bệnh tim mạch và mạch máu</p>
+                </div>
+              </div>
+              <p style="margin-bottom:1rem; font-size:0.9rem">Chọn các triệu chứng bạn đang gặp phải:</p>
+              <div class="symptom-grid" data-dept="Tim mạch">
+                <label class="symptom-item"><input type="checkbox" value="Đau ngực"><span class="symptom-check"></span>💢 Đau ngực</label>
+                <label class="symptom-item"><input type="checkbox" value="Tim đập nhanh"><span class="symptom-check"></span>💓 Tim đập nhanh</label>
+                <label class="symptom-item"><input type="checkbox" value="Hồi hộp"><span class="symptom-check"></span>❗Hồi hộp</label>
+                <label class="symptom-item"><input type="checkbox" value="Khó thở khi nằm"><span class="symptom-check"></span>😮‍💨 Khó thở khi nằm</label>
+                <label class="symptom-item"><input type="checkbox" value="Phù chân"><span class="symptom-check"></span>🦵 Phù chân</label>
+                <label class="symptom-item"><input type="checkbox" value="Chóng mặt"><span class="symptom-check"></span>😵 Chóng mặt</label>
+                <label class="symptom-item"><input type="checkbox" value="Ngất xỉu"><span class="symptom-check"></span>😴 Ngất xỉu</label>
+                <label class="symptom-item"><input type="checkbox" value="Đổ mồ hôi bất thường"><span class="symptom-check"></span>💦 Đổ mồ hôi</label>
+              </div>
+            </div>
+
+            <!-- 🫁 Hô hấp -->
+            <div class="dept-panel card" id="panel-lung">
+              <div class="dept-header">
+                <div class="dept-icon-big">🫁</div>
+                <div>
+                  <h2 style="font-size:1.5rem">Khoa Hô Hấp</h2>
+                  <p style="font-size:0.875rem">Đánh giá sức khoẻ phổi và đường thở</p>
+                </div>
+              </div>
+              <p style="margin-bottom:1rem; font-size:0.9rem">Chọn các triệu chứng bạn đang gặp phải:</p>
+              <div class="symptom-grid" data-dept="Hô hấp">
+                <label class="symptom-item"><input type="checkbox" value="Ho kéo dài"><span class="symptom-check"></span>😷 Ho kéo dài</label>
+                <label class="symptom-item"><input type="checkbox" value="Khó thở"><span class="symptom-check"></span>😮‍💨 Khó thở</label>
+                <label class="symptom-item"><input type="checkbox" value="Thở khò khè"><span class="symptom-check"></span>🌬️ Thở khò khè</label>
+                <label class="symptom-item"><input type="checkbox" value="Đau ngực khi thở"><span class="symptom-check"></span>💢 Đau ngực khi thở</label>
+                <label class="symptom-item"><input type="checkbox" value="Ho ra máu"><span class="symptom-check"></span>🩸 Ho ra máu</label>
+                <label class="symptom-item"><input type="checkbox" value="Đờm nhiều"><span class="symptom-check"></span>💧 Đờm nhiều</label>
+                <label class="symptom-item"><input type="checkbox" value="Sốt cao"><span class="symptom-check"></span>🌡️ Sốt cao</label>
+                <label class="symptom-item"><input type="checkbox" value="Mệt mỏi"><span class="symptom-check"></span>😩 Mệt mỏi</label>
+              </div>
+            </div>
+
+            <!-- 👂 TMH -->
+            <div class="dept-panel card" id="panel-ent">
+              <div class="dept-header">
+                <div class="dept-icon-big">👂</div>
+                <div>
+                  <h2 style="font-size:1.5rem">Khoa Tai – Mũi – Họng</h2>
+                  <p style="font-size:0.875rem">Đánh giá tai, mũi, họng và xoang</p>
+                </div>
+              </div>
+              <p style="margin-bottom:1rem; font-size:0.9rem">Chọn các triệu chứng bạn đang gặp phải:</p>
+              <div class="symptom-grid" data-dept="Tai Mũi Họng">
+                <label class="symptom-item"><input type="checkbox" value="Đau họng"><span class="symptom-check"></span>🤒 Đau họng</label>
+                <label class="symptom-item"><input type="checkbox" value="Nghẹt mũi"><span class="symptom-check"></span>🤧 Nghẹt mũi</label>
+                <label class="symptom-item"><input type="checkbox" value="Ù tai"><span class="symptom-check"></span>👂 Ù tai</label>
+                <label class="symptom-item"><input type="checkbox" value="Chóng mặt"><span class="symptom-check"></span>😵 Chóng mặt</label>
+                <label class="symptom-item"><input type="checkbox" value="Nghe kém"><span class="symptom-check"></span>🔇 Nghe kém</label>
+                <label class="symptom-item"><input type="checkbox" value="Chảy dịch tai"><span class="symptom-check"></span>💧 Dịch tai</label>
+                <label class="symptom-item"><input type="checkbox" value="Mất mùi vị"><span class="symptom-check"></span>👃 Mất mùi</label>
+                <label class="symptom-item"><input type="checkbox" value="Khàn tiếng"><span class="symptom-check"></span>🗣️ Khàn tiếng</label>
+              </div>
+            </div>
+
+            <!-- 🍽️ Tiêu hóa -->
+            <div class="dept-panel card" id="panel-digest">
+              <div class="dept-header">
+                <div class="dept-icon-big">🍽️</div>
+                <div>
+                  <h2 style="font-size:1.5rem">Khoa Tiêu Hóa</h2>
+                  <p style="font-size:0.875rem">Đánh giá dạ dày, ruột, gan và mật</p>
+                </div>
+              </div>
+              <div class="symptom-grid" data-dept="Tiêu hóa">
+                <label class="symptom-item"><input type="checkbox" value="Đau bụng"><span class="symptom-check"></span>😣 Đau bụng</label>
+                <label class="symptom-item"><input type="checkbox" value="Buồn nôn"><span class="symptom-check"></span>🤢 Buồn nôn</label>
+                <label class="symptom-item"><input type="checkbox" value="Tiêu chảy"><span class="symptom-check"></span>🚽 Tiêu chảy</label>
+                <label class="symptom-item"><input type="checkbox" value="Táo bón"><span class="symptom-check"></span>⛔ Táo bón</label>
+                <label class="symptom-item"><input type="checkbox" value="Ợ chua"><span class="symptom-check"></span>🔥 Ợ chua</label>
+                <label class="symptom-item"><input type="checkbox" value="Đầy hơi"><span class="symptom-check"></span>💨 Đầy hơi</label>
+                <label class="symptom-item"><input type="checkbox" value="Vàng da"><span class="symptom-check"></span>🟡 Vàng da</label>
+                <label class="symptom-item"><input type="checkbox" value="Phân bất thường"><span class="symptom-check"></span>⚠️ Phân bất thường</label>
+              </div>
+            </div>
+
+            <!-- 🧠 Thần kinh -->
+            <div class="dept-panel card" id="panel-neuro">
+              <div class="dept-header">
+                <div class="dept-icon-big">🧠</div>
+                <div>
+                  <h2 style="font-size:1.5rem">Khoa Thần Kinh</h2>
+                  <p style="font-size:0.875rem">Đánh giá não bộ, thần kinh và tâm lý</p>
+                </div>
+              </div>
+              <div class="symptom-grid" data-dept="Thần kinh">
+                <label class="symptom-item"><input type="checkbox" value="Đau đầu thường xuyên"><span class="symptom-check"></span>🤕 Đau đầu</label>
+                <label class="symptom-item"><input type="checkbox" value="Mất ngủ"><span class="symptom-check"></span>😴 Mất ngủ</label>
+                <label class="symptom-item"><input type="checkbox" value="Hay quên"><span class="symptom-check"></span>🤔 Hay quên</label>
+                <label class="symptom-item"><input type="checkbox" value="Tê tay chân"><span class="symptom-check"></span>🙌 Tê tay chân</label>
+                <label class="symptom-item"><input type="checkbox" value="Run tay"><span class="symptom-check"></span>✋ Run tay</label>
+                <label class="symptom-item"><input type="checkbox" value="Khó tập trung"><span class="symptom-check"></span>🧩 Khó tập trung</label>
+                <label class="symptom-item"><input type="checkbox" value="Trầm cảm"><span class="symptom-check"></span>😔 Trầm cảm</label>
+                <label class="symptom-item"><input type="checkbox" value="Lo âu"><span class="symptom-check"></span>😰 Lo âu</label>
+              </div>
+            </div>
+
+            <!-- 🦴 Xương khớp -->
+            <div class="dept-panel card" id="panel-bone">
+              <div class="dept-header">
+                <div class="dept-icon-big">🦴</div>
+                <div>
+                  <h2 style="font-size:1.5rem">Khoa Cơ Xương Khớp</h2>
+                  <p style="font-size:0.875rem">Đánh giá xương, khớp, cơ và gân</p>
+                </div>
+              </div>
+              <div class="symptom-grid" data-dept="Cơ xương khớp">
+                <label class="symptom-item"><input type="checkbox" value="Đau khớp"><span class="symptom-check"></span>🦵 Đau khớp</label>
+                <label class="symptom-item"><input type="checkbox" value="Cứng khớp buổi sáng"><span class="symptom-check"></span>🌅 Cứng khớp</label>
+                <label class="symptom-item"><input type="checkbox" value="Sưng khớp"><span class="symptom-check"></span>⭕ Sưng khớp</label>
+                <label class="symptom-item"><input type="checkbox" value="Đau lưng"><span class="symptom-check"></span>😖 Đau lưng</label>
+                <label class="symptom-item"><input type="checkbox" value="Đau cổ"><span class="symptom-check"></span>🤦 Đau cổ</label>
+                <label class="symptom-item"><input type="checkbox" value="Bong gân thường xuyên"><span class="symptom-check"></span>⚡ Bong gân</label>
+                <label class="symptom-item"><input type="checkbox" value="Yếu cơ"><span class="symptom-check"></span>💪 Yếu cơ</label>
+                <label class="symptom-item"><input type="checkbox" value="Tiếng kêu ở khớp"><span class="symptom-check"></span>🔊 Tiếng kêu khớp</label>
+              </div>
+            </div>
+
+          </div><!-- /dept-panels -->
+
+          <div style="margin-top:1.5rem">
+            <button class="btn btn-primary btn-lg btn-ripple" id="btn-analyze-dept" style="width:100%">
+              🤖 Phân Tích AI
+            </button>
+          </div>
+        </div>
+
+        <!-- RIGHT: Result -->
+        <div id="dept-result-panel">
+          <div class="card" id="dept-empty-card">
+            <div class="empty-state">
+              <div class="empty-state-icon">🏥</div>
+              <h3>Kết Quả Phân Tích</h3>
+              <p>Chọn chuyên khoa, đánh dấu triệu chứng và nhấn nút phân tích.</p>
+            </div>
+          </div>
+
+          <div id="dept-result-card" style="display:none" class="analysis-result">
+            <div class="card">
+              <h3 style="margin-bottom:1.25rem" id="result-dept-title">Kết Quả</h3>
+              <div class="risk-indicator">
+                <div class="risk-circle" id="result-risk-circle"><span id="result-risk-text">--</span></div>
+                <div>
+                  <div style="font-size:0.75rem; color:rgba(255,255,255,0.5); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:0.25rem">Mức độ nguy cơ</div>
+                  <div id="result-urgency" class="badge badge-yellow">--</div>
+                </div>
+              </div>
+
+              <div class="ai-result" style="margin-bottom:1.25rem">
+                <h4 style="font-size:0.9rem; margin-bottom:0.5rem; color:var(--color-primary-light)">🤖 AI nhận định:</h4>
+                <p id="result-diagnosis" style="font-size:0.9rem; margin-bottom:0.75rem; color:rgba(255,255,255,0.9)">--</p>
+                <p id="result-explanation" style="font-size:0.85rem; color:rgba(255,255,255,0.7)">--</p>
+              </div>
+
+              <div style="margin-bottom:1rem">
+                <h4 style="font-size:0.85rem; font-weight:700; color:rgba(255,255,255,0.5); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:0.5rem">
+                  Cơ quan có thể bị ảnh hưởng
+                </h4>
+                <div id="result-organs" class="recommendation-tags"></div>
+              </div>
+
+              <div style="margin-bottom:1rem">
+                <h4 style="font-size:0.85rem; font-weight:700; color:rgba(255,255,255,0.5); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:0.5rem">
+                  Khuyến nghị
+                </h4>
+                <ul id="result-recommendations" class="info-list"></ul>
+              </div>
+
+              <div style="padding:0.75rem; background:rgba(245,158,11,0.08); border:1px solid rgba(245,158,11,0.2); border-radius:0.75rem; font-size:0.8rem; color:rgba(255,255,255,0.6)">
+                ⚠️ <em id="result-disclaimer">Đây là phân tích giáo dục, không thay thế chẩn đoán y tế chuyên nghiệp.</em>
+              </div>
+
+              <div style="margin-top:1rem;">
+                <a href="library.html" class="btn btn-outline btn-sm" style="width:100%">📚 Xem Thư Viện Liên Quan</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>🏥 Bệnh Viện Sinh Học Thông Minh · <a href="disclaimer.html">Nội quy & Tuyên bố miễn trách</a></p>
+    </div>
+  </footer>
+
+  <script src="js/api.js"></script>
+  <script src="js/patient.js"></script>
+  <script>
+    // ── Patient banner ─────────────────────────────────────────────────────
+    const patient = PatientManager.get();
+    if (patient) {
+      document.getElementById('patient-banner').style.display = 'block';
+      document.getElementById('banner-name').textContent = patient.name;
+      document.getElementById('banner-code').textContent = patient.patientCode;
+    }
+
+    // ── Dept tab switching ─────────────────────────────────────────────────
+    let currentDept = 'Tim mạch';
+
+    document.querySelectorAll('.dept-tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.dept-tab-btn').forEach(b => {
+          b.classList.remove('active');
+          b.setAttribute('aria-selected', 'false');
+        });
+        document.querySelectorAll('.dept-panel').forEach(p => p.classList.remove('active'));
+
+        btn.classList.add('active');
+        btn.setAttribute('aria-selected', 'true');
+        currentDept = btn.dataset.dept;
+
+        const panelMap = {
+          'Tim mạch': 'panel-heart',
+          'Hô hấp': 'panel-lung',
+          'Tai Mũi Họng': 'panel-ent',
+          'Tiêu hóa': 'panel-digest',
+          'Thần kinh': 'panel-neuro',
+          'Cơ xương khớp': 'panel-bone'
+        };
+        document.getElementById(panelMap[currentDept])?.classList.add('active');
+
+        // Reset result
+        document.getElementById('dept-empty-card').style.display = 'block';
+        document.getElementById('dept-result-card').style.display = 'none';
+      });
+    });
+
+    // ── Symptom item toggle ────────────────────────────────────────────────
+    document.querySelectorAll('.symptom-item').forEach(item => {
+      item.addEventListener('click', () => {
+        const cb = item.querySelector('input[type="checkbox"]');
+        cb.checked = !cb.checked;
+        item.classList.toggle('selected', cb.checked);
+      });
+    });
+
+    // ── Analyze ────────────────────────────────────────────────────────────
+    document.getElementById('btn-analyze-dept').addEventListener('click', async () => {
+      const activePanel = document.querySelector('.dept-panel.active');
+      const checkedSymptoms = Array.from(
+        activePanel.querySelectorAll('input[type="checkbox"]:checked')
+      ).map(cb => cb.value);
+
+      if (checkedSymptoms.length === 0) {
+        showToast('Vui lòng chọn ít nhất một triệu chứng', 'warning');
+        return;
+      }
+
+      showLoading(`AI đang phân tích khoa ${currentDept}...`, 'Đang xử lý triệu chứng...');
+
+      try {
+        const patient = PatientManager.get();
+        const res = await API.Analyze.byDepartment(patient, currentDept, checkedSymptoms);
+        const a = res.analysis;
+
+        // Show result
+        document.getElementById('dept-empty-card').style.display = 'none';
+        document.getElementById('dept-result-card').style.display = 'block';
+
+        document.getElementById('result-dept-title').textContent = `Kết Quả – ${currentDept}`;
+        document.getElementById('result-diagnosis').textContent = a.diagnosis || '--';
+        document.getElementById('result-explanation').textContent = a.explanation || '--';
+        document.getElementById('result-disclaimer').textContent = a.disclaimer || '';
+
+        // Risk circle
+        const circle = document.getElementById('result-risk-circle');
+        const riskText = document.getElementById('result-risk-text');
+        riskText.textContent = a.riskLevel;
+        circle.className = 'risk-circle ' +
+          (a.riskScore >= 70 ? 'high' : a.riskScore >= 40 ? 'medium' : 'low');
+
+        // Urgency badge
+        const urgency = document.getElementById('result-urgency');
+        urgency.textContent = a.urgency || '--';
+        urgency.className = 'badge ' +
+          (a.urgency === 'Khẩn cấp' ? 'badge-red' :
+           a.urgency === 'Cần khám sớm' ? 'badge-yellow' :
+           a.urgency === 'Nên khám' ? 'badge-blue' : 'badge-green');
+
+        // Organs
+        const orgEls = document.getElementById('result-organs');
+        orgEls.innerHTML = '';
+        (a.affectedOrgans || []).forEach(o => {
+          const tag = document.createElement('span');
+          tag.className = 'badge badge-purple';
+          tag.textContent = o;
+          orgEls.appendChild(tag);
+        });
+
+        // Recommendations
+        const recList = document.getElementById('result-recommendations');
+        recList.innerHTML = '';
+        (a.recommendations || []).forEach(r => {
+          const li = document.createElement('li');
+          li.textContent = r;
+          recList.appendChild(li);
+        });
+
+        hideLoading();
+        showToast('Phân tích hoàn tất!', 'success');
+
+      } catch (err) {
+        hideLoading();
+        showToast('Lỗi: ' + err.message, 'error');
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,323 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nội Quy & Điều Khoản – Bệnh Viện Sinh Học Thông Minh</title>
+  <meta name="description" content="Nội quy sử dụng hệ thống AI y tế giáo dục – chỉ mang tính tham khảo, không thay thế bác sĩ." />
+  <link rel="stylesheet" href="css/global.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/animations.css" />
+  <style>
+    .disclaimer-content {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 2rem 0 5rem;
+    }
+
+    .rule-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 1.25rem;
+      padding: 2rem;
+      margin-bottom: 1.5rem;
+      transition: all 0.3s ease;
+    }
+
+    .rule-card:hover {
+      border-color: rgba(167,139,250,0.3);
+      transform: translateX(4px);
+    }
+
+    .rule-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .rule-icon {
+      width: 52px; height: 52px;
+      border-radius: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+
+    .rule-icon.green  { background: rgba(16,185,129,0.15); }
+    .rule-icon.red    { background: rgba(239,68,68,0.15); }
+    .rule-icon.yellow { background: rgba(245,158,11,0.15); }
+    .rule-icon.blue   { background: rgba(59,130,246,0.15); }
+    .rule-icon.purple { background: rgba(124,58,237,0.15); }
+
+    .faq-item {
+      margin-bottom: 1rem;
+    }
+
+    .faq-question {
+      width: 100%;
+      text-align: left;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 0.875rem;
+      padding: 1rem 1.25rem;
+      color: white;
+      font-family: var(--font-family);
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: all 0.25s;
+    }
+
+    .faq-question:hover {
+      background: rgba(124,58,237,0.1);
+      border-color: rgba(167,139,250,0.3);
+    }
+
+    .faq-answer {
+      display: none;
+      padding: 1rem 1.25rem;
+      font-size: 0.875rem;
+      color: rgba(255,255,255,0.75);
+      line-height: 1.7;
+      border: 1px solid rgba(255,255,255,0.06);
+      border-top: none;
+      border-radius: 0 0 0.875rem 0.875rem;
+      background: rgba(255,255,255,0.02);
+    }
+
+    .faq-item.open .faq-answer { display: block; }
+    .faq-item.open .faq-icon  { transform: rotate(180deg); }
+
+    .faq-icon { transition: transform 0.3s ease; font-style: normal; }
+
+    .team-card {
+      text-align: center;
+      padding: 2rem;
+    }
+
+    .team-avatar {
+      width: 72px; height: 72px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      margin: 0 auto 1rem;
+    }
+  </style>
+</head>
+<body class="page-enter">
+
+  <nav class="navbar">
+    <div class="container navbar-inner">
+      <a href="index.html" class="navbar-brand">
+        <div class="brand-icon">🏥</div>
+        <span>Digital BioHospital</span>
+      </a>
+      <ul class="navbar-nav">
+        <li><a href="index.html">🏠 Trang chủ</a></li>
+        <li><a href="departments.html">🏥 Chuyên khoa</a></li>
+        <li><a href="library.html">📚 Thư viện</a></li>
+        <li><a href="disclaimer.html" class="active">📋 Nội quy</a></li>
+      </ul>
+      <a href="reception.html" class="navbar-patient-btn btn btn-sm">🧑‍⚕️ Bắt đầu khám</a>
+    </div>
+  </nav>
+
+  <main id="main">
+    <div class="page-header" style="background: linear-gradient(180deg, rgba(245,158,11,0.08) 0%, transparent 100%); border-bottom: 1px solid rgba(255,255,255,0.05);">
+      <div class="container">
+        <div class="section-tag animate-fadeInUp" style="color:#FCD34D; border-color:rgba(245,158,11,0.3)">📋 Nội Quy</div>
+        <h1 class="animate-fadeInUp delay-100">Nội Quy & Điều Khoản Sử Dụng</h1>
+        <p class="animate-fadeInUp delay-200">Vui lòng đọc kỹ trước khi sử dụng hệ thống</p>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="disclaimer-content">
+
+        <!-- WARNING Banner -->
+        <div class="card animate-scaleIn" style="background:rgba(245,158,11,0.1); border-color:rgba(245,158,11,0.4); text-align:center; padding:2.5rem; margin-bottom:2rem">
+          <div style="font-size:3rem; margin-bottom:1rem">⚠️</div>
+          <h2 style="margin-bottom:1rem; color: #FCD34D">Tuyên Bố Quan Trọng</h2>
+          <p style="font-size:1rem; max-width:500px; margin:0 auto; color:rgba(255,255,255,0.85)">
+            Hệ thống <strong>Bệnh Viện Sinh Học Thông Minh</strong> là công cụ
+            <strong style="color:#FCD34D">giáo dục và học tập</strong>,
+            <span style="text-decoration:underline">không phải dịch vụ y tế chuyên nghiệp</span>.
+          </p>
+        </div>
+
+        <!-- Rules -->
+        <div class="stagger">
+
+          <div class="rule-card reveal">
+            <div class="rule-header">
+              <div class="rule-icon green">✅</div>
+              <h3>Mục Đích Được Phép</h3>
+            </div>
+            <ul class="info-list">
+              <li>Học tập về sinh học, y học và sức khoẻ cơ bản</li>
+              <li>Tham khảo thông tin sức khoẻ cho mục đích giáo dục</li>
+              <li>Tìm hiểu về các triệu chứng để có ý thức chăm sóc bản thân</li>
+              <li>Sử dụng như công cụ hỗ trợ trong các dự án STEM</li>
+              <li>Tra cứu kiến thức giải phẫu học cơ bản</li>
+            </ul>
+          </div>
+
+          <div class="rule-card reveal delay-100">
+            <div class="rule-header">
+              <div class="rule-icon red">❌</div>
+              <h3>Những Điều Không Được Phép</h3>
+            </div>
+            <ul class="info-list">
+              <li>Không dùng thay thế chẩn đoán của bác sĩ thực sự</li>
+              <li>Không tự điều trị bằng cách dựa vào kết quả AI trên hệ thống này</li>
+              <li>Không sử dụng kết quả để đưa ra quyết định y tế quan trọng</li>
+              <li>Không chia sẻ kết quả như thông tin y tế chính thức</li>
+            </ul>
+          </div>
+
+          <div class="rule-card reveal delay-200">
+            <div class="rule-header">
+              <div class="rule-icon yellow">🔒</div>
+              <h3>Bảo Mật & Dữ Liệu</h3>
+            </div>
+            <ul class="info-list">
+              <li>Dữ liệu được lưu an toàn trên MongoDB Atlas với mã hoá</li>
+              <li>Chúng tôi không bán hoặc chia sẻ dữ liệu với bên thứ ba</li>
+              <li>Thông tin nhập không được dùng cho mục đích thương mại</li>
+              <li>Bạn có quyền xóa hồ sơ bất kỳ lúc nào</li>
+              <li>AI phân tích được thực hiện qua API bảo mật của Google Gemini</li>
+            </ul>
+          </div>
+
+          <div class="rule-card reveal delay-300">
+            <div class="rule-header">
+              <div class="rule-icon blue">🚨</div>
+              <h3>Khi Nào Cần Gặp Bác Sĩ Thật</h3>
+            </div>
+            <p style="font-size:0.925rem; margin-bottom:1rem; color:rgba(255,255,255,0.8)">
+              <strong>Hãy gặp bác sĩ ngay lập tức</strong> nếu bạn có:
+            </p>
+            <ul class="info-list">
+              <li>Đau ngực dữ dội hoặc khó thở đột ngột</li>
+              <li>Triệu chứng đột quỵ: méo miệng, liệt tay, nói khó</li>
+              <li>Chấn thương nghiêm trọng</li>
+              <li>Sốt cao kéo dài không giảm</li>
+              <li>Bất kỳ triệu chứng nghiêm trọng hoặc kéo dài nào</li>
+            </ul>
+            <div style="margin-top:1rem; padding:1rem; background:rgba(59,130,246,0.1); border-radius:0.875rem; font-size:0.875rem">
+              📞 <strong>Cấp cứu:</strong> Gọi <strong style="color:#93C5FD; font-size:1.1rem">115</strong> (Việt Nam)
+            </div>
+          </div>
+
+          <div class="rule-card reveal delay-400">
+            <div class="rule-header">
+              <div class="rule-icon purple">🤖</div>
+              <h3>Về AI Trong Hệ Thống</h3>
+            </div>
+            <ul class="info-list">
+              <li>AI sử dụng Google Gemini 1.5 Flash — mô hình ngôn ngữ tổng quát</li>
+              <li>Kết quả phân tích dựa trên kiến thức y khoa tổng quát, không cá nhân hóa lâm sàng</li>
+              <li>AI có thể mắc lỗi — luôn tham khảo ý kiến chuyên gia</li>
+              <li>"Điểm sức khoẻ" và "nguy cơ" chỉ mang tính ước lượng giáo dục</li>
+            </ul>
+          </div>
+
+        </div>
+
+        <!-- FAQ -->
+        <h2 style="margin: 3rem 0 1.5rem; font-size:1.5rem">❓ Câu Hỏi Thường Gặp</h2>
+
+        <div id="faq-list">
+          <div class="faq-item">
+            <button class="faq-question" id="faq-q1">
+              Kết quả AI có chính xác không?
+              <i class="faq-icon">▼</i>
+            </button>
+            <div class="faq-answer">
+              Kết quả AI chỉ mang tính tham khảo và giáo dục. Chúng tôi sử dụng Google Gemini AI — một mô hình mạnh nhưng không thể thay thế chẩn đoán lâm sàng của bác sĩ được đào tạo chuyên sâu. Hãy coi đây là điểm khởi đầu để tìm hiểu, không phải kết luận cuối cùng.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question" id="faq-q2">
+              Dữ liệu của tôi có bị chia sẻ không?
+              <i class="faq-icon">▼</i>
+            </button>
+            <div class="faq-answer">
+              Không. Dữ liệu của bạn được lưu trữ an toàn trên MongoDB Atlas và chỉ được sử dụng để cung cấp dịch vụ phân tích. Chúng tôi không bán, cho thuê hoặc chia sẻ thông tin của bạn với bên thứ ba cho mục đích thương mại.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question" id="faq-q3">
+              Hệ thống có thay thế khám bệnh thật không?
+              <i class="faq-icon">▼</i>
+            </button>
+            <div class="faq-answer">
+              Tuyệt đối không. Hệ thống này được xây dựng như một công cụ học tập và nâng cao ý thức sức khoẻ. Không có AI nào có thể thay thế việc thăm khám trực tiếp, xét nghiệm lâm sàng và đánh giá của bác sĩ chuyên khoa.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question" id="faq-q4">
+              Tôi có thể dùng kết quả để thuyết trình không?
+              <i class="faq-icon">▼</i>
+            </button>
+            <div class="faq-answer">
+              Có thể dùng cho mục đích học tập và thuyết trình tại trường, nhưng hãy luôn ghi rõ "Nguồn: giáo dục, không phải chẩn đoán y tế" và đề cập xuất xứ từ hệ thống AI này.
+            </div>
+          </div>
+        </div>
+
+        <!-- Team / About -->
+        <h2 style="margin: 3rem 0 1.5rem; font-size:1.5rem">👥 Về Chúng Tôi</h2>
+        <div class="card" style="text-align:center; padding:2.5rem">
+          <div style="font-size:3rem; margin-bottom:1rem">🏥</div>
+          <h3 style="margin-bottom:0.5rem">Bệnh Viện Sinh Học Thông Minh</h3>
+          <p style="font-size:0.9rem; max-width:500px; margin:0 auto 1.5rem">
+            Dự án STEM học sinh được xây dựng với mục tiêu ứng dụng trí tuệ nhân tạo vào giáo dục sức khoẻ.
+            Kết hợp kiến thức sinh học, công nghệ AI và thiết kế hiện đại.
+          </p>
+          <div style="display:flex; justify-content:center; gap:1rem; flex-wrap:wrap">
+            <span class="badge badge-purple">Google Gemini AI</span>
+            <span class="badge badge-blue">Node.js + Express</span>
+            <span class="badge badge-green">MongoDB Atlas</span>
+            <span class="badge badge-yellow">Vercel + Render</span>
+          </div>
+          <div style="margin-top:1.5rem">
+            <a href="index.html" class="btn btn-primary">🏠 Về Trang Chủ</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>📋 Nội Quy · Bệnh Viện Sinh Học Thông Minh – Digital BioHospital</p>
+      <p style="margin-top:0.5rem; font-size:0.8rem">Phiên bản 1.0 · Cập nhật: 2026</p>
+    </div>
+  </footer>
+
+  <script src="js/api.js"></script>
+  <script src="js/patient.js"></script>
+  <script>
+    document.querySelectorAll('.faq-question').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const item = btn.parentElement;
+        item.classList.toggle('open');
+      });
+    });
+  </script>
+</body>
+</html>

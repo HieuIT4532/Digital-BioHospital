@@ -1,0 +1,458 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kế Hoạch Cá Nhân Hóa – Bệnh Viện Sinh Học Thông Minh</title>
+  <meta name="description" content="AI Gemini tạo kế hoạch sống 7 ngày cá nhân hóa: lịch sinh hoạt, dinh dưỡng và bài tập." />
+  <link rel="stylesheet" href="css/global.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/animations.css" />
+  <style>
+    .goal-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.6rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .goal-item {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.75rem 0.875rem;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 0.75rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 0.85rem;
+    }
+
+    .goal-item:hover { border-color: rgba(16,185,129,0.4); }
+    .goal-item.selected {
+      border-color: #10B981;
+      background: rgba(16,185,129,0.1);
+      color: #6EE7B7;
+    }
+    .goal-item input { display: none; }
+
+    /* Day Schedule */
+    .week-tabs {
+      display: flex;
+      gap: 0.4rem;
+      overflow-x: auto;
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.25rem;
+    }
+
+    .day-tab {
+      padding: 0.6rem 1rem;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 0.75rem;
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-weight: 600;
+      white-space: nowrap;
+      color: rgba(255,255,255,0.6);
+      transition: all 0.2s;
+      font-family: var(--font-family);
+    }
+
+    .day-tab:hover { color: white; }
+    .day-tab.active {
+      background: linear-gradient(135deg, rgba(16,185,129,0.3), rgba(16,185,129,0.1));
+      border-color: #10B981;
+      color: #6EE7B7;
+    }
+
+    .day-panel { display: none; }
+    .day-panel.active { display: block; animation: fadeIn 0.3s ease; }
+
+    .day-schedule {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.75rem;
+    }
+
+    .time-slot {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 0.875rem;
+      padding: 1rem;
+    }
+
+    .time-slot-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: rgba(255, 255, 255, 0.4);
+      margin-bottom: 0.4rem;
+    }
+
+    .time-slot-content {
+      font-size: 0.875rem;
+      color: rgba(255,255,255,0.85);
+    }
+
+    .exercise-slot {
+      grid-column: 1 / -1;
+      background: rgba(16,185,129,0.08);
+      border-color: rgba(16,185,129,0.2);
+    }
+
+    /* Nutrition */
+    .nutrition-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+
+    .meal-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 0.875rem;
+      padding: 1rem;
+    }
+
+    .meal-title {
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 0.5rem;
+    }
+
+    .meal-options {
+      list-style: none;
+      font-size: 0.875rem;
+    }
+
+    .meal-options li {
+      padding: 0.35rem 0;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      color: rgba(255,255,255,0.8);
+    }
+
+    .meal-options li::before { content: '→ '; color: #10B981; }
+    .meal-options li:last-child { border-bottom: none; }
+
+    .avoid-card {
+      background: rgba(239,68,68,0.06);
+      border-color: rgba(239,68,68,0.2);
+    }
+
+    .avoid-card .meal-title { color: #FCA5A5; }
+    .avoid-card .meal-options li::before { content: '✗ '; color: #EF4444; }
+
+    @media (max-width: 768px) {
+      .goal-grid     { grid-template-columns: 1fr; }
+      .day-schedule  { grid-template-columns: 1fr; }
+      .nutrition-grid{ grid-template-columns: 1fr; }
+    }
+
+    @media print {
+      .navbar, footer, .btn, #goal-form { display: none; }
+      .page-header, #plan-result { display: block !important; }
+    }
+  </style>
+</head>
+<body class="page-enter">
+
+  <nav class="navbar">
+    <div class="container navbar-inner">
+      <a href="index.html" class="navbar-brand">
+        <div class="brand-icon">🏥</div>
+        <span>Digital BioHospital</span>
+      </a>
+      <ul class="navbar-nav">
+        <li><a href="index.html">🏠 Trang chủ</a></li>
+        <li><a href="departments.html">🏥 Chuyên khoa</a></li>
+        <li><a href="anatomy.html">🧬 Giải phẫu</a></li>
+        <li><a href="prediction.html">🔮 Dự đoán</a></li>
+        <li><a href="personalize.html" class="active">🌱 Kế hoạch</a></li>
+        <li><a href="library.html">📚 Thư viện</a></li>
+      </ul>
+      <a href="reception.html" class="navbar-patient-btn btn btn-sm">🧑‍⚕️ Hồ sơ</a>
+    </div>
+  </nav>
+
+  <main id="main">
+    <div class="page-header" style="background: linear-gradient(180deg, rgba(16,185,129,0.08) 0%, transparent 100%); border-bottom: 1px solid rgba(255,255,255,0.05);">
+      <div class="container">
+        <div class="section-tag animate-fadeInUp" style="color:#6EE7B7; border-color:rgba(16,185,129,0.3)">🌱 Cá Nhân Hóa</div>
+        <h1 class="animate-fadeInUp delay-100">Kế Hoạch Sống 7 Ngày</h1>
+        <p class="animate-fadeInUp delay-200">AI Gemini tạo lịch sinh hoạt, thực đơn và bài tập dành riêng cho bạn</p>
+      </div>
+    </div>
+
+    <div class="container" style="padding-top:2rem; padding-bottom:4rem">
+
+      <!-- Goal Selection Form -->
+      <div class="card" id="goal-form" style="max-width:680px; margin:0 auto 2rem">
+        <h3 style="margin-bottom:0.5rem">Mục Tiêu Của Bạn</h3>
+        <p style="font-size:0.875rem; margin-bottom:1.25rem; color:rgba(255,255,255,0.6)">
+          Chọn 1–3 mục tiêu sức khoẻ. AI sẽ tạo kế hoạch phù hợp nhất.
+        </p>
+
+        <!-- Patient note -->
+        <div id="no-patient-warn" style="display:none; padding:0.875rem; background:rgba(245,158,11,0.08); border:1px solid rgba(245,158,11,0.25); border-radius:0.875rem; font-size:0.85rem; margin-bottom:1.25rem">
+          ⚠️ Bạn chưa có hồ sơ bệnh nhân. <a href="reception.html">Tạo hồ sơ</a> để AI cá nhân hóa chính xác hơn.
+        </div>
+
+        <div class="goal-grid">
+          <label class="goal-item" id="goal-weight">
+            <input type="checkbox" value="Giảm cân và kiểm soát cân nặng"/>⚖️ Giảm cân
+          </label>
+          <label class="goal-item" id="goal-energy">
+            <input type="checkbox" value="Tăng năng lượng và giảm mệt mỏi"/>⚡ Tăng năng lượng
+          </label>
+          <label class="goal-item" id="goal-sleep">
+            <input type="checkbox" value="Cải thiện chất lượng giấc ngủ"/>😴 Ngủ tốt hơn
+          </label>
+          <label class="goal-item" id="goal-muscle">
+            <input type="checkbox" value="Tăng cơ bắp và sức mạnh"/>💪 Tăng cơ bắp
+          </label>
+          <label class="goal-item" id="goal-stress">
+            <input type="checkbox" value="Giảm stress và cải thiện tâm trạng"/>🧘 Giảm stress
+          </label>
+          <label class="goal-item" id="goal-immune">
+            <input type="checkbox" value="Tăng cường hệ miễn dịch"/>🛡️ Tăng miễn dịch
+          </label>
+          <label class="goal-item" id="goal-heart">
+            <input type="checkbox" value="Cải thiện sức khoẻ tim mạch"/>❤️ Sức khoẻ tim
+          </label>
+          <label class="goal-item" id="goal-focus">
+            <input type="checkbox" value="Cải thiện tập trung và trí nhớ"/>🧠 Tăng tập trung
+          </label>
+        </div>
+
+        <button class="btn btn-primary btn-lg btn-ripple" id="btn-generate-plan" style="width:100%">
+          🌱 Tạo Kế Hoạch Cá Nhân
+        </button>
+      </div>
+
+      <!-- Result -->
+      <div id="plan-result" style="display:none">
+
+        <!-- Plan header -->
+        <div class="card" style="text-align:center; margin-bottom:2rem; background:linear-gradient(135deg,rgba(16,185,129,0.15),rgba(16,185,129,0.05)); border-color:rgba(16,185,129,0.3)">
+          <div style="font-size:3rem; margin-bottom:0.75rem">🌱</div>
+          <h2 id="plan-title" style="margin-bottom:0.5rem; font-size:1.5rem"></h2>
+          <p id="plan-summary" style="max-width:600px; margin:0 auto 1rem"></p>
+          <span id="plan-expected" class="badge badge-green" style="font-size:0.85rem; padding:0.4rem 1rem"></span>
+          <div style="margin-top:1rem">
+            <button class="btn btn-glass btn-sm" onclick="window.print()" id="btn-print">🖨️ In / Lưu PDF</button>
+          </div>
+        </div>
+
+        <!-- Weekly Schedule -->
+        <div class="card" style="margin-bottom:2rem">
+          <h3 style="margin-bottom:1.25rem">📅 Lịch Sinh Hoạt 7 Ngày</h3>
+          <div class="week-tabs" id="week-tabs"></div>
+          <div id="week-panels"></div>
+        </div>
+
+        <!-- Nutrition -->
+        <div class="card" style="margin-bottom:2rem">
+          <h3 style="margin-bottom:1.25rem">🍽️ Thực Đơn Gợi Ý</h3>
+          <div class="nutrition-grid" id="nutrition-grid"></div>
+          <div style="margin-top:1rem; padding:0.875rem; background:rgba(59,130,246,0.08); border:1px solid rgba(59,130,246,0.2); border-radius:0.875rem; font-size:0.875rem">
+            💧 <strong>Lượng nước: </strong><span id="water-intake" style="color:#93C5FD"></span>
+          </div>
+        </div>
+
+        <!-- Sleep -->
+        <div class="card" style="margin-bottom:2rem">
+          <h3 style="margin-bottom:1rem">😴 Thói Quen Giấc Ngủ</h3>
+          <div style="display:flex; gap:1.5rem; flex-wrap:wrap; margin-bottom:1rem">
+            <div>
+              <div style="font-size:0.75rem; color:rgba(255,255,255,0.5); text-transform:uppercase; letter-spacing:0.07em">Giờ ngủ</div>
+              <div id="sleep-bedtime" style="font-size:1.25rem; font-weight:700; color:#A78BFA"></div>
+            </div>
+            <div>
+              <div style="font-size:0.75rem; color:rgba(255,255,255,0.5); text-transform:uppercase; letter-spacing:0.07em">Giờ dậy</div>
+              <div id="sleep-wake" style="font-size:1.25rem; font-weight:700; color:#A78BFA"></div>
+            </div>
+          </div>
+          <ul id="sleep-tips" class="info-list"></ul>
+        </div>
+
+        <!-- Mental wellness + metrics -->
+        <div class="grid-2">
+          <div class="card">
+            <h3 style="margin-bottom:1rem; font-size:1rem">🧘 Sức Khoẻ Tâm Thần</h3>
+            <ul id="mental-tips" class="info-list"></ul>
+          </div>
+          <div class="card">
+            <h3 style="margin-bottom:1rem; font-size:1rem">📊 Chỉ Số Theo Dõi</h3>
+            <ul id="metrics-list" class="info-list"></ul>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>🏥 Bệnh Viện Sinh Học Thông Minh · <a href="disclaimer.html">Nội quy & Tuyên bố miễn trách</a></p>
+    </div>
+  </footer>
+
+  <script src="js/api.js"></script>
+  <script src="js/patient.js"></script>
+  <script>
+    // Check patient
+    const patient = PatientManager.get();
+    if (!patient) {
+      document.getElementById('no-patient-warn').style.display = 'block';
+    }
+
+    // Goal toggle
+    document.querySelectorAll('.goal-item').forEach(item => {
+      item.addEventListener('click', () => {
+        const cb = item.querySelector('input');
+        cb.checked = !cb.checked;
+        item.classList.toggle('selected', cb.checked);
+      });
+    });
+
+    // Generate plan
+    document.getElementById('btn-generate-plan').addEventListener('click', async () => {
+      const goals = Array.from(document.querySelectorAll('.goal-item input:checked')).map(cb => cb.value);
+      if (goals.length === 0) {
+        showToast('Vui lòng chọn ít nhất một mục tiêu', 'warning');
+        return;
+      }
+
+      showLoading('AI đang tạo kế hoạch cá nhân hóa...', 'Đang tối ưu hóa cho bạn...');
+
+      try {
+        const res = await API.Personalize.plan(patient, goals);
+        const plan = res.plan;
+
+        document.getElementById('goal-form').style.display = 'none';
+        document.getElementById('plan-result').style.display = 'block';
+
+        document.getElementById('plan-title').textContent = plan.planTitle || 'Kế Hoạch Cá Nhân Của Bạn';
+        document.getElementById('plan-summary').textContent = plan.planSummary || '';
+        document.getElementById('plan-expected').textContent = '✨ ' + (plan.expectedResults || '');
+
+        // Week schedule tabs
+        const tabs = document.getElementById('week-tabs');
+        const panels = document.getElementById('week-panels');
+        tabs.innerHTML = ''; panels.innerHTML = '';
+
+        (plan.weeklySchedule || []).forEach((day, i) => {
+          const tabBtn = document.createElement('button');
+          tabBtn.className = 'day-tab ' + (i === 0 ? 'active' : '');
+          tabBtn.textContent = day.day;
+          tabBtn.setAttribute('data-day', i);
+          tabs.appendChild(tabBtn);
+
+          const panel = document.createElement('div');
+          panel.className = 'day-panel ' + (i === 0 ? 'active' : '');
+          panel.setAttribute('data-day', i);
+          panel.innerHTML = `
+            <div style="margin-bottom:0.75rem">
+              <span class="badge badge-purple" style="font-size:0.8rem">🎯 ${day.focus}</span>
+            </div>
+            <div class="day-schedule">
+              <div class="time-slot">
+                <div class="time-slot-label">🌅 Buổi sáng</div>
+                <div class="time-slot-content">${day.morning}</div>
+              </div>
+              <div class="time-slot">
+                <div class="time-slot-label">☀️ Buổi trưa</div>
+                <div class="time-slot-content">${day.noon}</div>
+              </div>
+              <div class="time-slot">
+                <div class="time-slot-label">🌙 Buổi tối</div>
+                <div class="time-slot-content">${day.evening}</div>
+              </div>
+              <div class="time-slot exercise-slot">
+                <div class="time-slot-label" style="color:#6EE7B7">🏃 Tập luyện</div>
+                <div class="time-slot-content">${day.exercise}</div>
+              </div>
+            </div>
+          `;
+          panels.appendChild(panel);
+        });
+
+        // Tab switching
+        tabs.querySelectorAll('.day-tab').forEach(btn => {
+          btn.addEventListener('click', () => {
+            tabs.querySelectorAll('.day-tab').forEach(b => b.classList.remove('active'));
+            panels.querySelectorAll('.day-panel').forEach(p => p.classList.remove('active'));
+            btn.classList.add('active');
+            panels.querySelector(`[data-day="${btn.dataset.day}"]`).classList.add('active');
+          });
+        });
+
+        // Nutrition
+        const nutr = plan.nutritionPlan || {};
+        const ngrid = document.getElementById('nutrition-grid');
+        const mealDefs = [
+          { key:'breakfast', label:'🌅 Bữa sáng', items: nutr.breakfast },
+          { key:'lunch',     label:'☀️ Bữa trưa', items: nutr.lunch },
+          { key:'dinner',    label:'🌙 Bữa tối',  items: nutr.dinner },
+          { key:'snacks',    label:'🍎 Snack lành mạnh', items: nutr.snacks }
+        ];
+        ngrid.innerHTML = '';
+        mealDefs.forEach(m => {
+          const div = document.createElement('div');
+          div.className = 'meal-card';
+          div.innerHTML = `
+            <div class="meal-title">${m.label}</div>
+            <ul class="meal-options">
+              ${(m.items||[]).map(i => `<li>${i}</li>`).join('')}
+            </ul>
+          `;
+          ngrid.appendChild(div);
+        });
+
+        // Avoid foods
+        if (nutr.avoidFoods?.length) {
+          const avoid = document.createElement('div');
+          avoid.className = 'meal-card avoid-card';
+          avoid.style.gridColumn = '1 / -1';
+          avoid.innerHTML = `
+            <div class="meal-title">❌ Cần Tránh</div>
+            <ul class="meal-options">
+              ${nutr.avoidFoods.map(f => `<li>${f}</li>`).join('')}
+            </ul>
+          `;
+          ngrid.appendChild(avoid);
+        }
+
+        document.getElementById('water-intake').textContent = nutr.waterIntake || '--';
+
+        // Sleep
+        const sleep = plan.sleepRoutine || {};
+        document.getElementById('sleep-bedtime').textContent = sleep.bedtime || '--';
+        document.getElementById('sleep-wake').textContent = sleep.wakeTime || '--';
+        const sleepTips = document.getElementById('sleep-tips');
+        sleepTips.innerHTML = (sleep.tips||[]).map(t => `<li>${t}</li>`).join('');
+
+        // Mental + metrics
+        const mentalList = document.getElementById('mental-tips');
+        mentalList.innerHTML = (plan.mentalWellness||[]).map(t => `<li>${t}</li>`).join('');
+        const metricsList = document.getElementById('metrics-list');
+        metricsList.innerHTML = (plan.progressMetrics||[]).map(m => `<li>${m}</li>`).join('');
+
+        hideLoading();
+        showToast('Kế hoạch 7 ngày đã được tạo!', 'success');
+        document.getElementById('plan-result').scrollIntoView({ behavior:'smooth' });
+
+      } catch (err) {
+        hideLoading();
+        showToast('Lỗi: ' + err.message, 'error');
+      }
+    });
+  </script>
+</body>
+</html>

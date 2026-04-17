@@ -1,0 +1,535 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bệnh Viện Sinh Học Thông Minh – Digital BioHospital</title>
+  <meta name="description" content="Hệ thống AI phòng khám thông minh: phân tích sức khỏe, khám chuyên khoa, dự đoán tương lai và kế hoạch cá nhân hóa." />
+  <link rel="stylesheet" href="css/global.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/animations.css" />
+  <style>
+    /* ── Hero ── */
+    .hero-section {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: 120px 0 80px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 20px;
+      background: rgba(124, 58, 237, 0.15);
+      border: 1px solid rgba(167, 139, 250, 0.4);
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--color-primary-light);
+      margin-bottom: 2rem;
+    }
+
+    .hero-title {
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      font-weight: 900;
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-desc {
+      font-size: 1.2rem;
+      color: rgba(255,255,255,0.7);
+      max-width: 640px;
+      margin: 0 auto 2.5rem;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .hero-scroll-indicator {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      color: rgba(255,255,255,0.4);
+      font-size: 0.75rem;
+      animation: float 2s ease-in-out infinite;
+    }
+
+    .hero-scroll-indicator::before {
+      content: '';
+      width: 1px;
+      height: 40px;
+      background: linear-gradient(180deg, transparent, rgba(167,139,250,0.6));
+    }
+
+    /* ── Stats Bar ── */
+    .stats-bar {
+      padding: 2rem 0;
+      background: rgba(255,255,255,0.03);
+      border-top: 1px solid rgba(255,255,255,0.06);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .stats-inner {
+      display: flex;
+      justify-content: center;
+      gap: 3rem;
+      flex-wrap: wrap;
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-item .num {
+      font-size: 2rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--color-primary-light), var(--color-accent-light));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      display: block;
+      line-height: 1;
+    }
+
+    .stat-item .lbl {
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.5);
+      font-weight: 500;
+      margin-top: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    /* ── Features ── */
+    .features-section {
+      padding: 6rem 0;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .feature-link {
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+
+    /* ── AI Features Highlight ── */
+    .ai-highlight {
+      padding: 6rem 0;
+      background: rgba(124, 58, 237, 0.05);
+      border-top: 1px solid rgba(255,255,255,0.05);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .wow-features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .wow-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 1.5rem;
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .wow-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+    }
+
+    .wow-card.card-purple::before { background: linear-gradient(90deg, var(--color-primary), var(--color-primary-light)); }
+    .wow-card.card-pink::before   { background: linear-gradient(90deg, var(--color-accent), var(--color-accent-light)); }
+    .wow-card.card-green::before  { background: linear-gradient(90deg, #10B981, #6EE7B7); }
+
+    .wow-card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(167,139,250,0.3);
+      box-shadow: 0 16px 48px rgba(124,58,237,0.25);
+    }
+
+    .wow-badge {
+      display: inline-block;
+      padding: 3px 10px;
+      background: rgba(124,58,237,0.2);
+      border-radius: 999px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--color-primary-light);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 1rem;
+    }
+
+    /* ── Disclaimer Banner ── */
+    .disclaimer-banner {
+      padding: 1.5rem;
+      background: rgba(245, 158, 11, 0.08);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      border-radius: 1rem;
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+      margin: 2rem 0;
+    }
+
+    .disclaimer-banner .icon { font-size: 1.5rem; flex-shrink: 0; }
+
+    /* ── CTA Section ── */
+    .cta-section {
+      padding: 6rem 0;
+      text-align: center;
+    }
+
+    .cta-card {
+      background: linear-gradient(135deg, rgba(124,58,237,0.2), rgba(236,72,153,0.1));
+      border: 1px solid rgba(167,139,250,0.3);
+      border-radius: 2rem;
+      padding: 4rem;
+      max-width: 700px;
+      margin: 0 auto;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-card::before {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      background: linear-gradient(135deg, rgba(124,58,237,0.4), rgba(236,72,153,0.2));
+      border-radius: inherit;
+      z-index: -1;
+    }
+
+    @media (max-width: 600px) {
+      .hero-title { font-size: 2.2rem; }
+      .cta-card   { padding: 2rem; }
+    }
+  </style>
+</head>
+<body class="page-enter">
+  <!-- ♿ Skip to main -->
+  <a href="#main" style="position:absolute;left:-9999px;z-index:999;" id="skip-link">Bỏ qua điều hướng</a>
+
+  <!-- NAVBAR -->
+  <nav class="navbar" role="navigation" aria-label="Điều hướng chính">
+    <div class="container navbar-inner">
+      <a href="index.html" class="navbar-brand" id="nav-brand">
+        <div class="brand-icon" aria-hidden="true">🏥</div>
+        <span>Digital BioHospital</span>
+      </a>
+
+      <ul class="navbar-nav" role="list">
+        <li><a href="index.html"        class="active"  id="nav-home">🏠 Trang chủ</a></li>
+        <li><a href="departments.html"              id="nav-dept">🏥 Chuyên khoa</a></li>
+        <li><a href="anatomy.html"                  id="nav-anatomy">🧬 Giải phẫu</a></li>
+        <li><a href="analysis.html"                 id="nav-analysis">🔬 Phân tích</a></li>
+        <li><a href="prediction.html"               id="nav-predict">🔮 Dự đoán</a></li>
+        <li><a href="personalize.html"              id="nav-personal">🌱 Kế hoạch</a></li>
+        <li><a href="library.html"                  id="nav-lib">📚 Thư viện</a></li>
+      </ul>
+
+      <a href="reception.html" class="navbar-patient-btn btn btn-sm" id="btn-start-exam">
+        🧑‍⚕️ Bắt đầu khám
+      </a>
+    </div>
+  </nav>
+
+  <!-- MAIN CONTENT -->
+  <main id="main">
+
+    <!-- ══ HERO ══════════════════════════════════════════════════════════ -->
+    <section class="hero-section" aria-labelledby="hero-title">
+      <!-- Ambient orbs -->
+      <div class="hero-orb hero-orb-1" aria-hidden="true"></div>
+      <div class="hero-orb hero-orb-2" aria-hidden="true"></div>
+
+      <div class="container" style="width:100%">
+        <div class="hero-badge animate-fadeInUp" aria-label="Nhãn hệ thống">
+          <span>🤖</span> Hệ Thống AI Y Tế Giáo Dục · v1.0
+        </div>
+
+        <h1 class="hero-title gradient-animated" id="hero-title">
+          Bệnh Viện Sinh Học<br />Thông Minh
+        </h1>
+
+        <p class="hero-desc animate-fadeInUp delay-200">
+          Trải nghiệm như bệnh nhân thực tế — AI phân tích sức khoẻ,
+          dự đoán tương lai và tạo kế hoạch cá nhân hóa dành riêng cho bạn.
+        </p>
+
+        <div class="hero-actions animate-fadeInUp delay-400">
+          <a href="reception.html" class="btn btn-primary btn-lg btn-ripple" id="hero-btn-exam">
+            🧑‍⚕️ Bắt Đầu Khám
+          </a>
+          <a href="anatomy.html" class="btn btn-outline btn-lg" id="hero-btn-anatomy">
+            🧬 Khám Phá Cơ Thể
+          </a>
+          <a href="library.html" class="btn btn-glass btn-lg" id="hero-btn-library">
+            📚 Thư Viện
+          </a>
+        </div>
+      </div>
+
+      <div class="hero-scroll-indicator" aria-hidden="true">Khám phá</div>
+    </section>
+
+    <!-- ══ STATS BAR ══════════════════════════════════════════════════════ -->
+    <div class="stats-bar" aria-label="Thống kê hệ thống">
+      <div class="container">
+        <div class="stats-inner">
+          <div class="stat-item">
+            <span class="num" id="stat-depts">6</span>
+            <span class="lbl">Chuyên khoa</span>
+          </div>
+          <div class="stat-item">
+            <span class="num">3</span>
+            <span class="lbl">Tính năng AI độc quyền</span>
+          </div>
+          <div class="stat-item">
+            <span class="num">5</span>
+            <span class="lbl">Cơ quan giải phẫu</span>
+          </div>
+          <div class="stat-item">
+            <span class="num">100%</span>
+            <span class="lbl">Miễn phí</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ FEATURES ════════════════════════════════════════════════════════ -->
+    <section class="features-section" aria-labelledby="features-title">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-tag">Tính Năng</div>
+          <h2 id="features-title">Đầy Đủ Từ A → Z</h2>
+          <p>Mọi công cụ bạn cần để hiểu và chăm sóc sức khoẻ</p>
+        </div>
+
+        <div class="features-grid stagger" role="list">
+
+          <a href="reception.html" class="feature-link" id="feat-reception">
+            <article class="feature-card" role="listitem">
+              <span class="feature-icon">🧑‍⚕️</span>
+              <h3>Tiếp Nhận Bệnh Nhân</h3>
+              <p>Nhập thông tin, AI tính BMI và cho điểm sức khoẻ 0–100 ngay lập tức.</p>
+              <div class="badge badge-green" style="margin-top:1rem">Miễn phí</div>
+            </article>
+          </a>
+
+          <a href="departments.html" class="feature-link" id="feat-dept">
+            <article class="feature-card" role="listitem">
+              <span class="feature-icon">🏥</span>
+              <h3>Khám Chuyên Khoa</h3>
+              <p>6 chuyên khoa với AI riêng: Tim mạch, Hô hấp, TMH, Tiêu hóa, Thần kinh, Xương khớp.</p>
+              <div class="badge badge-purple" style="margin-top:1rem">6 Khoa</div>
+            </article>
+          </a>
+
+          <a href="anatomy.html" class="feature-link" id="feat-anatomy">
+            <article class="feature-card" role="listitem">
+              <span class="feature-icon">🧬</span>
+              <h3>Giải Phẫu Tương Tác</h3>
+              <p>Hình cơ thể người 3D — click vào từng cơ quan để xem chức năng và bệnh liên quan.</p>
+              <div class="badge badge-blue" style="margin-top:1rem">WOW Factor</div>
+            </article>
+          </a>
+
+          <a href="analysis.html" class="feature-link" id="feat-analysis">
+            <article class="feature-card" role="listitem">
+              <span class="feature-icon">🔬</span>
+              <h3>Liên Kết Cơ Quan</h3>
+              <p>AI vẽ chuỗi ảnh hưởng: Ngủ ít → Não → Tim → Thận. Tư duy sinh học hệ thống.</p>
+              <div class="badge badge-yellow" style="margin-top:1rem">AI Gemini</div>
+            </article>
+          </a>
+
+          <a href="prediction.html" class="feature-link" id="feat-predict">
+            <article class="feature-card" role="listitem">
+              <span class="feature-icon">🔮</span>
+              <h3>Dự Đoán Tương Lai</h3>
+              <p>AI dự đoán sức khỏe sau 30 ngày, 3 tháng, 1 năm nếu tiếp tục thói quen hiện tại.</p>
+              <div class="badge badge-red" style="margin-top:1rem">Độc Quyền</div>
+            </article>
+          </a>
+
+          <a href="personalize.html" class="feature-link" id="feat-personal">
+            <article class="feature-card" role="listitem">
+              <span class="feature-icon">🌱</span>
+              <h3>Kế Hoạch Cá Nhân</h3>
+              <p>AI tạo lịch sinh hoạt 7 ngày + menu ăn uống + bài tập phù hợp riêng cho bạn.</p>
+              <div class="badge badge-green" style="margin-top:1rem">Cá Nhân Hóa</div>
+            </article>
+          </a>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ AI WOW FEATURES ════════════════════════════════════════════════ -->
+    <section class="ai-highlight" aria-labelledby="ai-title">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-tag">🤖 AI Đa Tầng</div>
+          <h2 id="ai-title">Điểm Khác Biệt Hoàn Toàn</h2>
+          <p>3 tính năng AI độc quyền không nhóm nào có</p>
+        </div>
+
+        <div class="wow-features reveal">
+          <div class="wow-card card-purple" id="wow-predict">
+            <div class="wow-badge">🔮 Độc Quyền</div>
+            <div style="font-size:2.5rem; margin-bottom:1rem">🔮</div>
+            <h3 style="margin-bottom:0.75rem">AI Dự Đoán Tương Lai</h3>
+            <p style="margin-bottom:1.5rem">Không chỉ phân tích hiện tại — AI dự đoán xu hướng sức khỏe theo thời gian và cảnh báo nguy cơ.<br/><br/>
+              <em style="color:var(--color-primary-light)">"Ngủ 4h/ngày — sau 30 ngày nguy cơ suy giảm trí nhớ tăng 40%..."</em>
+            </p>
+            <a href="prediction.html" class="btn btn-outline btn-sm" id="wow-btn-predict">Khám phá →</a>
+          </div>
+
+          <div class="wow-card card-pink" id="wow-organs">
+            <div class="wow-badge">🔬 AI Hệ Thống</div>
+            <div style="font-size:2.5rem; margin-bottom:1rem">🔬</div>
+            <h3 style="margin-bottom:0.75rem">Liên Kết Cơ Quan</h3>
+            <p style="margin-bottom:1.5rem">AI vẽ đồ thị nhân-quả giữa các hệ cơ quan. Tư duy sinh học hệ thống — cực ăn điểm.<br/><br/>
+              <em style="color:var(--color-accent-light)">"Thiếu ngủ → Não mệt → Tim quá tải → Huyết áp tăng..."</em>
+            </p>
+            <a href="analysis.html" class="btn btn-outline btn-sm" id="wow-btn-organs">Khám phá →</a>
+          </div>
+
+          <div class="wow-card card-green" id="wow-plan">
+            <div class="wow-badge" style="background:rgba(16,185,129,0.2);color:#6EE7B7">🌱 Cá Nhân Hóa</div>
+            <div style="font-size:2.5rem; margin-bottom:1rem">🌱</div>
+            <h3 style="margin-bottom:0.75rem">Kế Hoạch Cá Nhân</h3>
+            <p style="margin-bottom:1.5rem">AI Gemini tạo lịch sinh hoạt 7 ngày hoàn toàn cá nhân hóa: ăn gì, tập gì, ngủ ra sao.<br/><br/>
+              <em style="color:#6EE7B7">"Dành riêng cho bạn — không kế hoạch nào giống nhau."</em>
+            </p>
+            <a href="personalize.html" class="btn btn-outline btn-sm" id="wow-btn-plan">Khám phá →</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ CTA ════════════════════════════════════════════════════════════ -->
+    <section class="cta-section" aria-labelledby="cta-title">
+      <div class="container">
+        <div class="cta-card reveal">
+          <div class="section-tag" style="margin-bottom:2rem">🚀 Bắt Đầu Ngay</div>
+          <h2 id="cta-title" style="margin-bottom:1rem">Sẵn Sàng Trải Nghiệm?</h2>
+          <p style="font-size:1.1rem; margin-bottom:2rem">
+            Chỉ mất 2 phút nhập thông tin — AI sẽ phân tích và đưa ra
+            kế hoạch chăm sóc sức khoẻ dành riêng cho bạn.
+          </p>
+          <a href="reception.html" class="btn btn-primary btn-xl btn-ripple" id="cta-btn-exam">
+            🧑‍⚕️ Bắt Đầu Khám Miễn Phí
+          </a>
+        </div>
+
+        <!-- Disclaimer -->
+        <div class="disclaimer-banner reveal delay-200">
+          <span class="icon">⚠️</span>
+          <div>
+            <strong style="color:rgba(255,255,255,0.9)">Lưu ý quan trọng:</strong>
+            <p style="margin:0; font-size:0.9rem">
+              Hệ thống này chỉ mang tính chất <strong>giáo dục và tham khảo</strong>, không thay thế chẩn đoán y tế chuyên nghiệp.
+              Khi có triệu chứng nghiêm trọng, hãy gặp bác sĩ ngay.
+              <a href="disclaimer.html" style="color:var(--color-warning)">Xem nội quy đầy đủ →</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer role="contentinfo">
+    <div class="container">
+      <p>
+        🏥 <strong>Bệnh Viện Sinh Học Thông Minh – Digital BioHospital</strong>
+        · Dự án STEM · Powered by Google Gemini AI
+      </p>
+      <p style="margin-top:0.5rem">
+        <a href="disclaimer.html" id="footer-disclaimer">Nội quy & Điều khoản</a>
+        · <a href="library.html" id="footer-library">Thư viện sức khỏe</a>
+      </p>
+    </div>
+  </footer>
+
+  <script src="js/api.js"></script>
+  <script src="js/patient.js"></script>
+  <script>
+    // Particles background
+    (function() {
+      const canvas = document.createElement('canvas');
+      canvas.id = 'particles-canvas';
+      document.body.prepend(canvas);
+      const ctx = canvas.getContext('2d');
+
+      function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+      resize();
+      window.addEventListener('resize', resize);
+
+      const particles = Array.from({ length: 60 }, () => ({
+        x: Math.random() * window.innerWidth,
+        y: Math.random() * window.innerHeight,
+        r: Math.random() * 2 + 0.5,
+        dx: (Math.random() - 0.5) * 0.4,
+        dy: (Math.random() - 0.5) * 0.4,
+        alpha: Math.random() * 0.5 + 0.1
+      }));
+
+      function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        particles.forEach(p => {
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(167, 139, 250, ${p.alpha})`;
+          ctx.fill();
+
+          p.x += p.dx; p.y += p.dy;
+          if (p.x < 0) p.x = canvas.width;
+          if (p.x > canvas.width) p.x = 0;
+          if (p.y < 0) p.y = canvas.height;
+          if (p.y > canvas.height) p.y = 0;
+        });
+        requestAnimationFrame(draw);
+      }
+      draw();
+    })();
+
+    // Check API on load
+    window.addEventListener('load', () => {
+      API.checkHealth();
+    });
+  </script>
+</body>
+</html>
