@@ -60,7 +60,8 @@ app.use('/api/patients',   require('./routes/patients'));
 app.use('/api/analyze',    require('./routes/analyze'));
 app.use('/api/predict',    require('./routes/predict'));
 app.use('/api/personalize',require('./routes/personalize'));
-app.use('/api/chat',       require('./routes/chat')); // New chat route
+app.use('/api/chat',       require('./routes/chat'));
+app.use('/api/library',    require('./routes/library')); // Thư viện drill-down
 
 // ── Health Check ──────────────────────────────────────────────────────────────
 app.get('/health', (req, res) => {

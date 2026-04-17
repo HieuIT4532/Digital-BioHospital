@@ -4,21 +4,18 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Thư Viện Sinh Học 11 – Bệnh Viện Sinh Học Thông Minh</title>
-  <meta name="description" content="Thư viện sinh học chuẩn Sinh học 11: Hệ tuần hoàn, hô hấp, thần kinh, miễn dịch, cân bằng nội môi, tiêu hóa. Kiến thức SGK + liên hệ thực tế." />
+  <meta name="description" content="Thư viện sinh học chuẩn Sinh học 11: Hệ tuần hoàn, hô hấp, thần kinh, miễn dịch, cân bằng nội môi, tiêu hóa. Từng bộ phận chi tiết – AI phân tích từ SGK." />
   <link rel="stylesheet" href="css/global.css" />
   <link rel="stylesheet" href="css/components.css" />
   <link rel="stylesheet" href="css/animations.css" />
   <style>
+    /* ── Search ── */
     .search-bar {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
+      display: flex; align-items: center; gap: 1rem;
       padding: 0 1.25rem;
       background: rgba(255,255,255,0.06);
       border: 1px solid rgba(255,255,255,0.12);
-      border-radius: 999px;
-      margin-bottom: 2rem;
-      transition: all 0.25s;
+      border-radius: 999px; margin-bottom: 2rem; transition: all 0.25s;
     }
     .search-bar:focus-within {
       border-color: var(--color-primary-light);
@@ -26,148 +23,205 @@
       box-shadow: 0 0 0 3px rgba(124,58,237,0.15);
     }
     .search-bar input {
-      flex: 1;
-      background: none;
-      border: none;
-      outline: none;
-      padding: 0.875rem 0;
-      color: white;
-      font-family: var(--font-family);
-      font-size: 1rem;
+      flex:1; background:none; border:none; outline:none;
+      padding: 0.875rem 0; color: white;
+      font-family: var(--font-family); font-size: 1rem;
     }
     .search-bar input::placeholder { color: rgba(255,255,255,0.35); }
 
-    .filter-tabs {
-      display: flex;
-      gap: 0.5rem;
-      flex-wrap: wrap;
-      margin-bottom: 2rem;
-    }
-
+    /* ── Filter Tabs ── */
+    .filter-tabs { display:flex; gap:0.5rem; flex-wrap:wrap; margin-bottom:2rem; }
     .filter-btn {
       padding: 0.4rem 1rem;
       background: rgba(255,255,255,0.05);
       border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 999px;
-      cursor: pointer;
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: rgba(255,255,255,0.6);
-      transition: all 0.2s;
-      font-family: var(--font-family);
+      border-radius: 999px; cursor:pointer; font-size:0.85rem; font-weight:600;
+      color: rgba(255,255,255,0.6); transition: all 0.2s; font-family: var(--font-family);
     }
     .filter-btn:hover { color: white; }
-    .filter-btn.active {
-      background: rgba(124,58,237,0.25);
-      border-color: var(--color-primary-light);
-      color: var(--color-primary-light);
-    }
+    .filter-btn.active { background: rgba(124,58,237,0.25); border-color: var(--color-primary-light); color: var(--color-primary-light); }
 
-    .library-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 1.5rem;
-    }
+    /* ── Library Grid ── */
+    .library-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(310px,1fr)); gap:1.5rem; }
 
+    /* ── System Card ── */
     .lib-card {
       background: rgba(255,255,255,0.04);
       border: 1px solid rgba(255,255,255,0.07);
-      border-radius: 1.25rem;
-      padding: 1.5rem;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      position: relative;
-      overflow: hidden;
+      border-radius: 1.25rem; padding: 1.5rem;
+      cursor: pointer; transition: all 0.3s ease;
+      position: relative; overflow: hidden;
     }
-
     .lib-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 3px;
-      transition: opacity 0.3s;
-      opacity: 0;
+      content:''; position:absolute; top:0; left:0; right:0; height:3px;
+      transition: opacity 0.3s; opacity:0;
+    }
+    .lib-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); }
+    .lib-card:hover::before { opacity:1; }
+    .lib-card:hover .lib-bg-icon { opacity:0.15; transform: scale(1.15) rotate(-5deg); }
+
+    /* Color themes per system */
+    .lib-cat-circulation { --sys-color-rgb: 239,68,68; }
+    .lib-cat-circulation::before { background: linear-gradient(90deg,#EF4444,#F97316); }
+    .lib-cat-circulation:hover { border-color: rgba(239,68,68,0.4); box-shadow: 0 20px 60px rgba(239,68,68,0.15); }
+
+    .lib-cat-respiratory { --sys-color-rgb: 59,130,246; }
+    .lib-cat-respiratory::before { background: linear-gradient(90deg,#3B82F6,#06B6D4); }
+    .lib-cat-respiratory:hover { border-color: rgba(59,130,246,0.4); box-shadow: 0 20px 60px rgba(59,130,246,0.15); }
+
+    .lib-cat-neuro { --sys-color-rgb: 124,58,237; }
+    .lib-cat-neuro::before { background: linear-gradient(90deg,#7C3AED,#A78BFA); }
+    .lib-cat-neuro:hover { border-color: rgba(124,58,237,0.4); box-shadow: 0 20px 60px rgba(124,58,237,0.15); }
+
+    .lib-cat-immune { --sys-color-rgb: 245,158,11; }
+    .lib-cat-immune::before { background: linear-gradient(90deg,#F59E0B,#FCD34D); }
+    .lib-cat-immune:hover { border-color: rgba(245,158,11,0.4); box-shadow: 0 20px 60px rgba(245,158,11,0.15); }
+
+    .lib-cat-homeostasis { --sys-color-rgb: 16,185,129; }
+    .lib-cat-homeostasis::before { background: linear-gradient(90deg,#10B981,#6EE7B7); }
+    .lib-cat-homeostasis:hover { border-color: rgba(16,185,129,0.4); box-shadow: 0 20px 60px rgba(16,185,129,0.15); }
+
+    .lib-cat-digestive { --sys-color-rgb: 251,146,60; }
+    .lib-cat-digestive::before { background: linear-gradient(90deg,#FB923C,#FBBF24); }
+    .lib-cat-digestive:hover { border-color: rgba(251,146,60,0.4); box-shadow: 0 20px 60px rgba(251,146,60,0.15); }
+
+    /* Background icon */
+    .lib-bg-icon {
+      position: absolute; right: 1rem; bottom: 1rem;
+      font-size: 5rem; opacity: 0.07;
+      transition: all 0.4s ease; pointer-events: none;
+      line-height: 1; user-select: none;
     }
 
-    .lib-card:hover { transform: translateY(-4px); border-color: rgba(167,139,250,0.3); box-shadow: var(--shadow-lg); }
-    .lib-card:hover::before { opacity: 1; }
+    .lib-icon { font-size: 2.2rem; margin-bottom: 0.75rem; display:block; }
+    .lib-title { font-size: 1.05rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .lib-excerpt { font-size: 0.85rem; color: rgba(255,255,255,0.6); line-height:1.6; margin-bottom:1rem; }
 
-    .lib-cat-circulation::before { background: linear-gradient(90deg,#EF4444,#F97316); }
-    .lib-cat-respiratory::before  { background: linear-gradient(90deg,#3B82F6,#06B6D4); }
-    .lib-cat-neuro::before        { background: linear-gradient(90deg,#7C3AED,#A78BFA); }
-    .lib-cat-immune::before       { background: linear-gradient(90deg,#F59E0B,#FCD34D); }
-    .lib-cat-homeostasis::before  { background: linear-gradient(90deg,#10B981,#6EE7B7); }
-    .lib-cat-digestive::before    { background: linear-gradient(90deg,#FB923C,#FBBF24); }
-
-    .lib-icon { font-size: 2rem; margin-bottom: 0.75rem; display: block; }
-    .lib-title { font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem; }
-    .lib-excerpt { font-size: 0.85rem; color: rgba(255,255,255,0.6); line-height: 1.6; }
-
-    .lib-tags { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-top: 1rem; }
+    .lib-card-footer { display:flex; align-items:center; justify-content:space-between; }
+    .lib-organ-count {
+      font-size: 0.75rem; font-weight: 700;
+      color: rgba(255,255,255,0.4);
+      display: flex; align-items: center; gap: 0.35rem;
+    }
+    .lib-tags { display:flex; gap:0.4rem; flex-wrap:wrap; }
     .lib-tag {
-      padding: 0.2rem 0.6rem;
-      background: rgba(124,58,237,0.15);
-      border-radius: 999px;
-      font-size: 0.7rem;
-      font-weight: 700;
-      color: var(--color-primary-light);
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
+      padding: 0.2rem 0.6rem; background: rgba(124,58,237,0.15);
+      border-radius: 999px; font-size: 0.7rem; font-weight:700;
+      color: var(--color-primary-light); text-transform:uppercase; letter-spacing: 0.06em;
     }
     .lib-tag.tag-sgk { background: rgba(239,68,68,0.15); color: #FCA5A5; }
     .lib-tag.tag-thucte { background: rgba(16,185,129,0.15); color: #6EE7B7; }
 
-    /* ── Modal Cải Tiến ── */
+    /* ══════════════════════════════════════════════════════
+       MODAL SHARED
+    ══════════════════════════════════════════════════════ */
     .modal-overlay {
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-      opacity: 0;
-      visibility: hidden;
+      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+      transition: all 0.4s cubic-bezier(0.4,0,0.2,1);
+      opacity:0; visibility:hidden;
     }
-    .modal-overlay.open {
-      opacity: 1;
-      visibility: visible;
-    }
+    .modal-overlay.open { opacity:1; visibility:visible; }
     .modal {
-      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-      transform: scale(0.95) translateY(20px);
-      opacity: 0;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      transition: all 0.4s cubic-bezier(0.34,1.56,0.64,1);
+      transform: scale(0.92) translateY(24px); opacity:0;
+      box-shadow: 0 32px 64px -16px rgba(0,0,0,0.6);
       border: 1px solid rgba(255,255,255,0.1);
     }
-    .modal-overlay.open .modal {
-      transform: scale(1) translateY(0);
-      opacity: 1;
+    .modal-overlay.open .modal { transform: scale(1) translateY(0); opacity:1; }
+
+    /* ══════════════════════════════════════════════════════
+       MODAL CẤP 1: ORGAN LIST
+    ══════════════════════════════════════════════════════ */
+    #organs-modal .modal {
+      max-width: 780px; width: 95vw;
+      background: rgba(14,14,20,0.98);
+      border-radius: 1.5rem;
+      padding: 2rem;
+    }
+    .organs-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 1.75rem;
+    }
+    .organs-title { display: flex; align-items: center; gap: 0.75rem; }
+    .organs-title h2 { font-size: 1.3rem; margin: 0; }
+    .organs-title .sys-icon { font-size: 2rem; }
+
+    .organs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1rem;
     }
 
-    .modal-article { max-height: 70vh; overflow-y: auto; scroll-behavior: smooth; }
-    .modal-article::-webkit-scrollbar { width: 5px; }
-    .modal-article::-webkit-scrollbar-thumb { background: var(--color-primary); border-radius: 999px; }
+    .organ-card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 1rem; padding: 1.25rem;
+      cursor: pointer; transition: all 0.25s ease;
+      text-align: center; position: relative; overflow: hidden;
+    }
+    .organ-card:hover {
+      background: rgba(124,58,237,0.15);
+      border-color: rgba(167,139,250,0.35);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(124,58,237,0.2);
+    }
+    .organ-card:hover .organ-arrow { opacity: 1; transform: translateX(0); }
+    .organ-icon { font-size: 2.2rem; margin-bottom: 0.6rem; display:block; }
+    .organ-name { font-size: 0.9rem; font-weight:700; margin-bottom:0.35rem; }
+    .organ-desc { font-size: 0.75rem; color: rgba(255,255,255,0.5); line-height:1.4; }
+    .organ-arrow {
+      position: absolute; top: 0.75rem; right: 0.75rem;
+      font-size: 0.8rem; color: var(--color-primary-light);
+      opacity: 0; transform: translateX(-4px); transition: all 0.2s;
+    }
 
-    /* 5-section tabs */
+    /* ══════════════════════════════════════════════════════
+       MODAL CẤP 2: DETAIL (AI)
+    ══════════════════════════════════════════════════════ */
+    #detail-modal .modal {
+      max-width: 860px; width: 95vw;
+      background: rgba(14,14,20,0.98);
+      border-radius: 1.5rem;
+    }
+    .detail-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.5rem 1.75rem 0;
+    }
+    .detail-header-left { display: flex; align-items: center; gap: 0.75rem; }
+    .detail-organ-icon { font-size: 2rem; }
+    .detail-organ-name { font-size: 1.2rem; font-weight: 700; margin: 0; }
+    .detail-system-breadcrumb {
+      font-size: 0.75rem; color: rgba(255,255,255,0.4);
+      display: flex; align-items: center; gap: 0.35rem; margin-top: 0.2rem;
+    }
+
+    .back-btn {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      padding: 0.4rem 1rem;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 999px; font-size: 0.8rem; font-weight: 600;
+      color: rgba(255,255,255,0.7); cursor: pointer;
+      transition: all 0.2s; font-family: var(--font-family);
+      margin-right: 0.5rem;
+    }
+    .back-btn:hover { background: rgba(124,58,237,0.2); color: var(--color-primary-light); border-color: rgba(167,139,250,0.4); }
+
+    /* Tabs */
     .art-tabs {
-      display: flex;
-      gap: 0.35rem;
-      flex-wrap: wrap;
-      margin-bottom: 1.5rem;
-      padding-bottom: 1rem;
+      display: flex; gap: 0.35rem; flex-wrap: wrap;
+      padding: 1.25rem 1.75rem;
       border-bottom: 1px solid rgba(255,255,255,0.07);
     }
-
     .art-tab {
       padding: 0.4rem 1rem;
       background: rgba(255,255,255,0.05);
       border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 999px;
-      font-size: 0.82rem;
-      font-weight: 600;
-      color: rgba(255,255,255,0.6);
-      cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      font-family: var(--font-family);
+      border-radius: 999px; font-size: 0.82rem; font-weight: 600;
+      color: rgba(255,255,255,0.6); cursor: pointer;
+      transition: all 0.3s; font-family: var(--font-family);
     }
-    .art-tab:hover { color: white; transform: translateY(-2px); }
+    .art-tab:hover { color:white; transform: translateY(-2px); }
     .art-tab.active {
       background: rgba(124,58,237,0.3);
       border-color: var(--color-primary-light);
@@ -175,90 +229,68 @@
       box-shadow: 0 4px 12px rgba(124,58,237,0.2);
     }
 
-    .art-section { display: none; opacity: 0; transform: translateY(10px); transition: all 0.4s ease; }
-    .art-section.active { display: block; opacity: 1; transform: translateY(0); }
-
-    .art-section h4 { font-size: 1.1rem; margin: 1.5rem 0 0.75rem; color: var(--color-primary-light); border-left: 3px solid var(--color-primary); padding-left: 0.75rem; }
-    .art-section p  { font-size: 0.95rem; color: rgba(255,255,255,0.85); line-height: 1.7; margin-bottom: 1rem; }
-    .art-section ul { list-style: none; margin-bottom: 1rem; background: rgba(0,0,0,0.1); border-radius: 1rem; padding: 1rem; }
-    .art-section ul li {
-      padding: 0.5rem 0;
-      font-size: 0.9rem;
-      color: rgba(255,255,255,0.8);
-      border-bottom: 1px dashed rgba(255,255,255,0.05);
-      display: flex;
-      align-items: flex-start;
-      gap: 0.5rem;
+    .detail-body {
+      padding: 1.25rem 1.75rem 1.75rem;
+      max-height: 60vh; overflow-y: auto; scroll-behavior: smooth;
     }
-    .art-section ul li:last-child { border-bottom: none; }
-    .art-section ul li::before { content: '👉'; display:block; font-size:0.9rem; }
+    .detail-body::-webkit-scrollbar { width: 5px; }
+    .detail-body::-webkit-scrollbar-thumb { background: var(--color-primary); border-radius: 999px; }
 
-    .sgk-box {
-      background: linear-gradient(135deg, rgba(239,68,68,0.1) 0%, rgba(239,68,68,0.02) 100%);
-      border: 1px solid rgba(239,68,68,0.3);
-      border-radius: 1rem;
-      padding: 1.25rem;
-      margin: 1.5rem 0;
-      box-shadow: 0 4px 15px rgba(239,68,68,0.05);
+    .art-section { display:none; opacity:0; transform:translateY(8px); transition: all 0.35s ease; }
+    .art-section.active { display:block; opacity:1; transform:translateY(0); }
+    .art-section h4 { font-size:1.05rem; margin:1.25rem 0 0.65rem; color:var(--color-primary-light); border-left:3px solid var(--color-primary); padding-left:0.75rem; }
+    .art-section p { font-size:0.92rem; color:rgba(255,255,255,0.85); line-height:1.7; margin-bottom:0.875rem; }
+    .art-section ul { list-style:none; margin-bottom:1rem; background:rgba(0,0,0,0.15); border-radius:0.875rem; padding:0.875rem 1rem; }
+    .art-section ul li { padding:0.45rem 0; font-size:0.88rem; color:rgba(255,255,255,0.8); border-bottom:1px dashed rgba(255,255,255,0.05); display:flex; align-items:flex-start; gap:0.5rem; }
+    .art-section ul li:last-child { border-bottom:none; }
+    .art-section ul li::before { content:'👉'; display:block; font-size:0.85rem; flex-shrink:0; }
+
+    .sgk-box { background:linear-gradient(135deg,rgba(239,68,68,0.1),rgba(239,68,68,0.02)); border:1px solid rgba(239,68,68,0.3); border-radius:1rem; padding:1.25rem; margin:1.25rem 0; }
+    .sgk-box-title { font-size:0.82rem; font-weight:700; color:#FCA5A5; margin-bottom:0.75rem; text-transform:uppercase; letter-spacing:0.08em; display:flex; align-items:center; gap:0.5rem; }
+
+    .reallife-box { background:linear-gradient(135deg,rgba(16,185,129,0.1),rgba(16,185,129,0.02)); border:1px solid rgba(16,185,129,0.3); border-radius:1rem; padding:1.25rem; margin:1.25rem 0; }
+    .reallife-box-title { font-size:0.82rem; font-weight:700; color:#6EE7B7; margin-bottom:0.75rem; text-transform:uppercase; letter-spacing:0.08em; display:flex; align-items:center; gap:0.5rem; }
+
+    /* ── Skeleton Loader ── */
+    .skeleton-wrap { padding: 1.5rem 0; }
+    .sk-line {
+      height: 14px; border-radius: 999px;
+      background: linear-gradient(90deg, rgba(255,255,255,0.06) 25%, rgba(255,255,255,0.12) 50%, rgba(255,255,255,0.06) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+      margin-bottom: 0.8rem;
     }
-    .sgk-box-title { font-size: 0.85rem; font-weight: 700; color: #FCA5A5; margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; display:flex; align-items:center; gap:0.5rem; }
+    .sk-line.sk-title { height: 20px; width: 40%; margin-bottom: 1.25rem; }
+    .sk-line.sk-short { width: 60%; }
+    .sk-line.sk-med   { width: 80%; }
+    .sk-line.sk-full  { width: 100%; }
+    .sk-block { height: 80px; border-radius: 1rem; background: linear-gradient(90deg, rgba(255,255,255,0.06) 25%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.06) 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; margin: 1rem 0; }
+    .sk-status { display:flex; align-items:center; gap:0.6rem; font-size:0.82rem; color: rgba(167,139,250,0.7); margin-bottom: 1.25rem; }
+    .sk-status-dot { width:8px; height:8px; border-radius:50%; background: var(--color-primary-light); animation: pulse 1s infinite; }
+    @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
 
-    .reallife-box {
-      background: linear-gradient(135deg, rgba(16,185,129,0.1) 0%, rgba(16,185,129,0.02) 100%);
-      border: 1px solid rgba(16,185,129,0.3);
-      border-radius: 1rem;
-      padding: 1.25rem;
-      margin: 1.5rem 0;
-      box-shadow: 0 4px 15px rgba(16,185,129,0.05);
-    }
-    .reallife-box-title { font-size: 0.85rem; font-weight: 700; color: #6EE7B7; margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; display:flex; align-items:center; gap:0.5rem; }
-
-    .hidden { display: none; }
-    
-    /* Wikipedia Button */
+    /* ── Wikipedia ── */
     .wiki-btn {
-      background: rgba(255,255,255,0.1);
-      border: 1px solid rgba(255,255,255,0.2);
-      color: white;
-      border-radius: 999px;
-      padding: 0.4rem 1rem;
-      font-size: 0.8rem;
-      font-weight: 600;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      transition: all 0.2s;
+      background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+      color:white; border-radius:999px; padding:0.4rem 1rem;
+      font-size:0.78rem; font-weight:600; cursor:pointer;
+      display:inline-flex; align-items:center; gap:0.4rem; transition:all 0.2s;
     }
-    .wiki-btn:hover {
-      background: white;
-      color: black;
-      transform: scale(1.05);
-    }
-    
-    /* Wikipedia Popup */
+    .wiki-btn:hover { background:white; color:black; transform:scale(1.05); }
     .wiki-popup {
-      position: fixed;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%) scale(0.9);
-      width: 90vw; max-width: 600px;
-      background: #111;
-      border: 1px solid rgba(255,255,255,0.15);
-      border-radius: 1rem;
-      padding: 1.5rem;
-      z-index: 10000;
-      box-shadow: 0 25px 50px rgba(0,0,0,0.8);
-      opacity: 0; visibility: hidden;
-      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      position:fixed; top:50%; left:50%;
+      transform:translate(-50%,-50%) scale(0.9);
+      width:90vw; max-width:600px;
+      background:#111; border:1px solid rgba(255,255,255,0.15);
+      border-radius:1rem; padding:1.5rem; z-index:10000;
+      box-shadow:0 25px 50px rgba(0,0,0,0.8);
+      opacity:0; visibility:hidden; transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);
     }
-    .wiki-popup.open {
-      opacity: 1; visibility: visible;
-      transform: translate(-50%, -50%) scale(1);
-    }
-    .wiki-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid rgba(255,255,255,0.1); }
-    .wiki-content { font-size: 0.9rem; line-height: 1.6; color: rgba(255,255,255,0.8); max-height: 50vh; overflow-y: auto; }
-    .wiki-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 9999; opacity: 0; visibility: hidden; transition: 0.3s; }
-    .wiki-overlay.open { opacity: 1; visibility: visible; }
+    .wiki-popup.open { opacity:1; visibility:visible; transform:translate(-50%,-50%) scale(1); }
+    .wiki-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; padding-bottom:0.5rem; border-bottom:1px solid rgba(255,255,255,0.1); }
+    .wiki-content { font-size:0.88rem; line-height:1.6; color:rgba(255,255,255,0.8); max-height:50vh; overflow-y:auto; }
+    .wiki-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.6); backdrop-filter:blur(4px); z-index:9999; opacity:0; visibility:hidden; transition:0.3s; }
+    .wiki-overlay.open { opacity:1; visibility:visible; }
   </style>
 </head>
 <body class="page-enter">
@@ -283,20 +315,20 @@
   </nav>
 
   <main id="main">
-    <div class="page-header" style="background: linear-gradient(180deg, rgba(59,130,246,0.08) 0%, transparent 100%); border-bottom: 1px solid rgba(255,255,255,0.05);">
+    <div class="page-header" style="background:linear-gradient(180deg,rgba(59,130,246,0.08) 0%,transparent 100%);border-bottom:1px solid rgba(255,255,255,0.05);">
       <div class="container">
-        <div class="section-tag animate-fadeInUp" style="color:#93C5FD; border-color:rgba(59,130,246,0.3)">📚 Sinh Học 11</div>
+        <div class="section-tag animate-fadeInUp" style="color:#93C5FD;border-color:rgba(59,130,246,0.3)">📚 Sinh Học 11</div>
         <h1 class="animate-fadeInUp delay-100">Thư Viện Sinh Học</h1>
-        <p class="animate-fadeInUp delay-200">6 hệ cơ quan — 5 phần mỗi hệ: Khái niệm · Cấu tạo · Chức năng · SGK 11 · Thực tế</p>
+        <p class="animate-fadeInUp delay-200">6 hệ cơ quan · Mỗi hệ có <strong>chi tiết từng bộ phận</strong> · AI phân tích từ PDF sách giáo khoa</p>
       </div>
     </div>
 
-    <div class="container" style="padding-top:2rem; padding-bottom:4rem">
+    <div class="container" style="padding-top:2rem;padding-bottom:4rem">
 
       <!-- Search -->
       <div class="search-bar animate-fadeInDown">
         <span>🔍</span>
-        <input type="text" id="search-input" placeholder="Tìm kiếm bài viết: tuần hoàn, hô hấp, phản xạ..." aria-label="Tìm kiếm thư viện" />
+        <input type="text" id="search-input" placeholder="Tìm kiếm: tim, phổi, neuron, kháng thể..." aria-label="Tìm kiếm thư viện" />
       </div>
 
       <!-- Filter tabs -->
@@ -314,79 +346,96 @@
       <div class="library-grid stagger" id="library-grid">
 
         <!-- 1: HỆ TUẦN HOÀN -->
-        <article class="lib-card lib-cat-circulation reveal" data-cat="circulation" data-title="Hệ Tuần Hoàn" onclick="openArticle('circulation')">
+        <article class="lib-card lib-cat-circulation reveal" data-cat="circulation" data-title="Hệ Tuần Hoàn Tim mạch máu" onclick="openOrgansModal('circulation')">
+          <span class="lib-bg-icon">❤️</span>
           <span class="lib-icon">❤️</span>
           <h2 class="lib-title">Hệ Tuần Hoàn</h2>
           <p class="lib-excerpt">Tim, mạch máu, tính tự động của tim. Chu kì co – giãn 0.8 giây. Vòng tuần hoàn lớn và nhỏ.</p>
-          <div class="lib-tags">
-            <span class="lib-tag tag-sgk">SGK 11</span>
-            <span class="lib-tag">Tim mạch</span>
-            <span class="lib-tag tag-thucte">Thực tế</span>
+          <div class="lib-card-footer">
+            <div class="lib-organ-count">🔬 5 bộ phận →</div>
+            <div class="lib-tags">
+              <span class="lib-tag tag-sgk">SGK 11</span>
+              <span class="lib-tag tag-thucte">Thực tế</span>
+            </div>
           </div>
         </article>
 
         <!-- 2: HỆ HÔ HẤP -->
-        <article class="lib-card lib-cat-respiratory reveal delay-100" data-cat="respiratory" data-title="Hệ Hô Hấp" onclick="openArticle('respiratory')">
+        <article class="lib-card lib-cat-respiratory reveal delay-100" data-cat="respiratory" data-title="Hệ Hô Hấp Phổi khí" onclick="openOrgansModal('respiratory')">
+          <span class="lib-bg-icon">🫁</span>
           <span class="lib-icon">🫁</span>
           <h2 class="lib-title">Hệ Hô Hấp</h2>
           <p class="lib-excerpt">Trao đổi khí O₂ – CO₂. Cơ chế hít vào – thở ra. Phế nang: 70m² trao đổi khí mỗi ngày.</p>
-          <div class="lib-tags">
-            <span class="lib-tag tag-sgk">SGK 11</span>
-            <span class="lib-tag">Trao đổi khí</span>
-            <span class="lib-tag tag-thucte">Thực tế</span>
+          <div class="lib-card-footer">
+            <div class="lib-organ-count">🔬 4 bộ phận →</div>
+            <div class="lib-tags">
+              <span class="lib-tag tag-sgk">SGK 11</span>
+              <span class="lib-tag tag-thucte">Thực tế</span>
+            </div>
           </div>
         </article>
 
         <!-- 3: HỆ THẦN KINH -->
-        <article class="lib-card lib-cat-neuro reveal delay-200" data-cat="neuro" data-title="Hệ Thần Kinh" onclick="openArticle('nervous')">
+        <article class="lib-card lib-cat-neuro reveal delay-200" data-cat="neuro" data-title="Hệ Thần Kinh Não neuron phản xạ" onclick="openOrgansModal('nervous')">
+          <span class="lib-bg-icon">🧠</span>
           <span class="lib-icon">🧠</span>
           <h2 class="lib-title">Hệ Thần Kinh</h2>
           <p class="lib-excerpt">Phản xạ, cung phản xạ, điện thế hoạt động. Hệ thần kinh trung ương và ngoại biên.</p>
-          <div class="lib-tags">
-            <span class="lib-tag tag-sgk">SGK 11</span>
-            <span class="lib-tag">Phản xạ</span>
-            <span class="lib-tag tag-thucte">Cung phản xạ</span>
+          <div class="lib-card-footer">
+            <div class="lib-organ-count">🔬 5 bộ phận →</div>
+            <div class="lib-tags">
+              <span class="lib-tag tag-sgk">SGK 11</span>
+              <span class="lib-tag tag-thucte">Thực tế</span>
+            </div>
           </div>
         </article>
 
         <!-- 4: HỆ MIỄN DỊCH -->
-        <article class="lib-card lib-cat-immune reveal delay-300" data-cat="immune" data-title="Hệ Miễn Dịch" onclick="openArticle('immune')">
+        <article class="lib-card lib-cat-immune reveal delay-300" data-cat="immune" data-title="Hệ Miễn Dịch kháng thể tế bào B T" onclick="openOrgansModal('immune')">
+          <span class="lib-bg-icon">🛡️</span>
           <span class="lib-icon">🛡️</span>
           <h2 class="lib-title">Hệ Miễn Dịch</h2>
           <p class="lib-excerpt">Bảo vệ cơ thể khỏi mầm bệnh. Tế bào B, tế bào T, kháng thể. Miễn dịch đặc hiệu và không đặc hiệu.</p>
-          <div class="lib-tags">
-            <span class="lib-tag tag-sgk">SGK 11</span>
-            <span class="lib-tag">Kháng thể</span>
-            <span class="lib-tag tag-thucte">Vaccine</span>
+          <div class="lib-card-footer">
+            <div class="lib-organ-count">🔬 5 bộ phận →</div>
+            <div class="lib-tags">
+              <span class="lib-tag tag-sgk">SGK 11</span>
+              <span class="lib-tag tag-thucte">Vaccine</span>
+            </div>
           </div>
         </article>
 
         <!-- 5: CÂN BẰNG NỘI MÔI -->
-        <article class="lib-card lib-cat-homeostasis reveal delay-400" data-cat="homeostasis" data-title="Cân Bằng Nội Môi" onclick="openArticle('homeostasis')">
+        <article class="lib-card lib-cat-homeostasis reveal delay-400" data-cat="homeostasis" data-title="Cân Bằng Nội Môi thận insulin glucose" onclick="openOrgansModal('homeostasis')">
+          <span class="lib-bg-icon">⚖️</span>
           <span class="lib-icon">⚖️</span>
           <h2 class="lib-title">Cân Bằng Nội Môi</h2>
           <p class="lib-excerpt">Ổn định môi trường trong: pH, nhiệt độ, áp suất thẩm thấu. Cơ chế phản hồi âm (negative feedback).</p>
-          <div class="lib-tags">
-            <span class="lib-tag tag-sgk">SGK 11</span>
-            <span class="lib-tag">Nội môi</span>
-            <span class="lib-tag tag-thucte">Phản hồi âm</span>
+          <div class="lib-card-footer">
+            <div class="lib-organ-count">🔬 5 bộ phận →</div>
+            <div class="lib-tags">
+              <span class="lib-tag tag-sgk">SGK 11</span>
+              <span class="lib-tag tag-thucte">Thực tế</span>
+            </div>
           </div>
         </article>
 
         <!-- 6: HỆ TIÊU HÓA -->
-        <article class="lib-card lib-cat-digestive reveal delay-500" data-cat="digestive" data-title="Hệ Tiêu Hóa" onclick="openArticle('digestive')">
+        <article class="lib-card lib-cat-digestive reveal delay-500" data-cat="digestive" data-title="Hệ Tiêu Hóa dạ dày ruột enzyme" onclick="openOrgansModal('digestive')">
+          <span class="lib-bg-icon">🍽️</span>
           <span class="lib-icon">🍽️</span>
           <h2 class="lib-title">Hệ Tiêu Hóa</h2>
           <p class="lib-excerpt">Tiêu hóa cơ học và hóa học. Enzyme tiêu hóa, ruột non hấp thu dưỡng chất, vi khuẩn đường ruột.</p>
-          <div class="lib-tags">
-            <span class="lib-tag tag-sgk">SGK 11</span>
-            <span class="lib-tag">Enzyme</span>
-            <span class="lib-tag tag-thucte">Dinh dưỡng</span>
+          <div class="lib-card-footer">
+            <div class="lib-organ-count">🔬 6 bộ phận →</div>
+            <div class="lib-tags">
+              <span class="lib-tag tag-sgk">SGK 11</span>
+              <span class="lib-tag tag-thucte">Dinh dưỡng</span>
+            </div>
           </div>
         </article>
 
       </div>
-
     </div>
   </main>
 
@@ -396,11 +445,65 @@
     </div>
   </footer>
 
-  <!-- Article Modal -->
-  <div class="modal-overlay" id="article-modal" role="dialog" aria-modal="true" aria-labelledby="modal-article-title">
-    <div class="modal" style="max-width:800px; width:95vw; background: rgba(20,20,25,0.95)">
-      <button class="modal-close" id="modal-close-btn" aria-label="Đóng">✕</button>
-      <div id="modal-article-content" class="modal-article" style="padding: 1rem 0.5rem;"></div>
+  <!-- ══ MODAL CẤP 1: DANH SÁCH BỘ PHẬN ══ -->
+  <div class="modal-overlay" id="organs-modal" role="dialog" aria-modal="true" aria-label="Danh sách bộ phận">
+    <div class="modal" style="border-radius:1.5rem; padding:2rem;">
+      <div class="organs-header">
+        <div class="organs-title">
+          <span class="sys-icon" id="organs-modal-icon">❤️</span>
+          <div>
+            <h2 id="organs-modal-title">Hệ Tuần Hoàn</h2>
+            <div style="font-size:0.78rem; color:rgba(255,255,255,0.4); margin-top:0.15rem;">Chọn bộ phận để xem chi tiết</div>
+          </div>
+        </div>
+        <button class="modal-close" id="organs-modal-close" aria-label="Đóng">✕</button>
+      </div>
+      <div class="organs-grid" id="organs-grid"></div>
+    </div>
+  </div>
+
+  <!-- ══ MODAL CẤP 2: BỘ PHẬN CHI TIẾT (AI) ══ -->
+  <div class="modal-overlay" id="detail-modal" role="dialog" aria-modal="true" aria-labelledby="detail-organ-title">
+    <div class="modal">
+      <div class="detail-header">
+        <div class="detail-header-left">
+          <span class="detail-organ-icon" id="detail-organ-icon">❤️</span>
+          <div>
+            <h2 class="detail-organ-name" id="detail-organ-title">Tim</h2>
+            <div class="detail-system-breadcrumb" id="detail-breadcrumb">
+              📚 Sinh Học 11 › ❤️ Hệ Tuần Hoàn › Tim
+            </div>
+          </div>
+        </div>
+        <div style="display:flex; align-items:center; gap:0.5rem;">
+          <button class="back-btn" id="back-to-organs-btn">← Quay lại</button>
+          <button class="wiki-btn" id="wiki-trigger-btn" onclick="openWiki('')">🌐 Wikipedia</button>
+          <button class="modal-close" id="detail-modal-close" aria-label="Đóng">✕</button>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="art-tabs" id="detail-tabs"></div>
+
+      <!-- Body -->
+      <div class="detail-body" id="detail-body">
+        <div id="detail-skeleton" class="skeleton-wrap">
+          <div class="sk-status">
+            <div class="sk-status-dot"></div>
+            <span id="sk-status-text">🧠 AI đang phân tích từ PDF Sinh học 11...</span>
+          </div>
+          <div class="sk-line sk-title"></div>
+          <div class="sk-line sk-full"></div>
+          <div class="sk-line sk-med"></div>
+          <div class="sk-line sk-short"></div>
+          <div class="sk-block"></div>
+          <div class="sk-line sk-full"></div>
+          <div class="sk-line sk-med"></div>
+          <div class="sk-line sk-full"></div>
+          <div class="sk-line sk-short"></div>
+        </div>
+        <div id="detail-content" style="display:none;"></div>
+      </div>
     </div>
   </div>
 
@@ -408,455 +511,218 @@
   <div class="wiki-overlay" id="wiki-overlay" onclick="closeWiki()"></div>
   <div class="wiki-popup" id="wiki-popup">
     <div class="wiki-header">
-      <h3 style="display:flex; align-items:center; gap:0.5rem"><span style="font-size:1.5rem">🌐</span> Wikipedia Tiếng Việt</h3>
-      <button class="modal-close" style="position:static; margin:0;" onclick="closeWiki()">✕</button>
+      <h3 style="display:flex;align-items:center;gap:0.5rem;font-size:1rem"><span style="font-size:1.4rem">🌐</span> Wikipedia Tiếng Việt</h3>
+      <button class="modal-close" style="position:static;margin:0;" onclick="closeWiki()">✕</button>
     </div>
     <div class="wiki-content" id="wiki-content">
-      <div style="text-align:center; padding: 2rem;"><div class="typing-dot" style="display:inline-block"></div> Đang tìm thông tin...</div>
+      <div style="text-align:center;padding:2rem;">🔍 Đang tìm thông tin...</div>
     </div>
   </div>
 
   <script src="js/api.js"></script>
   <script src="js/patient.js"></script>
   <script>
-    /* ═════════════════════════════════════════════════════
-       ARTICLE DATA — 6 HỆ × 5 PHẦN (SINH HỌC 11)
-    ═════════════════════════════════════════════════════ */
-    const articles = {
+    /* ═══════════════════════════════════════════════════
+       STATE
+    ═══════════════════════════════════════════════════ */
+    const BASE_URL = 'http://localhost:5000';
+    let currentSystem = null;   // e.g. 'circulation'
+    let currentSystemLabel = '';
+    let currentOrganId = null;
+    let currentOrganName = '';
 
-      /* ─── HỆ TUẦN HOÀN ─── */
-      circulation: {
-        title: '❤️ Hệ Tuần Hoàn',
-        tabs: ['Khái Niệm', 'Cấu Tạo', 'Chức Năng', 'SGK 11', 'Liên Hệ Thực Tế'],
-        sections: [
-          `<h4>🔬 Khái Niệm</h4>
-           <p>Hệ tuần hoàn là hệ thống vận chuyển các chất trong cơ thể gồm tim và hệ mạch (động mạch, tĩnh mạch, mao mạch). Ở người có hệ tuần hoàn kép: <strong>vòng tuần hoàn nhỏ</strong> (tim – phổi) và <strong>vòng tuần hoàn lớn</strong> (tim – toàn thân).</p>
-           <p>Máu đỏ (giàu O₂) đi qua động mạch, máu tím (giàu CO₂) đi qua tĩnh mạch về tim.</p>`,
+    // Frontend localStorage cache key
+    function cacheKey(sys, org) { return `biolib_v2_${sys}_${org}`; }
 
-          `<h4>❤️ Cấu Tạo Tim</h4>
-           <ul>
-             <li>4 ngăn: 2 tâm nhĩ (trái/phải) + 2 tâm thất (trái/phải)</li>
-             <li>Van tim: van nhĩ thất + van tổ chim (ngăn máu chảy ngược)</li>
-             <li>Nút xoang nhĩ (SA node): "máy tạo nhịp" tự nhiên – 70–80 lần/phút</li>
-             <li>Nút nhĩ thất (AV node): truyền tín hiệu từ nhĩ → thất</li>
-           </ul>
-           <h4>🩸 Hệ Mạch</h4>
-           <ul>
-             <li>Động mạch: thành dày, đàn hồi, mang máu rời tim</li>
-             <li>Tĩnh mạch: thành mỏng hơn, có van, mang máu về tim</li>
-             <li>Mao mạch: 1 lớp tế bào biểu mô mỏng, trao đổi chất</li>
-           </ul>`,
+    /* ═══════════════════════════════════════════════════
+       MODAL LEVEL 1: OPEN ORGANS LIST
+    ═══════════════════════════════════════════════════ */
+    async function openOrgansModal(systemId) {
+      currentSystem = systemId;
 
-          `<h4>⚡ Chức Năng</h4>
-           <ul>
-             <li>Vận chuyển O₂ và dưỡng chất đến từng tế bào</li>
-             <li>Đưa CO₂ và chất thải về phổi/thận để thải ra ngoài</li>
-             <li>Vận chuyển hormone từ tuyến nội tiết đến cơ quan đích</li>
-             <li>Điều tiết nhiệt độ cơ thể qua tuần hoàn ngoại vi</li>
-             <li>Bảo vệ cơ thể: bạch cầu lưu thông, vận chuyển kháng thể</li>
-           </ul>
-           <h4>⏱️ Chu Kì Tim</h4>
-           <p>Mỗi chu kì tim kéo dài <strong>0.8 giây</strong> gồm 3 pha:</p>
-           <ul>
-             <li>Tâm nhĩ co: 0.1 giây → bơm máu xuống tâm thất</li>
-             <li>Tâm thất co: 0.3 giây → bơm máu lên phổi + toàn thân</li>
-             <li>Tâm trương hoàn toàn: 0.4 giây → tim nghỉ ngơi</li>
-           </ul>`,
+      // Show modal immediately (data from API is fast – just static JSON)
+      const modal = document.getElementById('organs-modal');
+      modal.style.display = 'flex';
+      setTimeout(() => modal.classList.add('open'), 10);
 
-          `<div class="sgk-box">
-             <div class="sgk-box-title">📖 Kiến Thức SGK Sinh 11</div>
-             <p><strong>Tính tự động của tim:</strong> Tim có khả năng co bóp tự động nhờ hệ dẫn truyền điện với nút xoang nhĩ (SA) → nút nhĩ thất (AV) → bó His → mạng Purkinje.</p>
-             <p><strong>Điện tâm đồ (ECG):</strong> Ghi lại hoạt động điện của tim. Sóng P (nhĩ co), QRS (thất co), T (thất giãn).</p>
-             <p><strong>Huyết áp:</strong> Huyết áp tâm thu ≈ 120 mmHg; huyết áp tâm trương ≈ 80 mmHg. Điều hòa bởi thần kinh và hormone (adrenaline, ADH).</p>
-             <p><strong>Nhịp tim:</strong> Bình thường 60–100 lần/phút. Vận động viên có thể 40–60 lần/phút (tim khỏe, bơm được nhiều máu hơn mỗi nhịp).</p>
-           </div>`,
+      const grid = document.getElementById('organs-grid');
+      grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:2rem;opacity:0.5">Đang tải...</div>`;
 
-          `<div class="reallife-box">
-             <div class="reallife-box-title">🌍 Liên Hệ Thực Tế</div>
-             <p><strong>Tại sao cảm thấy tim đập nhanh khi sợ?</strong> Adrenaline do tuyến thượng thận tiết ra làm tăng nhịp tim — cơ thể chuẩn bị "chiến hay chạy" (fight or flight).</p>
-             <p><strong>Tại sao không nên ngồi quá lâu?</strong> Máu dồn xuống chân → cục máu đông có thể hình thành (DVT) → nguy hiểm khi nổi lên phổi (thuyên tắc phổi).</p>
-             <p><strong>Tập thể dục tốt cho tim như thế nào?</strong> Cardio đều đặn → buồng tim to hơn, bơm được nhiều máu hơn mỗi nhịp → nhịp tim lúc nghỉ thấp → tim "già" chậm hơn.</p>
-           </div>
-           <ul>
-             <li>Kiểm tra huyết áp định kỳ (nhất là trên 30 tuổi)</li>
-             <li>Tập cardio 150 phút/tuần (đi bộ nhanh, bơi, đạp xe)</li>
-             <li>Giảm muối &lt; 5g/ngày để hạ huyết áp</li>
-             <li>Không hút thuốc — nicotine gây co mạch tức thì</li>
-           </ul>`
-        ]
-      },
+      try {
+        const res = await fetch(`${BASE_URL}/api/library/${systemId}`);
+        const data = await res.json();
 
-      /* ─── HỆ HÔ HẤP ─── */
-      respiratory: {
-        title: '🫁 Hệ Hô Hấp',
-        tabs: ['Khái Niệm', 'Cấu Tạo', 'Chức Năng', 'SGK 11', 'Liên Hệ Thực Tế'],
-        sections: [
-          `<h4>🔬 Khái Niệm</h4>
-           <p>Hệ hô hấp là hệ thống cơ quan thực hiện trao đổi khí giữa cơ thể và môi trường. Ở người bao gồm: đường dẫn khí (mũi, họng, khí quản, phế quản) và phổi.</p>
-           <p><strong>Hô hấp ngoài:</strong> Trao đổi khí ở phổi (O₂ từ không khí vào máu, CO₂ từ máu ra ngoài).</p>
-           <p><strong>Hô hấp trong (hô hấp tế bào):</strong> Tế bào sử dụng O₂ để sản xuất ATP — năng lượng sống.</p>`,
+        currentSystemLabel = data.label;
+        document.getElementById('organs-modal-title').textContent = data.label;
+        // Extract icon from label (first char could be emoji)
+        document.getElementById('organs-modal-icon').textContent = data.organs[0]?.icon ?? '🔬';
 
-          `<h4>🫁 Cấu Tạo Phổi</h4>
-           <ul>
-             <li>Hai lá phổi (phái phải 3 thùy, trái 2 thùy)</li>
-             <li>Phế quản phân nhánh → phế quản nhỏ → túi phế nang (alveoli)</li>
-             <li>300–500 triệu phế nang, mỗi phế nang ∅ ≈ 0.2–0.3 mm</li>
-             <li>Tổng diện tích trao đổi khí: <strong>70m²</strong> (bằng 1 sân tennis!)</li>
-             <li>Màng phế nang cực mỏng: 0.2 micromet → khuếch tán khí cực nhanh</li>
-           </ul>
-           <h4>💪 Cơ Hô Hấp</h4>
-           <ul>
-             <li>Cơ hoành (diaphragm): cơ chính – co → hít vào</li>
-             <li>Cơ liên sườn ngoài: hỗ trợ hít thở</li>
-             <li>Cơ bụng: tham gia thở ra gắng sức</li>
-           </ul>`,
-
-          `<h4>🌬️ Chức Năng</h4>
-           <ul>
-             <li>Cung cấp O₂ cho máu để vận chuyển đến tế bào</li>
-             <li>Thải CO₂ — sản phẩm thải của hô hấp tế bào</li>
-             <li>Điều hòa pH máu (CO₂ hòa tan tạo H₂CO₃ → ảnh hưởng pH)</li>
-             <li>Bảo vệ: lông mao, chất nhầy lọc bụi, vi khuẩn</li>
-             <li>Tham gia tạo âm thanh (dây thanh âm rung tạo giọng nói)</li>
-           </ul>
-           <h4>🔄 Cơ Chế Trao Đổi Khí</h4>
-           <p>Theo <strong>khuếch tán</strong> (gradient nồng độ):</p>
-           <ul>
-             <li>pO₂ khí phế nang (100 mmHg) &gt; pO₂ máu tĩnh mạch (40 mmHg) → O₂ khuếch tán vào máu</li>
-             <li>pCO₂ máu (46 mmHg) &gt; pCO₂ khí phế nang (40 mmHg) → CO₂ khuếch tán ra ngoài</li>
-           </ul>`,
-
-          `<div class="sgk-box">
-             <div class="sgk-box-title">📖 Kiến Thức SGK Sinh 11</div>
-             <p><strong>Cơ chế hít vào:</strong> Cơ hoành co → thể tích lồng ngực tăng → áp suất giảm → khí tràn vào phổi (hít vào thụ động).</p>
-             <p><strong>Cơ chế thở ra:</strong> Cơ hoành giãn → thể tích lồng ngực giảm → áp suất tăng → khí đẩy ra ngoài.</p>
-             <p><strong>Nhịp thở:</strong> 12–20 lần/phút. Điều hòa bởi trung khu hô hấp ở hành tủy. CO₂ tăng → thở nhanh hơn.</p>
-             <p><strong>Dung tích sống (VC):</strong> Lượng khí tối đa hít vào + thở ra ≈ 3.5–5 lít. Vận động viên có VC cao hơn.</p>
-           </div>`,
-
-          `<div class="reallife-box">
-             <div class="reallife-box-title">🌍 Liên Hệ Thực Tế</div>
-             <p><strong>Tại sao thở sâu giúp thư giãn?</strong> Thở sâu kích hoạt thần kinh phó giao cảm → giảm nhịp tim và huyết áp → cảm giác bình tĩnh.</p>
-             <p><strong>Ô nhiễm PM2.5 nguy hiểm như thế nào?</strong> Hạt bụi &lt;2.5 micromet xuyên qua màng phế nang, vào máu → gây viêm hệ thống, tổn thương DNA.</p>
-             <p><strong>Tại sao leo núi cao khó thở?</strong> Áp suất khí quyển giảm → pO₂ thấp → ít O₂ khuếch tán vào máu → thiếu O₂ → chóng mặt.</p>
-           </div>
-           <ul>
-             <li>Không hút thuốc lá — phá hủy phế nang không hồi phục</li>
-             <li>Tập thở bụng (diaphragmatic breathing) để tăng dung tích phổi</li>
-             <li>Đeo khẩu trang N95 khi AQI &gt; 150</li>
-             <li>Trồng cây xanh trong nhà (hấp thu CO₂, thải O₂)</li>
-           </ul>`
-        ]
-      },
-
-      /* ─── HỆ THẦN KINH ─── */
-      nervous: {
-        title: '🧠 Hệ Thần Kinh',
-        tabs: ['Khái Niệm', 'Cấu Tạo', 'Chức Năng', 'SGK 11', 'Liên Hệ Thực Tế'],
-        sections: [
-          `<h4>🔬 Khái Niệm</h4>
-           <p>Hệ thần kinh là hệ thống điều khiển và phối hợp hoạt động của toàn cơ thể. Đây là hệ nhanh nhất — tín hiệu thần kinh truyền 1–120 m/s.</p>
-           <p>Đơn vị cơ bản: <strong>tế bào thần kinh (neuron)</strong> — có thân tế bào, sợi nhánh (dendrite) nhận tín hiệu, và sợi trục (axon) dẫn tín hiệu.</p>`,
-
-          `<h4>🧬 Cấu Tạo</h4>
-           <ul>
-             <li><strong>Hệ TK Trung ương:</strong> Não bộ (cerebrum, cerebellum, brainstem) + Tủy sống</li>
-             <li><strong>Hệ TK Ngoại biên:</strong> Dây thần kinh não + dây TK tủy sống</li>
-             <li><strong>Hệ TK Tự chủ:</strong> Giao cảm (fight/flight) + Phó giao cảm (rest/digest)</li>
-           </ul>
-           <h4>⚡ Synapse (Khớp Thần Kinh)</h4>
-           <p>Nơi trao đổi tín hiệu giữa 2 neuron qua chất dẫn truyền thần kinh (neurotransmitter). Ví dụ: Dopamine (vui), Serotonin (hạnh phúc), GABA (bình tĩnh), Acetylcholine (co cơ).</p>`,
-
-          `<h4>⚡ Chức Năng</h4>
-           <ul>
-             <li>Tiếp nhận kích thích từ môi trường (nóng, lạnh, ánh sáng, âm thanh)</li>
-             <li>Xử lý thông tin (tư duy, quyết định, cảm xúc)</li>
-             <li>Điều khiển phản ứng — cả phản xạ có điều kiện và không điều kiện</li>
-             <li>Điều phối hoạt động của các hệ cơ quan khác</li>
-             <li>Lưu trữ ký ức và học tập</li>
-           </ul>
-           <h4>🎯 Phản Xạ</h4>
-           <p><strong>Phản xạ không điều kiện:</strong> Bẩm sinh, không cần học (rút tay khi bị bỏng).</p>
-           <p><strong>Phản xạ có điều kiện:</strong> Hình thành qua học tập (Pavlov's dog: tiếng chuông → tiết nước bọt).</p>`,
-
-          `<div class="sgk-box">
-             <div class="sgk-box-title">📖 Kiến Thức SGK Sinh 11</div>
-             <p><strong>Cung phản xạ:</strong> 5 thành phần: Thụ cảm thể → Dây hướng tâm → Trung khu thần kinh → Dây ly tâm → Cơ quan phản ứng.</p>
-             <p><strong>Điện thế nghỉ:</strong> -70mV bên trong tế bào so với bên ngoài (do bơm Na⁺/K⁺ ATPase).</p>
-             <p><strong>Điện thế hoạt động:</strong> Khi kích thích đủ mạnh → màng khử cực từ -70mV → +30mV → sinh điện thế hoạt động → lan truyền dọc sợi trục.</p>
-             <p><strong>Myelin:</strong> Bao myelin làm tăng tốc độ dẫn truyền (nhảy qua eo Ranvier, 70–120 m/s).</p>
-           </div>`,
-
-          `<div class="reallife-box">
-             <div class="reallife-box-title">🌍 Liên Hệ Thực Tế</div>
-             <p><strong>Tại sao tập thể dục giúp học tốt hơn?</strong> Tập thể dục tăng BDNF (brain-derived neurotrophic factor) → thúc đẩy tạo synapse mới → học nhanh hơn, ghi nhớ tốt hơn.</p>
-             <p><strong>Tại sao dùng điện thoại trước khi ngủ hại não?</strong> Blue light ức chế melatonin → trì hoãn giấc ngủ → não không lưu ký ức ngắn → dài hạn.</p>
-             <p><strong>Rối loạn thần kinh phổ biến:</strong> ADHD (thiếu dopamine trong thùy trán), trầm cảm (thiếu serotonin), Parkinson (mất tế bào dopamine).</p>
-           </div>
-           <ul>
-             <li>Ngủ 7–9 tiếng để não dọn dẹp protein beta-amyloid (phòng Alzheimer)</li>
-             <li>Thiền định 10 phút/ngày tăng chất xám vùng hippocampus</li>
-             <li>Học kỹ năng mới → tạo synapse mới → não "trẻ" lâu hơn</li>
-             <li>Omega-3 (cá, hạt chia) là vật liệu xây dựng màng neuron</li>
-           </ul>`
-        ]
-      },
-
-      /* ─── HỆ MIỄN DỊCH ─── */
-      immune: {
-        title: '🛡️ Hệ Miễn Dịch',
-        tabs: ['Khái Niệm', 'Cấu Tạo', 'Chức Năng', 'SGK 11', 'Liên Hệ Thực Tế'],
-        sections: [
-          `<h4>🔬 Khái Niệm</h4>
-           <p>Hệ miễn dịch là hệ thống bảo vệ cơ thể khỏi mầm bệnh (vi khuẩn, virus, nấm, ký sinh trùng) và các tế bào lạ/bất thường (tế bào ung thư).</p>
-           <p><strong>Miễn dịch không đặc hiệu:</strong> Hàng rào da, niêm mạc, bạch cầu trung tính (phản ứng chung, nhanh).</p>
-           <p><strong>Miễn dịch đặc hiệu:</strong> Tế bào lympho B và T — nhận diện kháng nguyên cụ thể (chậm hơn nhưng chính xác và nhớ lâu).</p>`,
-
-          `<h4>🔬 Cấu Tạo</h4>
-           <ul>
-             <li><strong>Cơ quan lympho:</strong> Tủy xương (sản xuất tế bào miễn dịch), tuyến ức (T cell trưởng thành), lách, hạch lympho</li>
-             <li><strong>Tế bào B:</strong> Sản xuất kháng thể (immunoglobulin IgG, IgM, IgA...)</li>
-             <li><strong>Tế bào T:</strong> T helper (CD4) điều phối; T cytotoxic (CD8) giết tế bào nhiễm</li>
-             <li><strong>NK cells:</strong> Tiêu diệt tế bào ung thư và nhiễm virus tự nhiên</li>
-             <li><strong>Đại thực bào (Macrophage):</strong> Nuốt và tiêu hủy mầm bệnh</li>
-           </ul>`,
-
-          `<h4>🛡️ Chức Năng</h4>
-           <ul>
-             <li>Phát hiện và tiêu diệt mầm bệnh xâm nhập</li>
-             <li>Nhớ mầm bệnh đã gặp → phản ứng nhanh hơn lần sau (cơ sở vaccine)</li>
-             <li>Giám sát và loại bỏ tế bào ung thư mỗi ngày</li>
-             <li>Điều hòa phản ứng viêm (không để viêm quá mức)</li>
-             <li>Dọn dẹp tế bào chết (apoptosis)</li>
-           </ul>
-           <h4>🔑 Cơ Chế Kháng Thể</h4>
-           <p>Kháng thể (antibody) là protein Y-shaped. Mỗi kháng thể chỉ kết hợp với 1 kháng nguyên cụ thể (như chìa khóa và ổ khóa). Sau khi gắn kết → trung hòa, đánh dấu cho đại thực bào tiêu diệt.</p>`,
-
-          `<div class="sgk-box">
-             <div class="sgk-box-title">📖 Kiến Thức SGK Sinh 11</div>
-             <p><strong>Kháng nguyên (Antigen):</strong> Phân tử lạ kích thích cơ thể tạo kháng thể. Thường là protein trên bề mặt vi khuẩn/virus.</p>
-             <p><strong>Kháng thể (Antibody):</strong> Protein do tế bào B tiết ra, đặc hiệu với từng kháng nguyên.</p>
-             <p><strong>Miễn dịch thể dịch:</strong> Tế bào B → kháng thể trong máu và bạch huyết.</p>
-             <p><strong>Miễn dịch tế bào:</strong> Tế bào T cytotoxic tiêu diệt tế bào đích trực tiếp.</p>
-             <p><strong>Tế bào nhớ (Memory cells):</strong> Tồn tại hàng thập kỷ → phản ứng nhanh khi gặp lại cùng mầm bệnh.</p>
-           </div>`,
-
-          `<div class="reallife-box">
-             <div class="reallife-box-title">🌍 Liên Hệ Thực Tế</div>
-             <p><strong>Vaccine hoạt động như thế nào?</strong> Đưa vào cơ thể kháng nguyên yếu/chết/mảnh protein → tạo tế bào nhớ mà không gây bệnh thực sự → khi gặp mầm bệnh thật → phản ứng ngay.</p>
-             <p><strong>Auto-immune disease?</strong> Hệ miễn dịch nhầm tấn công tế bào cơ thể mình (lupus, rheumatoid arthritis, đái tháo đường type 1).</p>
-             <p><strong>Tại sao stress làm bạn dễ bệnh?</strong> Cortisol ức chế hoạt động của tế bào lympho → miễn dịch yếu → virus dễ xâm nhập hơn.</p>
-           </div>
-           <ul>
-             <li>Tiêm phòng đúng lịch — tạo miễn dịch không cần trải qua bệnh</li>
-             <li>Ngủ đủ giấc — thiếu ngủ giảm NK cells 30%</li>
-             <li>Vitamin C (trái cây chua) + D (ánh nắng) tăng cường miễn dịch</li>
-             <li>Vận động vừa phải — không gắng sức quá (gắng sức quá lại ức chế miễn dịch)</li>
-           </ul>`
-        ]
-      },
-
-      /* ─── CÂN BẰNG NỘI MÔI ─── */
-      homeostasis: {
-        title: '⚖️ Cân Bằng Nội Môi',
-        tabs: ['Khái Niệm', 'Cấu Tạo', 'Chức Năng', 'SGK 11', 'Liên Hệ Thực Tế'],
-        sections: [
-          `<h4>🔬 Khái Niệm</h4>
-           <p>Cân bằng nội môi (Homeostasis) là khả năng của cơ thể duy trì môi trường trong ổn định dù ngoại cảnh thay đổi. Đây là điều kiện sống của mọi hệ cơ thể.</p>
-           <p><strong>Môi trường trong</strong> = Huyết tương + Dịch mô + Dịch bạch huyết (khoảng 60% trọng lượng cơ thể là nước).</p>
-           <p><strong>Cơ chế phản hồi âm (Negative Feedback):</strong> Sự thay đổi → phát hiện → điều chỉnh ngược chiều → trở về mức bình thường.</p>`,
-
-          `<h4>⚙️ Các Hệ Tham Gia</h4>
-           <ul>
-             <li><strong>Hệ thần kinh:</strong> Phản ứng nhanh qua phản xạ (vài ms–giây)</li>
-             <li><strong>Hệ nội tiết:</strong> Điều hòa dài hạn qua hormone (phút–giờ)</li>
-             <li><strong>Thận:</strong> Điều hòa nước, điện giải, pH, huyết áp</li>
-             <li><strong>Phổi:</strong> Điều hòa CO₂, O₂ và pH máu</li>
-             <li><strong>Gan:</strong> Giữ glucose máu ổn định (glycogen)</li>
-           </ul>`,
-
-          `<h4>📊 Các Thông Số Nội Môi</h4>
-           <ul>
-             <li>Nhiệt độ cơ thể: <strong>37°C ± 0.5</strong> (hạ thân nhiệt &lt;35°C, sốt &gt;38°C)</li>
-             <li>pH máu: <strong>7.35–7.45</strong> (nhiễm toan &lt;7.35, nhiễm kiềm &gt;7.45)</li>
-             <li>Glucose máu: <strong>70–100 mg/dL</strong> (lúc đói)</li>
-             <li>Áp suất thẩm thấu: <strong>280–295 mOsm/kg</strong></li>
-             <li>Huyết áp tâm thu: <strong>90–120 mmHg</strong></li>
-           </ul>`,
-
-          `<div class="sgk-box">
-             <div class="sgk-box-title">📖 Kiến Thức SGK Sinh 11</div>
-             <p><strong>Cơ chế điều hòa thân nhiệt:</strong> Khi lạnh → cơ thể run → sinh nhiệt; co mạch ngoại vi → giữ nhiệt. Khi nóng → giãn mạch, toát mồ hôi → thải nhiệt.</p>
-             <p><strong>Điều hòa đường huyết:</strong> Tụy tiết insulin (hạ đường) và glucagon (tăng đường). Đái tháo đường type 1: thiếu insulin; type 2: kháng insulin.</p>
-             <p><strong>Hormon ADH (Vasopressin):</strong> Do tuyến yên tiết → thận tái hấp thu nước → niệu ít hơn, giảm mất nước.</p>
-             <p><strong>Aldosterone:</strong> Vỏ thượng thận tiết → thận tái hấp thu Na⁺ → giữ nước → tăng huyết áp.</p>
-           </div>`,
-
-          `<div class="reallife-box">
-             <div class="reallife-box-title">🌍 Liên Hệ Thực Tế</div>
-             <p><strong>Vì sao uống rượu gây đi tiểu nhiều?</strong> Ethanol ức chế bài tiết ADH → thận không tái hấp thu nước → mất nước nhanh → khát → đau đầu sáng hôm sau.</p>
-             <p><strong>Vì sao sốt cao nguy hiểm?</strong> Protein enzyme bắt đầu biến tính ở 40°C → tế bào không hoạt động được → nguy hiểm tính mạng nếu không hạ kịp.</p>
-             <p><strong>Tại sao không ăn sáng làm học kém?</strong> Glucose máu giảm → não thiếu năng lượng → khó tập trung, trí nhớ kém → nên ăn sáng để duy trì glucose ổn định.</p>
-           </div>
-           <ul>
-             <li>Uống đủ 2 lít nước/ngày để hỗ trợ thận duy trì áp suất thẩm thấu</li>
-             <li>Không bỏ bữa — giữ glucose máu ổn định</li>
-             <li>Tránh phòng điều hòa quá lạnh — cơ thể tốn nhiều năng lượng để giữ nhiệt</li>
-             <li>Kiểm tra đường huyết định kỳ (nhất là người có tiền sử tiểu đường)</li>
-           </ul>`
-        ]
-      },
-
-      /* ─── HỆ TIÊU HÓA ─── */
-      digestive: {
-        title: '🍽️ Hệ Tiêu Hóa',
-        tabs: ['Khái Niệm', 'Cấu Tạo', 'Chức Năng', 'SGK 11', 'Liên Hệ Thực Tế'],
-        sections: [
-          `<h4>🔬 Khái Niệm</h4>
-           <p>Hệ tiêu hóa phân giải thức ăn phức tạp (tinh bột, protein, lipid) thành phân tử nhỏ (glucose, amino acid, acid béo) để ruột non hấp thu vào máu.</p>
-           <p><strong>Tiêu hóa cơ học:</strong> Nghiền nhỏ thức ăn bằng răng, co bóp dạ dày.</p>
-           <p><strong>Tiêu hóa hóa học:</strong> Enzyme phá vỡ liên kết hóa học trong phân tử thức ăn.</p>`,
-
-          `<h4>🍽️ Cấu Tạo Đường Tiêu Hóa</h4>
-           <ul>
-             <li><strong>Miệng:</strong> Răng nghiền + Amylase nước bọt phân giải tinh bột</li>
-             <li><strong>Thực quản:</strong> Đẩy thức ăn xuống dạ dày bằng nhu động</li>
-             <li><strong>Dạ dày:</strong> HCl + Pepsin phân giải protein; co bóp nhào trộn</li>
-             <li><strong>Ruột non:</strong> Dài 6m — nơi hấp thu chính; nhung mao + microvilli tăng diện tích 200m²</li>
-             <li><strong>Gan & Túi mật:</strong> Tiết mật nhũ hóa lipid</li>
-             <li><strong>Tụy:</strong> Tiết enzyme lipase, protease, amylase + NaHCO₃ trung hòa acid</li>
-             <li><strong>Ruột già:</strong> Hấp thu nước và điện giải; vi khuẩn lên men</li>
-           </ul>`,
-
-          `<h4>⚡ Chức Năng</h4>
-           <ul>
-             <li>Cung cấp glucose — "nhiên liệu" chính cho não và cơ bắp</li>
-             <li>Hấp thu amino acid để tổng hợp protein — cơ bắp, enzyme, hormone</li>
-             <li>Hấp thu acid béo và glycerol — năng lượng dự trữ, màng tế bào</li>
-             <li>Hấp thu vitamin (A, D, E, K tan trong dầu cần lipid)</li>
-             <li>Điều hòa vi sinh vật đường ruột (gut microbiome) — ảnh hưởng miễn dịch và tâm trạng</li>
-           </ul>`,
-
-          `<div class="sgk-box">
-             <div class="sgk-box-title">📖 Kiến Thức SGK Sinh 11</div>
-             <p><strong>Enzyme tiêu hóa chính:</strong></p>
-             <ul>
-               <li>Amylase (nước bọt, tụy): tinh bột → maltose → glucose</li>
-               <li>Pepsin (dạ dày): protein → polypeptide (hoạt động tốt ở pH 1.5–2)</li>
-               <li>Trypsin, Chymotrypsin (tụy): protein → amino acid</li>
-               <li>Lipase (tụy): lipid → acid béo + glycerol</li>
-             </ul>
-             <p><strong>Hấp thu ở ruột non:</strong> Glucose + amino acid → mao mạch máu → tĩnh mạch cửa → gan. Acid béo + glycerol → mao mạch bạch huyết → ống ngực.</p>
-           </div>`,
-
-          `<div class="reallife-box">
-             <div class="reallife-box-title">🌍 Liên Hệ Thực Tế</div>
-             <p><strong>Gut-Brain Axis (Trục Não-Ruột):</strong> 95% serotonin sản xuất ở ruột! Vi khuẩn đường ruột ảnh hưởng trực tiếp đến tâm trạng và não bộ — nên ăn probiotic (sữa chua, kimchi).</p>
-             <p><strong>Tại sao ăn nhanh gây béo?</strong> Não cần 20 phút để nhận tín hiệu no. Ăn nhanh → nuốt nhiều trước khi não "báo đủ" → ăn quá mức mỗi ngày.</p>
-             <p><strong>Bệnh Crohn và IBS:</strong> Viêm đường ruột mãn tính — liên quan hệ miễn dịch tấn công nhầm niêm mạc ruột.</p>
-           </div>
-           <ul>
-             <li>Ăn đủ chất xơ (25–38g/ngày): rau, hoa quả, ngũ cốc nguyên hạt</li>
-             <li>Nhai kỹ — tiêu hóa bắt đầu từ miệng với amylase</li>
-             <li>Uống đủ nước — ngăn táo bón, hỗ trợ hấp thu</li>
-             <li>Ăn probiotic: sữa chua, miso, kim chi — nuôi dưỡng hệ vi sinh vật đường ruột</li>
-           </ul>`
-        ]
+        grid.innerHTML = data.organs.map(organ => `
+          <div class="organ-card" onclick="openDetailModal('${systemId}', '${organ.id}', '${organ.name}', '${organ.icon}')" id="organ-card-${organ.id}">
+            <span class="organ-arrow">→</span>
+            <span class="organ-icon">${organ.icon}</span>
+            <div class="organ-name">${organ.name}</div>
+            <div class="organ-desc">${organ.desc}</div>
+          </div>
+        `).join('');
+      } catch (err) {
+        grid.innerHTML = `<div style="grid-column:1/-1;color:#FCA5A5;text-align:center;padding:2rem">Lỗi tải dữ liệu: ${err.message}<br/>Hãy đảm bảo server đang chạy.</div>`;
       }
-    };
-
-    /* ═════════════════════════════════
-       TAB MANAGEMENT
-    ═════════════════════════════════ */
-    let currentArtId = null;
-
-    function openArticle(id) {
-      const art = articles[id];
-      if (!art) return;
-      currentArtId = id;
-
-      const titleForWiki = art.title.replace(/[\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF]/g, '').trim();
-
-      const content = document.getElementById('modal-article-content');
-      content.innerHTML = `
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
-          <h2 id="modal-article-title" style="margin:0">${art.title}</h2>
-          <button class="wiki-btn" onclick="openWiki('${titleForWiki}')">🌐 Tra cứu Wikipedia</button>
-        </div>
-        <div class="art-tabs" id="art-tabs-${id}">
-          ${art.tabs.map((t, i) => `
-            <button class="art-tab${i===0?' active':''}" onclick="switchTab('${id}',${i})" id="art-tab-${id}-${i}">${t}</button>
-          `).join('')}
-        </div>
-        ${art.sections.map((s, i) => `
-          <div class="art-section${i===0?' active':''}" id="art-sec-${id}-${i}">${s}</div>
-        `).join('')}
-      `;
-      // Trick to force reflow and trigger animation
-      document.getElementById('article-modal').style.display = 'flex';
-      setTimeout(() => {
-        document.getElementById('article-modal').classList.add('open');
-      }, 10);
-      content.scrollTop = 0;
     }
 
-    function switchTab(id, idx) {
-      const art = articles[id];
-      document.querySelectorAll(`[id^="art-tab-${id}-"]`).forEach((t, i) => {
-        t.classList.toggle('active', i === idx);
-      });
-      document.querySelectorAll(`[id^="art-sec-${id}-"]`).forEach((s, i) => {
-        s.classList.toggle('active', i === idx);
-      });
+    /* ═══════════════════════════════════════════════════
+       MODAL LEVEL 2: OPEN ORGAN DETAIL
+    ═══════════════════════════════════════════════════ */
+    async function openDetailModal(systemId, organId, organName, organIcon) {
+      currentOrganId = organId;
+      currentOrganName = organName;
+
+      // Close level-1, open level-2
+      closeOrgansModal(false);
+
+      const modal = document.getElementById('detail-modal');
+      modal.style.display = 'flex';
+      setTimeout(() => modal.classList.add('open'), 10);
+
+      // Set header
+      document.getElementById('detail-organ-icon').textContent = organIcon;
+      document.getElementById('detail-organ-title').textContent = organName;
+      document.getElementById('detail-breadcrumb').textContent = `📚 Sinh Học 11 › ${currentSystemLabel} › ${organName}`;
+      document.getElementById('wiki-trigger-btn').onclick = () => openWiki(organName);
+      document.getElementById('back-to-organs-btn').onclick = () => {
+        closeDetailModal();
+        openOrgansModal(systemId);
+      };
+
+      // Show skeleton, hide content
+      document.getElementById('detail-skeleton').style.display = 'block';
+      document.getElementById('detail-content').style.display = 'none';
+      document.getElementById('detail-tabs').innerHTML = '';
+      document.getElementById('sk-status-text').textContent = `🧠 AI đang phân tích ${organName} từ PDF Sinh học 11...`;
+
+      // Check localStorage cache first
+      const stored = localStorage.getItem(cacheKey(systemId, organId));
+      if (stored) {
+        try {
+          const cached = JSON.parse(stored);
+          renderDetailTabs(cached);
+          return;
+        } catch(e) { /* ignore bad cache */ }
+      }
+
+      try {
+        const res = await fetch(`${BASE_URL}/api/library/${systemId}/${organId}`);
+        if (!res.ok) { const e = await res.json(); throw new Error(e.error); }
+        const data = await res.json();
+
+        // Save to localStorage
+        localStorage.setItem(cacheKey(systemId, organId), JSON.stringify(data));
+        renderDetailTabs(data);
+      } catch (err) {
+        document.getElementById('detail-skeleton').style.display = 'none';
+        document.getElementById('detail-content').style.display = 'block';
+        document.getElementById('detail-content').innerHTML = `
+          <div style="text-align:center;padding:2rem">
+            <div style="font-size:2.5rem;margin-bottom:1rem">⚠️</div>
+            <p style="color:#FCA5A5">Lỗi tải nội dung: ${err.message}</p>
+            <p style="color:rgba(255,255,255,0.4);font-size:0.85rem">Hãy đảm bảo server đang chạy tại localhost:5000</p>
+          </div>
+        `;
+      }
     }
 
-    /* ═════════════
-       MODAL CLOSE
-    ═════════════ */
-    document.getElementById('modal-close-btn').addEventListener('click', () => {
-      document.getElementById('article-modal').classList.remove('open');
-      setTimeout(() => document.getElementById('article-modal').style.display = 'none', 400);
+    function renderDetailTabs(data) {
+      const tabs = data.tabs || [];
+      const tabsEl = document.getElementById('detail-tabs');
+      const contentEl = document.getElementById('detail-content');
+
+      tabsEl.innerHTML = tabs.map((tab, i) => `
+        <button class="art-tab${i===0?' active':''}" onclick="switchDetailTab(${i})" id="dtab-${i}">${tab.label}</button>
+      `).join('');
+
+      contentEl.innerHTML = tabs.map((tab, i) => `
+        <div class="art-section${i===0?' active':''}" id="dsec-${i}">${tab.html}</div>
+      `).join('');
+
+      document.getElementById('detail-skeleton').style.display = 'none';
+      contentEl.style.display = 'block';
+      document.getElementById('detail-body').scrollTop = 0;
+    }
+
+    function switchDetailTab(idx) {
+      document.querySelectorAll('[id^="dtab-"]').forEach((t, i) => t.classList.toggle('active', i === idx));
+      document.querySelectorAll('[id^="dsec-"]').forEach((s, i) => s.classList.toggle('active', i === idx));
+    }
+
+    /* ═══════════════════════════════════════════════════
+       CLOSE MODALS
+    ═══════════════════════════════════════════════════ */
+    function closeOrgansModal(reset = true) {
+      const modal = document.getElementById('organs-modal');
+      modal.classList.remove('open');
+      setTimeout(() => { modal.style.display = 'none'; }, 400);
+      if (reset) currentSystem = null;
+    }
+
+    function closeDetailModal() {
+      const modal = document.getElementById('detail-modal');
+      modal.classList.remove('open');
+      setTimeout(() => { modal.style.display = 'none'; }, 400);
+    }
+
+    // Close buttons
+    document.getElementById('organs-modal-close').addEventListener('click', () => closeOrgansModal());
+    document.getElementById('detail-modal-close').addEventListener('click', closeDetailModal);
+
+    // Click backdrop to close
+    document.getElementById('organs-modal').addEventListener('click', e => {
+      if (e.target === document.getElementById('organs-modal')) closeOrgansModal();
     });
-    document.getElementById('article-modal').addEventListener('click', (e) => {
-      if (e.target === document.getElementById('article-modal')) {
-        document.getElementById('article-modal').classList.remove('open');
-        setTimeout(() => document.getElementById('article-modal').style.display = 'none', 400);
+    document.getElementById('detail-modal').addEventListener('click', e => {
+      if (e.target === document.getElementById('detail-modal')) closeDetailModal();
+    });
+
+    // ESC key
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') {
+        if (document.getElementById('detail-modal').classList.contains('open')) closeDetailModal();
+        else if (document.getElementById('organs-modal').classList.contains('open')) closeOrgansModal();
+        else closeWiki();
       }
     });
 
-    /* ═════════════════════════════════
-       WIKIPEDIA API TRA CỨU
-    ═════════════════════════════════ */
+    /* ═══════════════════════════════════════════════════
+       WIKIPEDIA API
+    ═══════════════════════════════════════════════════ */
     async function openWiki(keyword) {
+      if (!keyword) return;
       document.getElementById('wiki-overlay').classList.add('open');
       document.getElementById('wiki-popup').classList.add('open');
       const content = document.getElementById('wiki-content');
-      content.innerHTML = '<div style="text-align:center; padding: 2rem;"><span style="font-size:2rem; animation:pulse 1s infinite block;">🔍</span><br/>Đang kết nối Wikipedia...</div>';
+      content.innerHTML = `<div style="text-align:center;padding:2rem"><span style="font-size:2rem">🔍</span><br/>Đang kết nối Wikipedia...</div>`;
 
       try {
-        const res = await fetch(\`https://vi.wikipedia.org/w/api.php?action=query&prop=extracts&exintro&explaintext&format=json&origin=*&titles=\${encodeURIComponent(keyword)}\`);
+        const res = await fetch(`https://vi.wikipedia.org/w/api.php?action=query&prop=extracts&exintro&explaintext&format=json&origin=*&titles=${encodeURIComponent(keyword)}`);
         const data = await res.json();
         const pages = data.query.pages;
         const pageId = Object.keys(pages)[0];
 
         if (pageId === '-1') {
-          content.innerHTML = \`<p style="color:#FCA5A5">Không tìm thấy bài viết cho "\${keyword}" trên Wikipedia Tiếng Việt.</p>\`;
+          content.innerHTML = `<p style="color:#FCA5A5">Không tìm thấy bài viết cho "<strong>${keyword}</strong>" trên Wikipedia.</p>`;
         } else {
           const extract = pages[pageId].extract;
-          const url = \`https://vi.wikipedia.org/wiki/\${encodeURIComponent(pages[pageId].title)}\`;
-          // Split into paragraphs
-          const paragraphs = extract.split('\\n').filter(p => p.trim() !== '').map(p => \`<p style="margin-bottom:1rem">\${p}</p>\`).join('');
-          
-          content.innerHTML = \`
-            <h4 style="color:var(--color-primary-light); margin-bottom:1rem; font-size:1.2rem;">\${pages[pageId].title}</h4>
-            \${paragraphs}
-            <div style="margin-top:1.5rem; text-align:right;">
-              <a href="\${url}" target="_blank" class="btn btn-sm" style="display:inline-block">Đọc bài đầy đủ →</a>
+          const url = `https://vi.wikipedia.org/wiki/${encodeURIComponent(pages[pageId].title)}`;
+          const paragraphs = extract.split('\n').filter(p => p.trim()).map(p => `<p style="margin-bottom:0.875rem">${p}</p>`).join('');
+          content.innerHTML = `
+            <h4 style="color:var(--color-primary-light);margin-bottom:1rem">${pages[pageId].title}</h4>
+            ${paragraphs}
+            <div style="margin-top:1.5rem;text-align:right">
+              <a href="${url}" target="_blank" class="btn btn-sm" style="display:inline-block">Đọc đầy đủ →</a>
             </div>
-          \`;
+          `;
         }
       } catch (e) {
-        content.innerHTML = \`<p style="color:#FCA5A5">Lỗi kết nối tới Wikipedia: \${e.message}</p>\`;
+        content.innerHTML = `<p style="color:#FCA5A5">Lỗi kết nối: ${e.message}</p>`;
       }
     }
 
@@ -865,20 +731,16 @@
       document.getElementById('wiki-popup').classList.remove('open');
     }
 
-    /* ══════════
-       SEARCH
-    ══════════ */
+    /* ═══════════════════════════════════════════════════
+       SEARCH & FILTER
+    ═══════════════════════════════════════════════════ */
     document.getElementById('search-input').addEventListener('input', function() {
       const q = this.value.toLowerCase();
       document.querySelectorAll('.lib-card').forEach(card => {
-        const text = (card.dataset.title || '') + ' ' + card.textContent;
-        card.style.display = text.toLowerCase().includes(q) ? '' : 'none';
+        card.style.display = (card.dataset.title || '').toLowerCase().includes(q) || !q ? '' : 'none';
       });
     });
 
-    /* ══════════
-       FILTER
-    ══════════ */
     document.querySelectorAll('.filter-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));

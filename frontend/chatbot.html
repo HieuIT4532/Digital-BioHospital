@@ -214,17 +214,59 @@
 
     /* Related systems badge */
     .sys-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.3rem;
-      padding: 0.25rem 0.65rem;
-      background: rgba(124,58,237,0.2);
-      border-radius: 999px;
-      font-size: 0.72rem;
-      font-weight: 700;
+      display: inline-flex; align-items: center; gap: 0.3rem;
+      padding: 0.25rem 0.65rem; background: rgba(124,58,237,0.2);
+      border-radius: 999px; font-size: 0.72rem; font-weight: 700;
+      color: var(--color-primary-light); margin-top: 0.5rem; margin-right: 0.35rem;
+    }
+
+    /* Follow-up topic chips */
+    .followup-chips {
+      display: flex; flex-wrap: wrap; gap: 0.4rem;
+      margin-top: 0.75rem;
+    }
+    .chip-btn {
+      padding: 0.3rem 0.8rem;
+      background: rgba(124,58,237,0.12);
+      border: 1px solid rgba(167,139,250,0.25);
+      border-radius: 999px; font-size: 0.75rem; font-weight: 600;
+      color: rgba(167,139,250,0.85); cursor: pointer;
+      transition: all 0.2s; font-family: var(--font-family);
+    }
+    .chip-btn:hover {
+      background: rgba(124,58,237,0.3);
+      border-color: var(--color-primary-light);
       color: var(--color-primary-light);
-      margin-top: 0.5rem;
-      margin-right: 0.35rem;
+      transform: translateY(-2px);
+    }
+
+    /* Markdown rendered content */
+    .msg-bubble h2, .msg-bubble h3, .msg-bubble h4 {
+      color: var(--color-primary-light); margin: 0.75rem 0 0.4rem;
+      font-size: 0.95rem;
+    }
+    .msg-bubble table {
+      width: 100%; border-collapse: collapse; margin: 0.75rem 0; font-size: 0.82rem;
+    }
+    .msg-bubble th {
+      background: rgba(124,58,237,0.2); padding: 0.4rem 0.65rem;
+      text-align: left; border: 1px solid rgba(255,255,255,0.1);
+    }
+    .msg-bubble td {
+      padding: 0.35rem 0.65rem; border: 1px solid rgba(255,255,255,0.07);
+    }
+    .msg-bubble tr:nth-child(even) td { background: rgba(255,255,255,0.03); }
+    .msg-bubble blockquote {
+      border-left: 3px solid var(--color-primary-light);
+      margin: 0.6rem 0; padding: 0.4rem 1rem;
+      background: rgba(124,58,237,0.08); border-radius: 0 0.5rem 0.5rem 0;
+      font-style: italic; color: rgba(255,255,255,0.7);
+    }
+
+    /* AI Status text */
+    .ai-thinking-text {
+      font-size: 0.78rem; color: rgba(167,139,250,0.7);
+      padding: 0.25rem 0.5rem; font-style: italic;
     }
 
     /* ── CHAT INPUT ── */
@@ -444,17 +486,60 @@
   <script src="js/patient.js"></script>
   <script>
     /* ═════════════════════════════
+       CONVERSATION HISTORY (multi-turn)
+    ═════════════════════════════ */
+    let conversationHistory = [];
+
+    // Load session from sessionStorage
+    (function loadSession() {
+      try {
+        const saved = sessionStorage.getItem('bioai_history');
+        if (saved) conversationHistory = JSON.parse(saved);
+      } catch(e) {}
+    })();
+
+    function saveSession() {
+      try { sessionStorage.setItem('bioai_history', JSON.stringify(conversationHistory.slice(-20))); } catch(e) {}
+    }
+
+    /* ═════════════════════════════
        FORMATTING UTILS
     ═════════════════════════════ */
     function formatMarkdown(text) {
       if (!text) return '';
-      let html = text
-        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-        .replace(/\*(.*?)\*/g, '<em>$1</em>')
-        .replace(/^\- (.*?)$/gm, '<li>$1</li>')
-        .replace(/(<li>.*?<\/li>)+/g, '<ul>$&</ul>')
-        .replace(/\n/g, '<br/>');
-      return html;
+      // Escape HTML (basic)
+      let html = text;
+
+      // Code blocks
+      html = html.replace(/```[\s\S]*?```/g, m => `<pre style="background:rgba(0,0,0,0.3);border-radius:0.5rem;padding:0.75rem;font-size:0.8rem;overflow-x:auto"><code>${m.replace(/```/g,'')}</code></pre>`);
+
+      // Headings
+      html = html.replace(/^### (.+)$/gm, '<h4>$1</h4>');
+      html = html.replace(/^## (.+)$/gm, '<h3>$1</h3>');
+
+      // Bold / Italic
+      html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+      html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
+
+      // Blockquote
+      html = html.replace(/^> (.+)$/gm, '<blockquote>$1</blockquote>');
+
+      // Lists
+      html = html.replace(/^[\-\*] (.+)$/gm, '<li>$1</li>');
+      html = html.replace(/(<li>.+<\/li>\n?)+/g, '<ul>$&</ul>');
+
+      // Simple table (| col | col |)
+      html = html.replace(/(\|.+\|\n)+/g, tableBlock => {
+        const rows = tableBlock.trim().split('\n').filter(r => !r.match(/^\|[\s\-|]+\|$/));
+        if (rows.length < 1) return tableBlock;
+        const th = rows[0].split('|').slice(1,-1).map(c => `<th>${c.trim()}</th>`).join('');
+        const trs = rows.slice(1).map(r => `<tr>${r.split('|').slice(1,-1).map(c => `<td>${c.trim()}</td>`).join('')}</tr>`).join('');
+        return `<table><thead><tr>${th}</tr></thead><tbody>${trs}</tbody></table>`;
+      });
+
+      // Line breaks
+      html = html.replace(/\n\n/g, '</p><p>').replace(/\n/g, '<br/>');
+      return `<p>${html}</p>`;
     }
 
     function getTime() {
@@ -468,7 +553,7 @@
     const inputEl = document.getElementById('chat-input');
     const sendBtn = document.getElementById('chat-send-btn');
 
-    function addMessage(text, role, systems = []) {
+    function addMessage(text, role, systems = [], followups = []) {
       const welcome = document.getElementById('welcome-msg');
       if (welcome) welcome.style.display = 'none';
 
@@ -476,13 +561,16 @@
       msg.className = `msg ${role} animate-fadeInUp`;
 
       const formattedText = formatMarkdown(text);
-      const badgesContainer = systems.length > 0 ? 
+      const badgesContainer = systems.length > 0 ?
         `<div style="margin-top:0.5rem">${systems.map(s => `<span class="sys-badge">${s}</span>`).join('')}</div>` : '';
+
+      const chipsHtml = (role === 'ai' && followups.length > 0) ?
+        `<div class="followup-chips">${followups.map(q => `<button class="chip-btn" onclick="sendQuickQ(this.textContent)">💬 ${q}</button>`).join('')}</div>` : '';
 
       msg.innerHTML = `
         <div class="msg-avatar">${role === 'ai' ? '🤖' : '👤'}</div>
         <div>
-          <div class="msg-bubble">${formattedText}${badgesContainer}</div>
+          <div class="msg-bubble">${formattedText}${badgesContainer}${chipsHtml}</div>
           <div class="msg-time">${getTime()}</div>
         </div>
       `;
@@ -491,19 +579,39 @@
       messagesEl.scrollTop = messagesEl.scrollHeight;
     }
 
+    const AI_STATUS_MSGS = [
+      '🧠 Đang phân tích từ PDF Sinh học 11...',
+      '📖 Đang tra cứu kiến thức SGK...',
+      '🔬 Đang liên kết các hệ cơ quan...',
+      '💡 Đang tổng hợp câu trả lời...',
+    ];
+    let statusIdx = 0;
+    let statusInterval = null;
+
     function addTypingIndicator() {
       const typing = document.createElement('div');
       typing.className = 'msg ai';
       typing.id = 'typing-ind';
       typing.innerHTML = `
         <div class="msg-avatar">🤖</div>
-        <div class="msg-bubble"><div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div></div>
+        <div class="msg-bubble">
+          <div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>
+          <div class="ai-thinking-text" id="ai-status-text">${AI_STATUS_MSGS[0]}</div>
+        </div>
       `;
       messagesEl.appendChild(typing);
       messagesEl.scrollTop = messagesEl.scrollHeight;
+
+      statusIdx = 0;
+      statusInterval = setInterval(() => {
+        statusIdx = (statusIdx + 1) % AI_STATUS_MSGS.length;
+        const el = document.getElementById('ai-status-text');
+        if (el) el.textContent = AI_STATUS_MSGS[statusIdx];
+      }, 1800);
     }
 
     function removeTypingIndicator() {
+      clearInterval(statusInterval);
       const t = document.getElementById('typing-ind');
       if (t) t.remove();
     }
@@ -519,17 +627,36 @@
       inputEl.style.height = 'auto';
       sendBtn.disabled = true;
 
+      // Add to history before sending
       addMessage(question, 'user');
+      conversationHistory.push({ role: 'user', text: question });
       addTypingIndicator();
 
       try {
         const patientData = PatientManager.get();
-        const response = await API.Chat.send(patientData, question);
+
+        // Send with last 8 turns of history
+        const res = await fetch('http://localhost:5000/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            message: question,
+            patient: patientData,
+            history: conversationHistory.slice(-8)
+          })
+        });
+        const response = await res.json();
+        if (!res.ok) throw new Error(response.error || 'Lỗi máy chủ');
 
         removeTypingIndicator();
-        
+
         const sourceLabel = response.source !== 'Tổng hợp bên ngoài' ? `📖 ${response.source}` : '🌐 Tổng hợp';
-        addMessage(response.reply, 'ai', [sourceLabel]);
+        addMessage(response.reply, 'ai', [sourceLabel], response.followups || []);
+
+        // Append AI reply to history
+        conversationHistory.push({ role: 'model', text: response.reply });
+        saveSession();
+
       } catch (err) {
         removeTypingIndicator();
         addMessage(`Lỗi: ${err.message}. Đảm bảo máy chủ đang chạy tại localhost:5000.`, 'ai');
@@ -556,12 +683,21 @@
       inputEl.style.height = Math.min(inputEl.scrollHeight, 120) + 'px';
     });
 
-    // Chào mừng ban đầu
+    // Restore session or show welcome
     setTimeout(() => {
-      if(messagesEl.children.length <= 1) { // Chỉ chào nếu chưa có tin nhắn
-        addMessage('Xin chào! 👋 Tôi là **BioAI** — trợ lý sinh học thông minh.\n\nHãy đặt câu hỏi về triệu chứng hoặc kiến thức Sinh học 11, tôi sẽ phân tích dựa trên dữ liệu y khoa và sách giáo khoa.', 'ai');
+      if (conversationHistory.length > 0) {
+        document.getElementById('welcome-msg').style.display = 'none';
+        // Replay last 6 messages
+        const toReplay = conversationHistory.slice(-6);
+        toReplay.forEach(h => {
+          if (h.role === 'user') addMessage(h.text, 'user');
+          else addMessage(h.text, 'ai');
+        });
+      } else {
+        addMessage('Xin chào! 👋 Tôi là **BioAI** — trợ lý sinh học thông minh.\n\nHãy đặt câu hỏi về triệu chứng hoặc kiến thức Sinh học 11. Tôi nhớ cả cuộc hội thoại để trả lời có ngữ cảnh!', 'ai', [],
+          ['Tim đập nhanh bất thường là sao?', 'Cơ chế phản xạ là gì?', 'Stress ảnh hưởng cơ thể như thế nào?']);
       }
-    }, 1000);
+    }, 600);
   </script>
 </body>
 </html>

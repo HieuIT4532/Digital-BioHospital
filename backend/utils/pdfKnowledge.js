@@ -108,4 +108,16 @@ function getLoadedSystems() {
   return Object.keys(knowledgeCache);
 }
 
-module.exports = { loadAllPDFs, findRelevantKnowledge, getLoadedSystems };
+/**
+ * Get raw PDF text for a specific system key
+ * @param {string} systemKey  e.g. 'tuần hoàn'
+ * @returns {string|null}
+ */
+function getSystemText(systemKey) {
+  if (knowledgeCache[systemKey]) {
+    return knowledgeCache[systemKey].text;
+  }
+  return null;
+}
+
+module.exports = { loadAllPDFs, findRelevantKnowledge, getLoadedSystems, getSystemText };
