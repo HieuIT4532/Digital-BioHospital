@@ -10,9 +10,9 @@ const safetySettings = [
 ];
 
 const model = genAI.getGenerativeModel({ 
-  model: 'gemini-1.5-flash',
+  model: 'gemini-3-flash',
   safetySettings 
-}, { apiVersion: 'v1' });
+});
 
 /**
  * Gọi Gemini API với prompt và trả về text
