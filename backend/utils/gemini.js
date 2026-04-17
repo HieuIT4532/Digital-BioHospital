@@ -10,7 +10,7 @@ const safetySettings = [
 ];
 
 const model = genAI.getGenerativeModel({ 
-  model: 'gemini-3-flash',
+  model: 'gemini-3-flash-preview',
   safetySettings 
 });
 
