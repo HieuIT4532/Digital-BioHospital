@@ -525,7 +525,6 @@
     /* ═══════════════════════════════════════════════════
        STATE
     ═══════════════════════════════════════════════════ */
-    const BASE_URL = 'http://localhost:5000';
     let currentSystem = null;   // e.g. 'circulation'
     let currentSystemLabel = '';
     let currentOrganId = null;
@@ -534,27 +533,26 @@
     // Frontend localStorage cache key
     function cacheKey(sys, org) { return `biolib_v2_${sys}_${org}`; }
 
-    /* ═══════════════════════════════════════════════════
-       MODAL LEVEL 1: OPEN ORGANS LIST
-    ═══════════════════════════════════════════════════ */
     async function openOrgansModal(systemId) {
       currentSystem = systemId;
 
-      // Show modal immediately (data from API is fast – just static JSON)
+      // Reset modal state BEFORE showing (Fixes Error 1)
+      document.getElementById('organs-modal-title').textContent = 'Đang tải dữ liệu...';
+      document.getElementById('organs-modal-icon').textContent = '⏳';
+      const grid = document.getElementById('organs-grid');
+      grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:2rem;opacity:0.5">Đang kết nối tới AI Server...</div>`;
+
+      // Show modal
       const modal = document.getElementById('organs-modal');
       modal.style.display = 'flex';
       setTimeout(() => modal.classList.add('open'), 10);
 
-      const grid = document.getElementById('organs-grid');
-      grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:2rem;opacity:0.5">Đang tải...</div>`;
-
       try {
-        const res = await fetch(`${BASE_URL}/api/library/${systemId}`);
-        const data = await res.json();
+        const data = await API.Library.getByCategory(systemId);
 
+        // Update with real data
         currentSystemLabel = data.label;
         document.getElementById('organs-modal-title').textContent = data.label;
-        // Extract icon from label (first char could be emoji)
         document.getElementById('organs-modal-icon').textContent = data.organs[0]?.icon ?? '🔬';
 
         grid.innerHTML = data.organs.map(organ => `
@@ -566,13 +564,19 @@
           </div>
         `).join('');
       } catch (err) {
-        grid.innerHTML = `<div style="grid-column:1/-1;color:#FCA5A5;text-align:center;padding:2rem">Lỗi tải dữ liệu: ${err.message}<br/>Hãy đảm bảo server đang chạy.</div>`;
+        console.error('Library Fetch Error:', err);
+        grid.innerHTML = `
+          <div style="grid-column:1/-1;color:#FCA5A5;text-align:center;padding:2rem">
+            <div style="font-size:2rem;margin-bottom:1rem">⚠️</div>
+            <strong>Lỗi tải dữ liệu:</strong> ${err.message}<br/>
+            <p style="font-size:0.8rem;opacity:0.7;margin-top:0.5rem">
+              Endpoint: ${API.BASE}/api/library/${systemId}<br/>
+              Hãy đảm bảo server Render đang hoạt động.
+            </p>
+          </div>`;
       }
     }
 
-    /* ═══════════════════════════════════════════════════
-       MODAL LEVEL 2: OPEN ORGAN DETAIL
-    ═══════════════════════════════════════════════════ */
     async function openDetailModal(systemId, organId, organName, organIcon) {
       currentOrganId = organId;
       currentOrganName = organName;
@@ -611,7 +615,7 @@
       }
 
       try {
-        const res = await fetch(`${BASE_URL}/api/library/${systemId}/${organId}`);
+        const res = await fetch(`${API.BASE}/api/library/${systemId}/${organId}`);
         if (!res.ok) { const e = await res.json(); throw new Error(e.error); }
         const data = await res.json();
 
@@ -625,7 +629,7 @@
           <div style="text-align:center;padding:2rem">
             <div style="font-size:2.5rem;margin-bottom:1rem">⚠️</div>
             <p style="color:#FCA5A5">Lỗi tải nội dung: ${err.message}</p>
-            <p style="color:rgba(255,255,255,0.4);font-size:0.85rem">Hãy đảm bảo server đang chạy tại localhost:5000</p>
+            <p style="color:rgba(255,255,255,0.4);font-size:0.85rem">Hãy đảm bảo server đang chạy tại ${API.BASE}</p>
           </div>
         `;
       }

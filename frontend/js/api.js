@@ -20,14 +20,28 @@ async function apiFetch(endpoint, options = {}) {
     ...options
   };
 
-  const response = await fetch(url, defaultOptions);
-  const data = await response.json();
+  try {
+    const response = await fetch(url, defaultOptions);
+    const contentType = response.headers.get('content-type');
 
-  if (!response.ok) {
-    throw new Error(data.error || `Lỗi ${response.status}: ${response.statusText}`);
+    if (contentType && contentType.includes('application/json')) {
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error || `Lỗi ${response.status}: ${response.statusText}`);
+      }
+      return data;
+    } else {
+      // Trả về HTML thay vì JSON (thường là lỗi 404 hoặc server chưa sẵn sàng)
+      const text = await response.text();
+      console.error('API Error Response:', text.substring(0, 200));
+      throw new Error(`Server trả về định dạng không hợp lệ (HTML). Có thể địa chỉ API "${API_BASE}" chưa được cấu hình đúng.`);
+    }
+  } catch (err) {
+    if (err.name === 'SyntaxError') {
+      throw new Error('Dữ liệu phản hồi không hợp lệ (JSON parse error).');
+    }
+    throw err;
   }
-
-  return data;
 }
 
 // ════════════════════════════════════════════════════════════════════════════
@@ -148,6 +162,16 @@ const ChatAPI = {
 };
 
 // ════════════════════════════════════════════════════════════════════════════
+// LIBRARY API
+// ════════════════════════════════════════════════════════════════════════════
+
+const LibraryAPI = {
+  async getByCategory(category) {
+    return apiFetch(`/api/library/${category}`);
+  }
+};
+
+// ════════════════════════════════════════════════════════════════════════════
 // UPTIME / HEALTH CHECK
 // ════════════════════════════════════════════════════════════════════════════
 
@@ -169,5 +193,7 @@ window.API = {
   Predict: PredictAPI,
   Personalize: PersonalizeAPI,
   Chat: ChatAPI,
-  checkHealth: checkAPIHealth
+  Library: LibraryAPI,
+  checkHealth: checkAPIHealth,
+  BASE: API_BASE
 };

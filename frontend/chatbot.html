@@ -648,17 +648,7 @@
         const patientData = PatientManager.get();
 
         // Send with last 8 turns of history
-        const res = await fetch('http://localhost:5000/api/chat', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            message: question,
-            patient: patientData,
-            history: conversationHistory.slice(-8)
-          })
-        });
-        const response = await res.json();
-        if (!res.ok) throw new Error(response.error || 'Lỗi máy chủ');
+        const response = await API.Chat.send(patientData, question);
 
         removeTypingIndicator();
 
