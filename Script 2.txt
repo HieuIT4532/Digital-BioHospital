@@ -1,0 +1,77 @@
+Phần 1: Hệ thần kinh và Cơ chế dẫn truyền xung thần kinh qua Synapse
+Hệ thần kinh ở người có nhiệm vụ truyền tải thông tin dưới dạng tín hiệu điện hóa giữa các tế bào thần kinh, từ đó điều khiển mọi hoạt động, cảm giác, suy nghĩ và cảm xúc
+. Điểm mấu chốt trong hoạt động của hệ thần kinh là sự truyền tin qua Synapse.
+1. Cấu tạo của Synapse (Khớp thần kinh): Synapse là điểm tiếp xúc giữa hai tế bào thần kinh với nhau, hoặc giữa tế bào thần kinh với tế bào cơ/tuyến
+. Cấu tạo của một synapse hóa học điển hình gồm 3 phần:
+Tiền synapse (Màng trước): Là phần tận cùng của sợi trục nơ-ron thần kinh (cúc synapse). Nó chứa các túi dự trữ chất dẫn truyền thần kinh và có các kênh canxi đóng vai trò quan trọng trong việc giải phóng chất dẫn truyền
+.
+Khe synapse: Là một khoảng trống rất nhỏ và hẹp (khoảng 20-30 nanomet) nằm giữa màng trước và màng sau
+.
+Hậu synapse (Màng sau): Màng của tế bào tiếp nhận tín hiệu, trên đó có chứa các kênh ion và các thụ thể (receptor) đặc hiệu để tiếp nhận chất dẫn truyền thần kinh
+.
+2. Cơ chế hoạt động dẫn truyền thần kinh:
+Khi có tín hiệu kích thích, xung thần kinh (điện thế hoạt động) lan truyền dọc theo sợi trục đến cúc synapse, làm mở các kênh canxi (Ca 
+2+
+ )
+.
+Dòng ion canxi tràn vào trong tế bào kích thích các túi dự trữ tiến đến hòa vào màng trước, giải phóng các phân tử chất dẫn truyền thần kinh vào khe synapse qua quá trình xuất bào
+.
+Các chất này khuếch tán qua khe synapse và gắn vào thụ thể đặc hiệu ở màng sau theo cơ chế "ổ khóa - chìa khóa"
+.
+Sự gắn kết này làm thay đổi điện thế màng sau, nếu đủ lớn sẽ tạo ra một điện thế hoạt động mới (kích thích) để truyền đi tiếp, hoặc ngăn chặn tín hiệu (ức chế)
+.
+Sau khi truyền tin xong, chất dẫn truyền thần kinh sẽ bị enzyme phân hủy, khuếch tán ra mô xung quanh, hoặc được bơm tái hấp thu trở lại tiền synapse để tái sử dụng
+.
+3. Các chất dẫn truyền thần kinh quan trọng ở người:
+Acetylcholine: Đóng vai trò chính trong dẫn truyền thần kinh vận động cơ và trí nhớ. Sự thiếu hụt chất này trong não liên quan mật thiết đến bệnh suy giảm trí nhớ Alzheimer
+.
+Dopamine: Liên quan đến hệ thống vận động và kiểm soát tư duy. Mất tế bào sản xuất dopamine gây bệnh Parkinson (run rẩy, cứng cơ), trong khi dư thừa dopamine liên quan đến bệnh tâm thần phân liệt
+.
+Serotonin: Điều chỉnh tâm trạng, cảm xúc. Sự mất cân bằng liên quan đến lo âu, tự kỷ và trầm cảm
+.
+GABA (Axit gamma-aminobutyric): Là chất dẫn truyền ức chế chính trong não, giúp điều hòa thần kinh
+.
+Glutamate: Chất dẫn truyền kích thích chính. Tuy nhiên, sự dư thừa glutamate có thể gây độc, làm chết tế bào thần kinh, góp phần gây ra tổn thương não hoặc bệnh xơ cứng cột bên teo cơ
+.
+Endorphins và Enkephalins: Giống như thuốc giảm đau tự nhiên của cơ thể (nhóm opioid nội sinh), giúp điều chỉnh cảm giác đau và tâm trạng
+.
+
+--------------------------------------------------------------------------------
+Phần 2: Hệ nội tiết và Cơ chế điều hòa Hormone
+Hệ nội tiết là hệ thống các tuyến không có ống dẫn, tiết ra các chất hóa học gọi là hormone trực tiếp vào máu để đi đến các cơ quan đích. Hormone giúp điều hòa sự trao đổi chất, sinh trưởng, nhịp tim, và đặc biệt là chức năng sinh sản ở con người
+. Hormone có bản chất hóa học có thể là peptide, steroid (dẫn xuất từ cholesterol) hoặc dẫn xuất axit amin
+.
+1. Các cơ quan chính trong hệ nội tiết của người:
+Vùng dưới đồi (Hypothalamus) & Tuyến yên (Pituitary gland): Đây là trung tâm chỉ huy nằm trong não bộ. Vùng dưới đồi nhận tín hiệu thần kinh và giải phóng các hormone thần kinh để điều khiển tuyến yên
+. Tuyến yên sau đó tiết ra nhiều hormone quan trọng (như GH - hormone tăng trưởng, ACTH, TSH, FSH, LH, Prolactin) để kích thích và kiểm soát hoạt động của toàn bộ các tuyến nội tiết khác trong cơ thể
+. Thùy sau tuyến yên còn dự trữ và giải phóng Vasopressin (ADH) giúp thận giữ nước và Oxytocin giúp co bóp tử cung, tiết sữa
+.
+Tuyến giáp và Tuyến cận giáp: Nằm ở vùng cổ, sản sinh hormone kiểm soát sự trao đổi chất và điều hòa nồng độ canxi trong máu, xương
+.
+Tuyến tụy: Nằm trong ổ bụng, tiết ra insulin và glucagon đóng vai trò then chốt trong việc kiểm soát lượng đường (glucose) trong máu
+.
+Tuyến thượng thận: Nằm trên hai quả thận, sản xuất các hormone như cortisol, adrenaline giúp cơ thể điều hòa huyết áp, nhịp tim và phản ứng lại với các tình trạng căng thẳng (stress)
+.
+Tuyến sinh dục (Buồng trứng ở nữ, Tinh hoàn ở nam): Ở nam giới, tinh hoàn sản xuất testosterone (nhóm androgen) giúp phát triển đặc tính nam và chức năng sinh dục
+. Ở nữ giới, buồng trứng sản xuất estrogen và progesterone, điều hòa chu kỳ kinh nguyệt, đặc tính nữ và hỗ trợ mang thai
+.
+2. Cơ chế điều hòa bài tiết hormone: Hệ nội tiết hoạt động chủ yếu dựa trên "Trục dưới đồi - Tuyến yên - Tuyến đích" thông qua cơ chế điều hòa ngược (Feedback):
+Điều hòa ngược âm tính (Negative feedback): Là cơ chế phổ biến nhất để duy trì sự cân bằng nội môi. Khi nồng độ hormone của tuyến đích (ví dụ: T3, T4 của tuyến giáp) trong máu giảm, nó sẽ kích thích vùng dưới đồi và tuyến yên tăng tiết hormone chỉ huy (TRH, TSH)
+. Ngược lại, khi nồng độ hormone tuyến đích đã đủ cao, nó sẽ quay ngược lại ức chế tuyến chỉ huy làm giảm bài tiết, từ đó đưa nồng độ hormone trở lại mức bình thường
+.
+Điều hòa ngược dương tính (Positive feedback): Rất ít gặp nhưng quan trọng trong các tình huống sống còn. Khi nồng độ hormone tuyến đích tăng, nó không ức chế mà lại kích thích ngược làm tuyến chỉ huy tiết nhiều hormone hơn
+. Ví dụ: Khi cơ thể bị stress nặng, nồng độ cortisol tăng cao đồng thời kích thích nồng độ ACTH cũng tăng cao tức thời để đối phó với stress; hoặc sự gia tăng hormone ở phụ nữ gây hiện tượng phóng noãn (rụng trứng)
+.
+3. Các bệnh lý liên quan đến rối loạn hệ nội tiết ở người: Bất kỳ sự mất cân bằng hormone nào (do dư thừa hay thiếu hụt) đều gây bệnh:
+Tiểu đường (Đái tháo đường): Xảy ra khi tuyến tụy có vấn đề, lượng đường trong máu quá cao do thiếu insulin hoặc kháng insulin, gây sụt cân, khát nước, mệt mỏi
+.
+Bệnh lý tuyến giáp:
+Cường giáp: Dư thừa hormone tuyến giáp gây ra nhịp tim nhanh, tiêu chảy, sụt cân nghiêm trọng, mệt mỏi
+.
+Suy giáp: Tuyến giáp không sản xuất đủ hormone khiến quá trình trao đổi chất chậm lại, nhịp tim chậm, dễ tăng cân mất kiểm soát, táo bón, suy giảm trí nhớ
+.
+Bệnh lý tuyến thượng thận:
+Hội chứng Cushing: Do nồng độ hormone cortisol quá cao, làm tích tụ mỡ ở mặt, bụng, rạn da, da mỏng dễ bầm tím
+.
+Bệnh Addison (Suy thượng thận): Do tuyến thượng thận không sản xuất đủ cortisol hoặc aldosterone, gây sụt cân, huyết áp thấp, thèm ăn mặn và mệt mỏi nghiêm trọng
+.
