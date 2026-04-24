@@ -52,8 +52,11 @@ app.use('/api/patients', require('./routes/patients'));
 app.use('/api/analyze', require('./routes/analyze'));
 app.use('/api/predict', require('./routes/predict'));
 app.use('/api/personalize', require('./routes/personalize'));
+<<<<<<< HEAD
 app.use('/api/chat', require('./routes/chat'));
 app.use('/api/library', require('./routes/library'));
+=======
+>>>>>>> parent of f5af21d (upd)
 
 // ── Health Check ──────────────────────────────────────────────────────────────
 app.get('/health', (req, res) => {
@@ -69,7 +72,11 @@ app.get('/', (req, res) => {
   res.json({
     name: 'Bệnh Viện Sinh Học Thông Minh – API',
     version: '1.0.0',
+<<<<<<< HEAD
     endpoints: ['/api/patients', '/api/analyze', '/api/predict', '/api/personalize', '/api/chat', '/api/library']
+=======
+    endpoints: ['/api/patients', '/api/analyze', '/api/predict', '/api/personalize']
+>>>>>>> parent of f5af21d (upd)
   });
 });
 
