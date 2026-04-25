@@ -250,6 +250,20 @@
 
     .reallife-box { background:linear-gradient(135deg,rgba(16,185,129,0.1),rgba(16,185,129,0.02)); border:1px solid rgba(16,185,129,0.3); border-radius:1rem; padding:1.25rem; margin:1.25rem 0; }
     .reallife-box-title { font-size:0.82rem; font-weight:700; color:#6EE7B7; margin-bottom:0.75rem; text-transform:uppercase; letter-spacing:0.08em; display:flex; align-items:center; gap:0.5rem; }
+ 
+    .wiki-btn {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      padding: 0.35rem 0.85rem;
+      background: #fff;
+      border: 1px solid #aaa;
+      border-radius: 6px; font-size: 0.72rem; font-weight: 700;
+      color: #333; cursor: pointer;
+      transition: all 0.2s; font-family: var(--font-family);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      margin-left: 0.75rem;
+    }
+    .wiki-btn:hover { background: #f6f6f6; transform: translateY(-1px); box-shadow: 0 4px 8px rgba(0,0,0,0.15); }
+    .wiki-btn img { width: 14px; height: 14px; }
 
     /* ── Skeleton Loader ── */
     .skeleton-wrap { padding: 1.5rem 0; }
@@ -270,13 +284,6 @@
     @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
 
     /* ── Wikipedia ── */
-    .wiki-btn {
-      background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
-      color:white; border-radius:999px; padding:0.4rem 1rem;
-      font-size:0.78rem; font-weight:600; cursor:pointer;
-      display:inline-flex; align-items:center; gap:0.4rem; transition:all 0.2s;
-    }
-    .wiki-btn:hover { background:white; color:black; transform:scale(1.05); }
     .wiki-popup {
       position:fixed; top:50%; left:50%;
       transform:translate(-50%,-50%) scale(0.9);
@@ -522,6 +529,10 @@
               📚 Sinh Học 11 › ❤️ Hệ Tuần Hoàn › Tim
             </div>
           </div>
+          <button class="wiki-btn" id="wiki-trigger" onclick="openWiki(currentOrganName)">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/7/77/Wikipedia_svg_logo.svg" alt="W" />
+            Wikipedia
+          </button>
         </div>
         <div style="display:flex; align-items:center; gap:0.5rem;">
           <button class="back-btn" id="back-to-organs-btn">← Quay lại</button>
@@ -757,12 +768,22 @@
         } else {
           const extract = pages[pageId].extract;
           const url = `https://vi.wikipedia.org/wiki/${encodeURIComponent(pages[pageId].title)}`;
-          const paragraphs = extract.split('\n').filter(p => p.trim()).map(p => `<p style="margin-bottom:0.875rem">${p}</p>`).join('');
+          const paragraphs = extract.split('\n').filter(p => p.trim()).slice(0, 3).map(p => `<p style="margin-bottom:0.875rem">${p}</p>`).join('');
+          
           content.innerHTML = `
-            <h4 style="color:var(--color-primary-light);margin-bottom:1rem">${pages[pageId].title}</h4>
+            <div style="display:flex; align-items:center; gap:0.75rem; margin-bottom:1.25rem; background:rgba(255,255,255,0.05); padding:1rem; border-radius:0.75rem; border:1px solid rgba(255,255,255,0.1)">
+              <img src="https://upload.wikimedia.org/wikipedia/commons/7/77/Wikipedia_svg_logo.svg" style="width:40px; height:40px" />
+              <div>
+                <h3 style="margin:0; font-size:1.1rem; color:white">${pages[pageId].title}</h3>
+                <div style="font-size:0.75rem; opacity:0.6">Bách khoa toàn thư mở</div>
+              </div>
+            </div>
             ${paragraphs}
-            <div style="margin-top:1.5rem;text-align:right">
-              <a href="${url}" target="_blank" class="btn btn-sm" style="display:inline-block">Đọc đầy đủ →</a>
+            <p style="opacity:0.6; font-style:italic; font-size:0.8rem">... (Và nhiều thông tin khác trên Wikipedia)</p>
+            <div style="margin-top:2rem; text-align:center">
+              <a href="${url}" target="_blank" class="btn" style="background:#fff; color:#000; padding:0.75rem 2rem; border-radius:999px; font-weight:700; text-decoration:none; display:inline-block; box-shadow: 0 4px 15px rgba(255,255,255,0.2)">
+                Mở Wikipedia Tiếng Việt →
+              </a>
             </div>
           `;
         }
