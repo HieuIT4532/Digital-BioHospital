@@ -1,0 +1,93 @@
+/* Scoped styles for the anatomy model */
+#anatomy-model-container {
+    --accent-cyan: #00f0ff;
+    --accent-purple: #7b2ffc;
+    --accent-blue: #2196f3;
+    --accent-pink: #ff3366;
+    --accent-gold: #ffd700;
+    --text-primary: #e8eaf6;
+    --text-secondary: #8892b0;
+    --text-muted: #5a6380;
+    --glass-bg: rgba(15, 25, 50, 0.6);
+    --glass-border: rgba(0, 240, 255, 0.12);
+    --glass-shadow: rgba(0, 0, 0, 0.4);
+    --radius-lg: 20px;
+    --radius-md: 12px;
+    --radius-sm: 8px;
+    --radius-xl: 28px;
+    --font-display: 'Orbitron', monospace;
+    --gradient-primary: linear-gradient(135deg, #00f0ff, #7b2ffc);
+    --gradient-popup: linear-gradient(160deg, #1a1035 0%, #0d0a1a 40%, #15102a 100%);
+    --transition-normal: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-slow: 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#anatomy-model-container .glass-panel {
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 8px 32px var(--glass-shadow), inset 0 1px 0 rgba(255,255,255,0.05);
+    overflow: hidden;
+}
+
+#anatomy-model-container .panel-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1rem 1.25rem; border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+#anatomy-model-container .panel-header h2 {
+    font-family: var(--font-display); font-size: 0.85rem; font-weight: 600;
+    letter-spacing: 1.5px; text-transform: uppercase;
+    background: var(--gradient-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+
+#anatomy-model-container .panel-body { padding: 1.25rem; }
+
+#anatomy-model-container #main-content {
+    display: grid; grid-template-columns: 280px 1fr 240px; gap: 1.5rem;
+    padding: 1.5rem 0; min-height: 700px;
+}
+
+#anatomy-model-container #body-container { position: relative; display: flex; flex-direction: column; align-items: center; }
+#anatomy-model-container .model-wrapper { position: relative; width: 100%; max-width: 450px; aspect-ratio: 500 / 900; }
+#anatomy-model-container #human-body-svg { width: 100%; height: 100%; }
+
+#anatomy-model-container .interactive-part { cursor: pointer; transition: filter 0.25s ease; }
+#anatomy-model-container .interactive-part:hover { filter: brightness(1.35) drop-shadow(0 0 10px rgba(0,240,255,0.45)); }
+#anatomy-model-container .interactive-part.selected { filter: brightness(1.5) drop-shadow(0 0 16px rgba(0,240,255,0.7)); }
+
+/* Internal Nav */
+#anatomy-model-container #main-nav { display: flex; justify-content: center; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+#anatomy-model-container .nav-btn {
+    display: flex; align-items: center; gap: 0.4rem; padding: 0.5rem 1rem;
+    background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1);
+    border-radius: var(--radius-xl); color: var(--text-secondary); cursor: pointer;
+}
+#anatomy-model-container .nav-btn.active { border-color: var(--accent-cyan); color: var(--accent-cyan); background: rgba(0,240,255,0.1); }
+
+/* Popup */
+.popup-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px);
+    z-index: 2000; display: flex; align-items: center; justify-content: center;
+    opacity: 0; visibility: hidden; transition: 0.3s;
+}
+.popup-overlay.active { opacity: 1; visibility: visible; }
+.popup-modal {
+    width: 450px; max-width: 90vw; background: var(--gradient-popup);
+    border-radius: 20px; border: 1px solid rgba(123,47,252,0.3); padding: 2rem;
+    transform: scale(0.9); transition: 0.3s; color: white;
+}
+.popup-overlay.active .popup-modal { transform: scale(1); }
+.popup-close { position: absolute; top: 15px; right: 15px; cursor: pointer; background: none; border: none; color: white; font-size: 1.2rem; }
+.popup-ai-section { background: rgba(123,47,252,0.1); padding: 1rem; border-radius: 12px; margin: 1rem 0; border-left: 3px solid var(--accent-cyan); }
+.popup-func-list { list-style: none; padding: 0; }
+.popup-func-list li { padding: 0.5rem 0; display: flex; gap: 0.5rem; }
+.popup-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem; }
+.popup-tag { padding: 0.2rem 0.6rem; border-radius: 10px; font-size: 0.75rem; background: rgba(255,255,255,0.1); }
+
+/* Animation */
+@keyframes heartbeat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+#organ-heart { transform-origin: center; animation: heartbeat 1.5s infinite; }
