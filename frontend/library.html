@@ -310,6 +310,60 @@
   <script src="js/api.js"></script>
   <script src="js/patient.js"></script>
   <script>
+<<<<<<< HEAD
+    /* ═══════════════════════════════════════════════════
+       STATE
+    ═══════════════════════════════════════════════════ */
+    let currentSystem = null;   // e.g. 'circulation'
+    let currentSystemLabel = '';
+    let currentOrganId = null;
+    let currentOrganName = '';
+
+    // Frontend localStorage cache key
+    function cacheKey(sys, org) { return `biolib_v2_${sys}_${org}`; }
+
+    async function openOrgansModal(systemId) {
+      currentSystem = systemId;
+
+      // Reset modal state BEFORE showing (Fixes Error 1)
+      document.getElementById('organs-modal-title').textContent = 'Đang tải dữ liệu...';
+      document.getElementById('organs-modal-icon').textContent = '⏳';
+      const grid = document.getElementById('organs-grid');
+      grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:2rem;opacity:0.5">Đang kết nối tới AI Server...</div>`;
+
+      // Show modal
+      const modal = document.getElementById('organs-modal');
+      modal.style.display = 'flex';
+      setTimeout(() => modal.classList.add('open'), 10);
+
+      try {
+        const data = await API.Library.getByCategory(systemId);
+
+        // Update with real data
+        currentSystemLabel = data.label;
+        document.getElementById('organs-modal-title').textContent = data.label;
+        document.getElementById('organs-modal-icon').textContent = data.organs[0]?.icon ?? '🔬';
+
+        grid.innerHTML = data.organs.map(organ => `
+          <div class="organ-card" onclick="openDetailModal('${systemId}', '${organ.id}', '${organ.name}', '${organ.icon}')" id="organ-card-${organ.id}">
+            <span class="organ-arrow">→</span>
+            <span class="organ-icon">${organ.icon}</span>
+            <div class="organ-name">${organ.name}</div>
+            <div class="organ-desc">${organ.desc}</div>
+          </div>
+        `).join('');
+      } catch (err) {
+        console.error('Library Fetch Error:', err);
+        grid.innerHTML = `
+          <div style="grid-column:1/-1;color:#FCA5A5;text-align:center;padding:2rem">
+            <div style="font-size:2rem;margin-bottom:1rem">⚠️</div>
+            <strong>Lỗi tải dữ liệu:</strong> ${err.message}<br/>
+            <p style="font-size:0.8rem;opacity:0.7;margin-top:0.5rem">
+              Endpoint: ${API.BASE}/api/library/${systemId}<br/>
+              Hãy đảm bảo server Render đang hoạt động.
+            </p>
+          </div>`;
+=======
     // Article data
     const articles = {
       'circulation-1': {
@@ -531,6 +585,7 @@
             <li>Phòng ngủ chỉ dùng để ngủ (không mang bài tập vào)</li>
           </ul>
         `
+>>>>>>> 2a9cf3db908d4d5037f484876b3091cd867ab898
       }
     };
 
@@ -541,8 +596,118 @@
       document.getElementById('article-modal').classList.add('open');
     }
 
+<<<<<<< HEAD
+    async function openDetailModal(systemId, organId, organName, organIcon) {
+      currentOrganId = organId;
+      currentOrganName = organName;
+
+      // Close level-1, open level-2
+      closeOrgansModal(false);
+
+      const modal = document.getElementById('detail-modal');
+      modal.style.display = 'flex';
+      setTimeout(() => modal.classList.add('open'), 10);
+
+      // Set header
+      document.getElementById('detail-organ-icon').textContent = organIcon;
+      document.getElementById('detail-organ-title').textContent = organName;
+      document.getElementById('detail-breadcrumb').textContent = `📚 Sinh Học 11 › ${currentSystemLabel} › ${organName}`;
+      document.getElementById('wiki-trigger-btn').onclick = () => openWiki(organName);
+      document.getElementById('back-to-organs-btn').onclick = () => {
+        closeDetailModal();
+        openOrgansModal(systemId);
+      };
+
+      // Show skeleton, hide content
+      document.getElementById('detail-skeleton').style.display = 'block';
+      document.getElementById('detail-content').style.display = 'none';
+      document.getElementById('detail-tabs').innerHTML = '';
+      document.getElementById('sk-status-text').textContent = `🧠 AI đang phân tích ${organName} từ PDF Sinh học 11...`;
+
+      // Check localStorage cache first
+      const stored = localStorage.getItem(cacheKey(systemId, organId));
+      if (stored) {
+        try {
+          const cached = JSON.parse(stored);
+          renderDetailTabs(cached);
+          return;
+        } catch(e) { /* ignore bad cache */ }
+      }
+
+      try {
+        const res = await fetch(`${API.BASE}/api/library/${systemId}/${organId}`);
+        if (!res.ok) { const e = await res.json(); throw new Error(e.error); }
+        const data = await res.json();
+
+        // Save to localStorage
+        localStorage.setItem(cacheKey(systemId, organId), JSON.stringify(data));
+        renderDetailTabs(data);
+      } catch (err) {
+        document.getElementById('detail-skeleton').style.display = 'none';
+        document.getElementById('detail-content').style.display = 'block';
+        document.getElementById('detail-content').innerHTML = `
+          <div style="text-align:center;padding:2rem">
+            <div style="font-size:2.5rem;margin-bottom:1rem">⚠️</div>
+            <p style="color:#FCA5A5">Lỗi tải nội dung: ${err.message}</p>
+            <p style="color:rgba(255,255,255,0.4);font-size:0.85rem">Hãy đảm bảo server đang chạy tại ${API.BASE}</p>
+          </div>
+        `;
+      }
+    }
+
+    function renderDetailTabs(data) {
+      const tabs = data.tabs || [];
+      const tabsEl = document.getElementById('detail-tabs');
+      const contentEl = document.getElementById('detail-content');
+
+      tabsEl.innerHTML = tabs.map((tab, i) => `
+        <button class="art-tab${i===0?' active':''}" onclick="switchDetailTab(${i})" id="dtab-${i}">${tab.label}</button>
+      `).join('');
+
+      contentEl.innerHTML = tabs.map((tab, i) => `
+        <div class="art-section${i===0?' active':''}" id="dsec-${i}">${tab.html}</div>
+      `).join('');
+
+      document.getElementById('detail-skeleton').style.display = 'none';
+      contentEl.style.display = 'block';
+      document.getElementById('detail-body').scrollTop = 0;
+    }
+
+    function switchDetailTab(idx) {
+      document.querySelectorAll('[id^="dtab-"]').forEach((t, i) => t.classList.toggle('active', i === idx));
+      document.querySelectorAll('[id^="dsec-"]').forEach((s, i) => s.classList.toggle('active', i === idx));
+    }
+
+    /* ═══════════════════════════════════════════════════
+       CLOSE MODALS
+    ═══════════════════════════════════════════════════ */
+    function closeOrgansModal(reset = true) {
+      const modal = document.getElementById('organs-modal');
+      modal.classList.remove('open');
+      setTimeout(() => { modal.style.display = 'none'; }, 400);
+      if (reset) currentSystem = null;
+    }
+
+    function closeDetailModal() {
+      const modal = document.getElementById('detail-modal');
+      modal.classList.remove('open');
+      setTimeout(() => { modal.style.display = 'none'; }, 400);
+    }
+
+    // Close buttons
+    document.getElementById('organs-modal-close').addEventListener('click', () => closeOrgansModal());
+    document.getElementById('detail-modal-close').addEventListener('click', closeDetailModal);
+
+    // Click backdrop to close
+    document.getElementById('organs-modal').addEventListener('click', e => {
+      if (e.target === document.getElementById('organs-modal')) closeOrgansModal();
+    });
+    document.getElementById('detail-modal').addEventListener('click', e => {
+      if (e.target === document.getElementById('detail-modal')) closeDetailModal();
+=======
     document.getElementById('modal-close-btn').addEventListener('click', () => {
       document.getElementById('article-modal').classList.remove('open');
+>>>>>>> 2a9cf3db908d4d5037f484876b3091cd867ab898
     });
 
     document.getElementById('article-modal').addEventListener('click', (e) => {

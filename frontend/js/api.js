@@ -134,29 +134,20 @@ const PersonalizeAPI = {
 // ════════════════════════════════════════════════════════════════════════════
 
 const ChatAPI = {
-  async send(message, history = [], patientData = null) {
+  /**
+   * Nhắn tin với AI, lấy thông tin từ PDF hoặc kiến thức ngoài
+   * @param {Object} patientData
+   * @param {string} message
+   */
+  async send(patientData, message) {
     return apiFetch('/api/chat', {
       method: 'POST',
-      body: JSON.stringify({ message, history, patientData })
+      body: JSON.stringify({ patient: patientData, message })
     });
   }
 };
 
 // ════════════════════════════════════════════════════════════════════════════
-// LIBRARY API
-// ════════════════════════════════════════════════════════════════════════════
-
-const LibraryAPI = {
-  async getByCategory(category) {
-    return apiFetch(`/api/library/${category}`);
-  },
-  async getAll() {
-    return apiFetch('/api/library');
-  }
-};
-
-// ════════════════════════════════════════════════════════════════════════════
-
 // UPTIME / HEALTH CHECK
 // ════════════════════════════════════════════════════════════════════════════
 
@@ -178,7 +169,5 @@ window.API = {
   Predict: PredictAPI,
   Personalize: PersonalizeAPI,
   Chat: ChatAPI,
-  Library: LibraryAPI,
-  checkHealth: checkAPIHealth,
-  BASE: API_BASE
+  checkHealth: checkAPIHealth
 };

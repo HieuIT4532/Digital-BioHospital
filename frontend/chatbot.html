@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tư Vấn AI – Bệnh Viện Sinh Học Thông Minh</title>
+  <meta name="description" content="AI Tư vấn sức khỏe dựa trên Sinh học 11. Hỏi đáp về hệ tuần hoàn, hô hấp, thần kinh, miễn dịch và lời khuyên sức khỏe cá nhân." />
+  <link rel="stylesheet" href="css/global.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/animations.css" />
+  <style>
+    .chat-layout {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 1.5rem;
+      padding: 2rem 0 4rem;
+      min-height: calc(100vh - 200px);
+      align-items: start;
+    }
+
+    /* ── LEFT PANEL ── */
+    .chat-sidebar { position: sticky; top: 90px; }
+
+    .ai-avatar-card {
+      background: linear-gradient(145deg, rgba(124,58,237,0.12), rgba(236,72,153,0.05));
+      border: 1px solid rgba(167,139,250,0.25);
+      border-radius: 1.5rem;
+      padding: 1.75rem 1.5rem;
+      text-align: center; margin-bottom: 1rem;
+      backdrop-filter: blur(30px);
+      box-shadow: 0 8px 32px rgba(124,58,237,0.12), inset 0 1px 0 rgba(255,255,255,0.07);
+    }
+
+    /* Holographic Avatar */
+    .ai-avatar-wrap { position: relative; width: 88px; height: 88px; margin: 0 auto 1rem; }
+    .ai-avatar-ring {
+      position: absolute; inset: -4px; border-radius: 50%;
+      background: conic-gradient(from 0deg, #7C3AED, #EC4899, #06B6D4, #A78BFA, #7C3AED);
+      animation: rotateSlow 3s linear infinite;
+      padding: 3px;
+    }
+    .ai-avatar-ring-inner {
+      background: rgba(8,3,22,0.95); border-radius: 50%; width: 100%; height: 100%;
+    }
+    .ai-avatar {
+      position: absolute; inset: 4px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #7C3AED, #EC4899);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2.2rem;
+      box-shadow: 0 0 40px rgba(167,139,250,0.5), inset 0 0 20px rgba(124,58,237,0.3);
+      animation: glowPulse 3s ease-in-out infinite;
+    }
+
+    .ai-name {
+      font-family: var(--font-heading); font-size: 1.05rem; font-weight: 800;
+      background: linear-gradient(135deg, #A78BFA, #F9A8D4);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip:text;
+      margin-bottom: 0.3rem;
+    }
+
+    .ai-status {
+      display: flex; align-items: center; justify-content: center;
+      gap: 0.5rem; font-size: 0.78rem; color: #6EE7B7; margin-bottom: 0.75rem;
+    }
+    .ai-status-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: #10B981; box-shadow: 0 0 8px #10B981;
+      animation: pulse 2s infinite;
+    }
+    .ai-model-tag {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 3px 10px; border-radius: 999px;
+      background: rgba(124,58,237,0.15); border: 1px solid rgba(167,139,250,0.25);
+      font-size: 0.68rem; font-weight: 700; color: rgba(167,139,250,0.7);
+      text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 1rem;
+    }
+
+    .quick-questions { display: flex; flex-direction: column; gap: 0.5rem; }
+    .quick-q-btn {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 0.875rem;
+      padding: 0.65rem 0.875rem;
+      text-align: left; font-size: 0.78rem;
+      color: rgba(255,255,255,0.7); cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: var(--font-family);
+      line-height: 1.4;
+    }
+
+    .quick-q-btn:hover {
+      border-color: rgba(167,139,250,0.4);
+      background: rgba(124,58,237,0.12);
+      color: var(--color-primary-light);
+      transform: translateX(3px);
+    }
+
+    /* Disclaimer mini */
+    .mini-disclaimer {
+      padding: 0.875rem;
+      background: rgba(245,158,11,0.08);
+      border: 1px solid rgba(245,158,11,0.25);
+      border-radius: 0.875rem;
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.6);
+      line-height: 1.5;
+      margin-top: 1rem;
+    }
+
+    /* ── RIGHT: CHAT ── */
+    .chat-panel {
+      display: flex;
+      flex-direction: column;
+      height: calc(100vh - 200px);
+      min-height: 550px;
+      max-height: 800px;
+    }
+
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1.25rem;
+      background: rgba(0,0,0,0.2);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 1.5rem 1.5rem 0 0;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      scroll-behavior: smooth;
+    }
+
+    .chat-messages::-webkit-scrollbar { width: 5px; }
+    .chat-messages::-webkit-scrollbar-thumb { background: var(--color-primary); border-radius: 999px; }
+
+    /* Message bubble */
+    .msg {
+      display: flex;
+      gap: 0.75rem;
+      align-items: flex-end;
+      max-width: 85%;
+    }
+
+    .msg.user {
+      align-self: flex-end;
+      flex-direction: row-reverse;
+    }
+
+    .msg-avatar {
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+
+    .msg.ai .msg-avatar {
+      background: linear-gradient(135deg, #7C3AED, #EC4899);
+    }
+
+    .msg.user .msg-avatar {
+      background: rgba(255,255,255,0.1);
+    }
+
+    .msg-bubble {
+      padding: 0.875rem 1.125rem;
+      border-radius: 1.25rem;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      max-width: 100%;
+    }
+
+    .msg.ai .msg-bubble {
+      background: rgba(124,58,237,0.15);
+      border: 1px solid rgba(167,139,250,0.2);
+      border-bottom-left-radius: 0.25rem;
+      color: rgba(255,255,255,0.9);
+    }
+
+    .msg.user .msg-bubble {
+      background: rgba(124,58,237,0.4);
+      border: 1px solid rgba(167,139,250,0.3);
+      border-bottom-right-radius: 0.25rem;
+      color: white;
+    }
+
+    .msg-time {
+      font-size: 0.68rem;
+      color: rgba(255,255,255,0.3);
+      margin-top: 0.25rem;
+      text-align: right;
+    }
+
+    .msg.ai .msg-time { text-align: left; }
+
+    /* Typing indicator */
+    .typing-indicator {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+      padding: 0.75rem 1rem;
+    }
+
+    .typing-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--color-primary-light);
+      animation: typingAnim 1.4s infinite;
+    }
+
+    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes typingAnim {
+      0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+      30% { transform: translateY(-8px); opacity: 1; }
+    }
+
+    /* Related systems badge */
+    .sys-badge {
+      display: inline-flex; align-items: center; gap: 0.3rem;
+      padding: 0.25rem 0.65rem; background: rgba(124,58,237,0.2);
+      border-radius: 999px; font-size: 0.72rem; font-weight: 700;
+      color: var(--color-primary-light); margin-top: 0.5rem; margin-right: 0.35rem;
+    }
+
+    /* Follow-up topic chips */
+    .followup-chips {
+      display: flex; flex-wrap: wrap; gap: 0.4rem;
+      margin-top: 0.75rem;
+    }
+    .chip-btn {
+      padding: 0.3rem 0.8rem;
+      background: rgba(124,58,237,0.12);
+      border: 1px solid rgba(167,139,250,0.25);
+      border-radius: 999px; font-size: 0.75rem; font-weight: 600;
+      color: rgba(167,139,250,0.85); cursor: pointer;
+      transition: all 0.2s; font-family: var(--font-family);
+    }
+    .chip-btn:hover {
+      background: rgba(124,58,237,0.3);
+      border-color: var(--color-primary-light);
+      color: var(--color-primary-light);
+      transform: translateY(-2px);
+    }
+
+    /* Markdown rendered content */
+    .msg-bubble h2, .msg-bubble h3, .msg-bubble h4 {
+      color: var(--color-primary-light); margin: 0.75rem 0 0.4rem;
+      font-size: 0.95rem;
+    }
+    .msg-bubble table {
+      width: 100%; border-collapse: collapse; margin: 0.75rem 0; font-size: 0.82rem;
+    }
+    .msg-bubble th {
+      background: rgba(124,58,237,0.2); padding: 0.4rem 0.65rem;
+      text-align: left; border: 1px solid rgba(255,255,255,0.1);
+    }
+    .msg-bubble td {
+      padding: 0.35rem 0.65rem; border: 1px solid rgba(255,255,255,0.07);
+    }
+    .msg-bubble tr:nth-child(even) td { background: rgba(255,255,255,0.03); }
+    .msg-bubble blockquote {
+      border-left: 3px solid var(--color-primary-light);
+      margin: 0.6rem 0; padding: 0.4rem 1rem;
+      background: rgba(124,58,237,0.08); border-radius: 0 0.5rem 0.5rem 0;
+      font-style: italic; color: rgba(255,255,255,0.7);
+    }
+
+    /* AI Status text */
+    .ai-thinking-text {
+      font-size: 0.78rem; color: rgba(167,139,250,0.7);
+      padding: 0.25rem 0.5rem; font-style: italic;
+    }
+
+    /* ── CHAT INPUT ── */
+    .chat-input-wrapper {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-top: none;
+      border-radius: 0 0 1.5rem 1.5rem;
+      padding: 1rem 1.25rem;
+    }
+
+    .chat-input-row {
+      display: flex;
+      gap: 0.75rem;
+      align-items: flex-end;
+    }
+
+    .chat-input {
+      flex: 1;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 1rem;
+      padding: 0.75rem 1rem;
+      color: white;
+      font-family: var(--font-family);
+      font-size: 0.9rem;
+      resize: none;
+      outline: none;
+      min-height: 46px;
+      max-height: 120px;
+      transition: all 0.2s;
+      line-height: 1.5;
+    }
+
+    .chat-input:focus {
+      border-color: rgba(167,139,250,0.5);
+      background: rgba(124,58,237,0.1);
+    }
+
+    .chat-input::placeholder { color: rgba(255,255,255,0.35); }
+
+    .chat-send-btn {
+      width: 46px; height: 46px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #7C3AED, #EC4899);
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      transition: all 0.25s ease;
+      flex-shrink: 0;
+    }
+
+    .chat-send-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 20px rgba(167,139,250,0.5);
+    }
+
+    .chat-send-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .chat-hint {
+      font-size: 0.72rem;
+      color: rgba(255,255,255,0.3);
+      margin-top: 0.5rem;
+      text-align: center;
+    }
+
+    /* Welcome message */
+    .welcome-msg {
+      text-align: center;
+      padding: 2rem 1rem;
+      opacity: 0.8;
+    }
+
+    @media (max-width: 900px) {
+      .chat-layout { grid-template-columns: 1fr; }
+      .chat-sidebar { position: static; }
+      .chat-panel { height: 500px; }
+    }
+  </style>
+</head>
+<body class="page-enter">
+
+  <nav class="navbar">
+    <div class="container navbar-inner">
+      <a href="index.html" class="navbar-brand">
+        <div class="brand-icon">🏥</div>
+        <span>Digital BioHospital</span>
+      </a>
+      <ul class="navbar-nav">
+        <li><a href="index.html">🏠 Trang chủ</a></li>
+        <li><a href="departments.html">🏥 Chuyên khoa</a></li>
+        <li><a href="anatomy.html">🧬 Giải phẫu</a></li>
+        <li><a href="analysis.html">🔬 Phân tích</a></li>
+        <li><a href="prediction.html">🔮 Dự đoán</a></li>
+        <li><a href="library.html">📚 Thư viện</a></li>
+        <li><a href="chatbot.html" class="active">🤖 Tư vấn AI</a></li>
+      </ul>
+      <a href="reception.html" class="navbar-patient-btn btn btn-sm">🧑‍⚕️ Hồ sơ</a>
+    </div>
+  </nav>
+
+  <main id="main">
+    <div class="page-header" style="background: linear-gradient(180deg, rgba(124,58,237,0.08) 0%, transparent 100%); border-bottom: 1px solid rgba(255,255,255,0.05);">
+      <div class="container">
+        <div class="section-tag animate-fadeInUp">🤖 AI Tư Vấn</div>
+        <h1 class="animate-fadeInUp delay-100">Tư Vấn Sức Khỏe AI</h1>
+        <p class="animate-fadeInUp delay-200">Hỏi bất kỳ điều gì về sức khỏe — AI phân tích dựa trên Sinh học 11 và logic điều kiện y tế</p>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="chat-layout">
+
+        <!-- LEFT SIDEBAR -->
+        <div class="chat-sidebar">
+          <div class="ai-avatar-card">
+            <!-- Holographic Avatar -->
+            <div class="ai-avatar-wrap">
+              <div class="ai-avatar-ring"><div class="ai-avatar-ring-inner"></div></div>
+              <div class="ai-avatar">🤖</div>
+            </div>
+            <div class="ai-name">BioAI Assistant</div>
+            <div class="ai-status">
+              <div class="ai-status-dot"></div>
+              Đang hoạt động
+            </div>
+            <div class="ai-model-tag">✨ Gemini AI · SGK 11</div>
+            <p style="font-size:0.75rem; color:rgba(255,255,255,0.45); line-height:1.5">Multi-turn · Nhớ ngữ cảnh<br/>Phân tích PDF Sinh học</p>
+          </div>
+
+
+          <div class="card" style="padding:1.25rem; margin-bottom:1rem">
+            <h4 style="font-size:0.85rem; font-weight:700; color:rgba(255,255,255,0.5); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:0.75rem">💬 Câu Hỏi Nhanh</h4>
+            <div class="quick-questions">
+              <button class="quick-q-btn" onclick="sendQuickQ('Tại sao em hay mệt và buồn ngủ ban ngày?')">
+                😴 Tại sao hay mệt mỏi ban ngày?
+              </button>
+              <button class="quick-q-btn" onclick="sendQuickQ('Tim đập nhanh bất thường là dấu hiệu gì?')">
+                ❤️ Tim đập nhanh bất thường
+              </button>
+              <button class="quick-q-btn" onclick="sendQuickQ('Đau đầu thường xuyên liên quan đến hệ thống nào?')">
+                🧠 Đau đầu thường xuyên
+              </button>
+              <button class="quick-q-btn" onclick="sendQuickQ('Khó thở khi leo cầu thang là bình thường không?')">
+                🫁 Khó thở khi leo cầu thang
+              </button>
+              <button class="quick-q-btn" onclick="sendQuickQ('Stress ảnh hưởng đến cơ thể như thế nào theo Sinh học 11?')">
+                😰 Stress ảnh hưởng gì đến cơ thể?
+              </button>
+              <button class="quick-q-btn" onclick="sendQuickQ('Làm thế nào để tăng cường hệ miễn dịch tự nhiên?')">
+                🛡️ Tăng cường miễn dịch tự nhiên
+              </button>
+              <button class="quick-q-btn" onclick="sendQuickQ('Ăn nhiều đường ảnh hưởng đến cân bằng nội môi như thế nào?')">
+                🍬 Ăn nhiều đường hại gì?
+              </button>
+            </div>
+          </div>
+
+          <div class="mini-disclaimer">
+            ⚠️ <strong style="color:rgba(245,158,11,0.9)">Lưu ý:</strong> AI này chỉ dùng cho mục đích <strong>giáo dục</strong>, không thay thế chẩn đoán y tế. Khi có triệu chứng nghiêm trọng hãy gặp bác sĩ ngay.
+          </div>
+        </div>
+
+        <!-- RIGHT: CHAT PANEL -->
+        <div class="chat-panel animate-slideRight">
+          <!-- Messages -->
+          <div class="chat-messages" id="chat-messages">
+            <!-- Welcome -->
+            <div class="welcome-msg" id="welcome-msg">
+              <div style="font-size:3rem; margin-bottom:1rem">🤖</div>
+              <h3 style="font-size:1.1rem; margin-bottom:0.5rem">Xin chào! Tôi là BioAI</h3>
+              <p style="font-size:0.875rem">Hỏi tôi bất kỳ điều gì về sức khỏe hoặc sinh học — tôi sẽ phân tích dựa trên kiến thức Sinh học 11 và giải thích liên hệ giữa các hệ cơ quan.</p>
+              <div style="margin-top:1rem; display:flex; flex-wrap:wrap; justify-content:center; gap:0.5rem">
+                <span class="sys-badge">❤️ Tuần hoàn</span>
+                <span class="sys-badge">🫁 Hô hấp</span>
+                <span class="sys-badge">🧠 Thần kinh</span>
+                <span class="sys-badge">🛡️ Miễn dịch</span>
+                <span class="sys-badge">⚖️ Nội môi</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Input -->
+          <div class="chat-input-wrapper">
+            <div class="chat-input-row">
+              <textarea
+                class="chat-input"
+                id="chat-input"
+                placeholder="Ví dụ: Tại sao em hay mệt? Tim đập nhanh là sao?..."
+                rows="1"
+                aria-label="Nhập câu hỏi"
+              ></textarea>
+              <button class="chat-send-btn" id="chat-send-btn" onclick="sendMessage()" aria-label="Gửi tin nhắn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+              </button>
+            </div>
+            <div class="chat-hint">Nhấn Ctrl+Enter để gửi nhanh</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div class="footer-info">
+        <h3>Digital BioHospital</h3>
+        <p>Hệ thống hỗ trợ học tập và chuẩn đoán Sinh học 11 - Dự án STEM 2024</p>
+      </div>
+      <p>&copy; 2024 BioHospital Project. Bảo lưu mọi quyền.</p>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/api.js"></script>
+  <script src="js/patient.js"></script>
+  <script>
+    /* ═════════════════════════════
+       CONVERSATION HISTORY (multi-turn)
+    ═════════════════════════════ */
+    let conversationHistory = [];
+
+    // Load session from sessionStorage
+    (function loadSession() {
+      try {
+        const saved = sessionStorage.getItem('bioai_history');
+        if (saved) conversationHistory = JSON.parse(saved);
+      } catch(e) {}
+    })();
+
+    function saveSession() {
+      try { sessionStorage.setItem('bioai_history', JSON.stringify(conversationHistory.slice(-20))); } catch(e) {}
+    }
+
+    /* ═════════════════════════════
+       FORMATTING UTILS
+    ═════════════════════════════ */
+    function formatMarkdown(text) {
+      if (!text) return '';
+      // Escape HTML (basic)
+      let html = text;
+
+      // Code blocks
+      html = html.replace(/```[\s\S]*?```/g, m => `<pre style="background:rgba(0,0,0,0.3);border-radius:0.5rem;padding:0.75rem;font-size:0.8rem;overflow-x:auto"><code>${m.replace(/```/g,'')}</code></pre>`);
+
+      // Headings
+      html = html.replace(/^### (.+)$/gm, '<h4>$1</h4>');
+      html = html.replace(/^## (.+)$/gm, '<h3>$1</h3>');
+
+      // Bold / Italic
+      html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+      html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
+
+      // Blockquote
+      html = html.replace(/^> (.+)$/gm, '<blockquote>$1</blockquote>');
+
+      // Lists
+      html = html.replace(/^[\-\*] (.+)$/gm, '<li>$1</li>');
+      html = html.replace(/(<li>.+<\/li>\n?)+/g, '<ul>$&</ul>');
+
+      // Simple table (| col | col |)
+      html = html.replace(/(\|.+\|\n)+/g, tableBlock => {
+        const rows = tableBlock.trim().split('\n').filter(r => !r.match(/^\|[\s\-|]+\|$/));
+        if (rows.length < 1) return tableBlock;
+        const th = rows[0].split('|').slice(1,-1).map(c => `<th>${c.trim()}</th>`).join('');
+        const trs = rows.slice(1).map(r => `<tr>${r.split('|').slice(1,-1).map(c => `<td>${c.trim()}</td>`).join('')}</tr>`).join('');
+        return `<table><thead><tr>${th}</tr></thead><tbody>${trs}</tbody></table>`;
+      });
+
+      // Line breaks
+      html = html.replace(/\n\n/g, '</p><p>').replace(/\n/g, '<br/>');
+      return `<p>${html}</p>`;
+    }
+
+    function getTime() {
+      return new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+    }
+
+    /* ═════════════════════════════
+       UI MANAGEMENT
+    ═════════════════════════════ */
+    const messagesEl = document.getElementById('chat-messages');
+    const inputEl = document.getElementById('chat-input');
+    const sendBtn = document.getElementById('chat-send-btn');
+
+    function addMessage(text, role, systems = [], followups = []) {
+      const welcome = document.getElementById('welcome-msg');
+      if (welcome) welcome.style.display = 'none';
+
+      const msg = document.createElement('div');
+      msg.className = `msg ${role} animate-fadeInUp`;
+
+      const formattedText = formatMarkdown(text);
+      const badgesContainer = systems.length > 0 ?
+        `<div style="margin-top:0.5rem">${systems.map(s => `<span class="sys-badge">${s}</span>`).join('')}</div>` : '';
+
+      const chipsHtml = (role === 'ai' && followups.length > 0) ?
+        `<div class="followup-chips">${followups.map(q => `<button class="chip-btn" onclick="sendQuickQ(this.textContent)">💬 ${q}</button>`).join('')}</div>` : '';
+
+      msg.innerHTML = `
+        <div class="msg-avatar">${role === 'ai' ? '🤖' : '👤'}</div>
+        <div>
+          <div class="msg-bubble">${formattedText}${badgesContainer}${chipsHtml}</div>
+          <div class="msg-time">${getTime()}</div>
+        </div>
+      `;
+
+      messagesEl.appendChild(msg);
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+    }
+
+    const AI_STATUS_MSGS = [
+      '🧠 Đang phân tích từ PDF Sinh học 11...',
+      '📖 Đang tra cứu kiến thức SGK...',
+      '🔬 Đang liên kết các hệ cơ quan...',
+      '💡 Đang tổng hợp câu trả lời...',
+    ];
+    let statusIdx = 0;
+    let statusInterval = null;
+
+    function addTypingIndicator() {
+      const typing = document.createElement('div');
+      typing.className = 'msg ai';
+      typing.id = 'typing-ind';
+      typing.innerHTML = `
+        <div class="msg-avatar">🤖</div>
+        <div class="msg-bubble">
+          <div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>
+          <div class="ai-thinking-text" id="ai-status-text">${AI_STATUS_MSGS[0]}</div>
+        </div>
+      `;
+      messagesEl.appendChild(typing);
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+
+      statusIdx = 0;
+      statusInterval = setInterval(() => {
+        statusIdx = (statusIdx + 1) % AI_STATUS_MSGS.length;
+        const el = document.getElementById('ai-status-text');
+        if (el) el.textContent = AI_STATUS_MSGS[statusIdx];
+      }, 1800);
+    }
+
+    function removeTypingIndicator() {
+      clearInterval(statusInterval);
+      const t = document.getElementById('typing-ind');
+      if (t) t.remove();
+    }
+
+    /* ═════════════════════════════
+       CHAT ACTION
+    ═════════════════════════════ */
+    async function sendMessage() {
+      const question = inputEl.value.trim();
+      if (!question) return;
+
+      inputEl.value = '';
+      inputEl.style.height = 'auto';
+      sendBtn.disabled = true;
+
+      // Add to history before sending
+      addMessage(question, 'user');
+      conversationHistory.push({ role: 'user', text: question });
+      addTypingIndicator();
+
+      try {
+        const patientData = PatientManager.get();
+
+        // Send with last 8 turns of history
+        const response = await API.Chat.send(patientData, question);
+
+        removeTypingIndicator();
+
+        const sourceLabel = response.source !== 'Tổng hợp bên ngoài' ? `📖 ${response.source}` : '🌐 Tổng hợp';
+        addMessage(response.reply, 'ai', [sourceLabel], response.followups || []);
+
+        // Append AI reply to history
+        conversationHistory.push({ role: 'model', text: response.reply });
+        saveSession();
+
+      } catch (err) {
+        removeTypingIndicator();
+        addMessage(`Lỗi: ${err.message}. Đảm bảo máy chủ đang chạy tại localhost:5000.`, 'ai');
+      }
+
+      sendBtn.disabled = false;
+      inputEl.focus();
+    }
+
+    function sendQuickQ(q) {
+      inputEl.value = q;
+      sendMessage();
+    }
+
+    inputEl.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+        e.preventDefault();
+        sendMessage();
+      }
+    });
+
+    inputEl.addEventListener('input', () => {
+      inputEl.style.height = 'auto';
+      inputEl.style.height = Math.min(inputEl.scrollHeight, 120) + 'px';
+    });
+
+    // Restore session or show welcome
+    setTimeout(() => {
+      if (conversationHistory.length > 0) {
+        document.getElementById('welcome-msg').style.display = 'none';
+        // Replay last 6 messages
+        const toReplay = conversationHistory.slice(-6);
+        toReplay.forEach(h => {
+          if (h.role === 'user') addMessage(h.text, 'user');
+          else addMessage(h.text, 'ai');
+        });
+      } else {
+        addMessage('Xin chào! 👋 Tôi là **BioAI** — trợ lý sinh học thông minh.\n\nHãy đặt câu hỏi về triệu chứng hoặc kiến thức Sinh học 11. Tôi nhớ cả cuộc hội thoại để trả lời có ngữ cảnh!', 'ai', [],
+          ['Tim đập nhanh bất thường là sao?', 'Cơ chế phản xạ là gì?', 'Stress ảnh hưởng cơ thể như thế nào?']);
+      }
+    }, 600);
+  </script>
+</body>
+</html>
