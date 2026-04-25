@@ -130,7 +130,6 @@ const PersonalizeAPI = {
 };
 
 // ════════════════════════════════════════════════════════════════════════════
-<<<<<<< HEAD
 // CHAT API
 // ════════════════════════════════════════════════════════════════════════════
 
@@ -157,8 +156,7 @@ const LibraryAPI = {
 };
 
 // ════════════════════════════════════════════════════════════════════════════
-=======
->>>>>>> parent of f5af21d (upd)
+
 // UPTIME / HEALTH CHECK
 // ════════════════════════════════════════════════════════════════════════════
 
@@ -179,12 +177,8 @@ window.API = {
   Analyze: AnalyzeAPI,
   Predict: PredictAPI,
   Personalize: PersonalizeAPI,
-<<<<<<< HEAD
   Chat: ChatAPI,
   Library: LibraryAPI,
   checkHealth: checkAPIHealth,
   BASE: API_BASE
-=======
-  checkHealth: checkAPIHealth
->>>>>>> parent of f5af21d (upd)
 };
