@@ -1,0 +1,40 @@
+Phần 1: Di truyền Y học - Cơ chế phát sinh bệnh và hội chứng di truyền ở người
+Cơ chế phát sinh bệnh ung thư ở người: Ung thư được phát sinh từ một tế bào bị đột biến gene nhiều lần, dẫn đến việc mất khả năng điều hòa phân bào
+,
+. Ở cấp độ phân tử, protein p53 có vai trò cốt lõi trong việc áp chế khối u và kiểm soát chu kỳ tế bào. Nếu gene mã hóa protein p53 bị đột biến sai hỏng, tế bào sẽ mất chức năng kiểm soát, làm phát sinh khối u và tăng sinh mất kiểm soát gây ung thư
+,
+. Tế bào ung thư ác tính có đặc điểm là phân chia không giới hạn, tự tổng hợp yếu tố sinh trưởng, mất khả năng phụ thuộc neo bám (dễ di căn tự do trong cơ thể) và không bị ức chế bởi mật độ tế bào
+,
+. Tần số mắc ung thư ở người già cao hơn vì tế bào của họ đã trải qua nhiều lần nhân đôi, tích lũy nhiều đột biến, đồng thời hệ miễn dịch suy yếu làm giảm khả năng tiêu diệt tế bào ung thư
+,
+.
+Tác động đa hiệu của gene gây bệnh: Một đột biến gene nhỏ ở người có thể kéo theo nhiều rối loạn lớn (tính đa hiệu của gene). Ví dụ, bệnh hồng cầu hình lưỡi liềm do đột biến gene HbS quy định chuỗi β-hemoglobin (thay thế axit amin glutamic bằng valin ở vị trí số 6)
+. Đột biến này làm hồng cầu biến dạng, gây ra hàng loạt rối loạn bệnh lý nghiêm trọng như suy thận, tổn thương tim và lách do sự tắc nghẽn các mao mạch
+,
+.
+Các hội chứng do đột biến nhiễm sắc thể (NST): Sự phân chia tế bào lỗi tạo ra các thể đột biến số lượng NST. Ở người, sự thừa một NST tạo ra các bệnh lý nghiêm trọng như hội chứng Down (thừa 1 NST số 21 gây thiểu năng trí tuệ, dị tật tim mạch), hội chứng Patau (thừa 1 NST số 13 gây dị dạng não, sứt môi, hở hàm ếch) và hội chứng siêu nữ 3X (ảnh hưởng đến khả năng học tập, ngôn ngữ)
+,
+,
+,
+. Tuổi của người mẹ càng cao thì nguy cơ sinh con mắc bệnh Down càng lớn
+.
+Phần 2: Tổ chức và sự tiến hóa của hệ gen người
+Kích thước và mật độ gene: Khác với vi khuẩn, hệ gen của người (Homo sapiens) có kích thước rất lớn, khoảng 3.200 Mb (triệu cặp base), nhưng chỉ chứa khoảng 20.500 gene mã hóa protein
+,
+. Điều này cho thấy con người có mật độ gene cực kỳ thấp trên mỗi phân tử ADN
+. Hệ gen người chứa lượng ADN không mã hóa nhiều gấp khoảng 10.000 lần so với vi khuẩn, đa phần các trình tự không mã hóa này nằm trong các đoạn intron xen kẽ giữa các exon của gene
+.
+Sự biểu hiện linh hoạt của hệ gen: Mặc dù chỉ có khoảng 20.500 gene, cơ thể người có thể sản sinh ra lượng chuỗi polypeptide (protein) nhiều hơn con số này
+. Cơ chế tạo ra sự đa dạng này là do quá trình cắt các intron và nối các exon (splicing) theo nhiều cách khác nhau từ một phân tử mARN sơ khai ban đầu
+,
+.
+Phần 3: Bằng chứng tiến hóa và sự phát sinh loài người
+Mối quan hệ họ hàng giữa người và linh trưởng: Bằng chứng sinh học phân tử hiện đại chứng minh con người và tinh tinh có quan hệ họ hàng rất gần gũi. Khi so sánh, trình tự hệ gen của người và tinh tinh chỉ khác nhau khoảng 4%
+. Sự khác biệt này chủ yếu đến từ các đột biến thêm đoạn, mất đoạn và lặp đoạn xảy ra trong quá trình tiến hóa phân nhánh
+.
+Cơ chế đột biến hình thành nên loài người: Khoảng 6 triệu năm trước, sau khi các dạng tổ tiên của người hiện đại và tinh tinh phân ly, một sự kiện dung hợp (chuyển đoạn) hai nhiễm sắc thể khác nhau ở dạng tổ tiên đã xảy ra
+. Sự dung hợp này là lý do giải thích tại sao loài người hiện đại có bộ NST đơn bội n=23, khác biệt so với bộ NST của tinh tinh là n=24
+.
+Sự tiến hóa của các gene đặc thù: Quá trình chọn lọc tự nhiên và tiến hóa đã biến đổi các nucleotide ở những gene đặc biệt mang lại đặc điểm đặc trưng cho con người. Tiêu biểu là gene FOXP2, một gene quan trọng ảnh hưởng trực tiếp đến khả năng phát âm và ngôn ngữ ở người
+. Việc so sánh hệ gen giữa người và các loài thú khác (như chuột) cũng tìm thấy các "khối" gene lớn được bảo tồn tương đồng, minh chứng cho việc các gene này đã cùng tồn tại và phát triển xuyên suốt lịch sử tiến hóa của động vật có vú
+.

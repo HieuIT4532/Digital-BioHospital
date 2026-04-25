@@ -144,19 +144,15 @@ const PersonalizeAPI = {
 };
 
 // ════════════════════════════════════════════════════════════════════════════
+<<<<<<< HEAD
 // CHAT API
 // ════════════════════════════════════════════════════════════════════════════
 
 const ChatAPI = {
-  /**
-   * Nhắn tin với AI, lấy thông tin từ PDF hoặc kiến thức ngoài
-   * @param {Object} patientData
-   * @param {string} message
-   */
-  async send(patientData, message) {
+  async send(message, history = [], patientData = null) {
     return apiFetch('/api/chat', {
       method: 'POST',
-      body: JSON.stringify({ patient: patientData, message })
+      body: JSON.stringify({ message, history, patientData })
     });
   }
 };
@@ -168,10 +164,21 @@ const ChatAPI = {
 const LibraryAPI = {
   async getByCategory(category) {
     return apiFetch(`/api/library/${category}`);
+<<<<<<< HEAD
+=======
+  },
+  async getAll() {
+    return apiFetch('/api/library');
+>>>>>>> 2a9cf3db908d4d5037f484876b3091cd867ab898
   }
 };
 
 // ════════════════════════════════════════════════════════════════════════════
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> parent of f5af21d (upd)
+>>>>>>> 2a9cf3db908d4d5037f484876b3091cd867ab898
 // UPTIME / HEALTH CHECK
 // ════════════════════════════════════════════════════════════════════════════
 
@@ -192,8 +199,15 @@ window.API = {
   Analyze: AnalyzeAPI,
   Predict: PredictAPI,
   Personalize: PersonalizeAPI,
+<<<<<<< HEAD
   Chat: ChatAPI,
   Library: LibraryAPI,
   checkHealth: checkAPIHealth,
   BASE: API_BASE
+<<<<<<< HEAD
+=======
+=======
+  checkHealth: checkAPIHealth
+>>>>>>> parent of f5af21d (upd)
+>>>>>>> 2a9cf3db908d4d5037f484876b3091cd867ab898
 };

@@ -1,21 +1,24 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="vi">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Thư Viện Sinh Học 11 – Bệnh Viện Sinh Học Thông Minh</title>
-  <meta name="description" content="Thư viện sinh học chuẩn Sinh học 11: Hệ tuần hoàn, hô hấp, thần kinh, miễn dịch, cân bằng nội môi, tiêu hóa. Từng bộ phận chi tiết – AI phân tích từ SGK." />
+  <title>Thư Viện Sức Khoẻ – Bệnh Viện Sinh Học Thông Minh</title>
+  <meta name="description" content="Thư viện kiến thức sinh học và sức khoẻ: hệ tuần hoàn, hô hấp, thần kinh, dinh dưỡng." />
   <link rel="stylesheet" href="css/global.css" />
   <link rel="stylesheet" href="css/components.css" />
   <link rel="stylesheet" href="css/animations.css" />
   <style>
-    /* ── Search ── */
     .search-bar {
-      display: flex; align-items: center; gap: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
       padding: 0 1.25rem;
       background: rgba(255,255,255,0.06);
       border: 1px solid rgba(255,255,255,0.12);
-      border-radius: 999px; margin-bottom: 2rem; transition: all 0.25s;
+      border-radius: 999px;
+      margin-bottom: 2rem;
+      transition: all 0.25s;
     }
     .search-bar:focus-within {
       border-color: var(--color-primary-light);
@@ -23,274 +26,108 @@
       box-shadow: 0 0 0 3px rgba(124,58,237,0.15);
     }
     .search-bar input {
-      flex:1; background:none; border:none; outline:none;
-      padding: 0.875rem 0; color: white;
-      font-family: var(--font-family); font-size: 1rem;
+      flex: 1;
+      background: none;
+      border: none;
+      outline: none;
+      padding: 0.875rem 0;
+      color: white;
+      font-family: var(--font-family);
+      font-size: 1rem;
     }
     .search-bar input::placeholder { color: rgba(255,255,255,0.35); }
 
-    /* ── Filter Tabs ── */
-    .filter-tabs { display:flex; gap:0.5rem; flex-wrap:wrap; margin-bottom:2rem; }
+    .filter-tabs {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 2rem;
+    }
+
     .filter-btn {
       padding: 0.4rem 1rem;
       background: rgba(255,255,255,0.05);
       border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 999px; cursor:pointer; font-size:0.85rem; font-weight:600;
-      color: rgba(255,255,255,0.6); transition: all 0.2s; font-family: var(--font-family);
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: rgba(255,255,255,0.6);
+      transition: all 0.2s;
+      font-family: var(--font-family);
     }
     .filter-btn:hover { color: white; }
-    .filter-btn.active { background: rgba(124,58,237,0.25); border-color: var(--color-primary-light); color: var(--color-primary-light); }
+    .filter-btn.active {
+      background: rgba(124,58,237,0.25);
+      border-color: var(--color-primary-light);
+      color: var(--color-primary-light);
+    }
 
-    /* ── Library Grid ── */
-    .library-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(310px,1fr)); gap:1.5rem; }
+    .library-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
 
-    /* ── System Card ── */
     .lib-card {
       background: rgba(255,255,255,0.04);
       border: 1px solid rgba(255,255,255,0.07);
-      border-radius: 1.25rem; padding: 1.5rem;
-      cursor: pointer; transition: all 0.3s ease;
-      position: relative; overflow: hidden;
+      border-radius: 1.25rem;
+      padding: 1.5rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
     }
+
     .lib-card::before {
-      content:''; position:absolute; top:0; left:0; right:0; height:3px;
-      transition: opacity 0.3s; opacity:0;
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      transition: opacity 0.3s;
+      opacity: 0;
     }
-    .lib-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); }
-    .lib-card:hover::before { opacity:1; }
-    .lib-card:hover .lib-bg-icon { opacity:0.15; transform: scale(1.15) rotate(-5deg); }
 
-    /* Color themes per system */
-    .lib-cat-circulation { --sys-color-rgb: 239,68,68; }
+    .lib-card:hover { transform: translateY(-4px); border-color: rgba(167,139,250,0.3); box-shadow: var(--shadow-lg); }
+    .lib-card:hover::before { opacity: 1; }
+
     .lib-cat-circulation::before { background: linear-gradient(90deg,#EF4444,#F97316); }
-    .lib-cat-circulation:hover { border-color: rgba(239,68,68,0.4); box-shadow: 0 20px 60px rgba(239,68,68,0.15); }
-
-    .lib-cat-respiratory { --sys-color-rgb: 59,130,246; }
     .lib-cat-respiratory::before { background: linear-gradient(90deg,#3B82F6,#06B6D4); }
-    .lib-cat-respiratory:hover { border-color: rgba(59,130,246,0.4); box-shadow: 0 20px 60px rgba(59,130,246,0.15); }
+    .lib-cat-neuro::before        { background: linear-gradient(90deg,#7C3AED,#A78BFA); }
+    .lib-cat-nutrition::before    { background: linear-gradient(90deg,#10B981,#6EE7B7); }
+    .lib-cat-immune::before       { background: linear-gradient(90deg,#F59E0B,#FCD34D); }
+    .lib-cat-bone::before         { background: linear-gradient(90deg,#6B7280,#9CA3AF); }
 
-    .lib-cat-neuro { --sys-color-rgb: 124,58,237; }
-    .lib-cat-neuro::before { background: linear-gradient(90deg,#7C3AED,#A78BFA); }
-    .lib-cat-neuro:hover { border-color: rgba(124,58,237,0.4); box-shadow: 0 20px 60px rgba(124,58,237,0.15); }
+    .lib-icon { font-size: 2rem; margin-bottom: 0.75rem; display: block; }
+    .lib-title { font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .lib-excerpt { font-size: 0.85rem; color: rgba(255,255,255,0.6); line-height: 1.6; }
 
-    .lib-cat-immune { --sys-color-rgb: 245,158,11; }
-    .lib-cat-immune::before { background: linear-gradient(90deg,#F59E0B,#FCD34D); }
-    .lib-cat-immune:hover { border-color: rgba(245,158,11,0.4); box-shadow: 0 20px 60px rgba(245,158,11,0.15); }
-
-    .lib-cat-homeostasis { --sys-color-rgb: 16,185,129; }
-    .lib-cat-homeostasis::before { background: linear-gradient(90deg,#10B981,#6EE7B7); }
-    .lib-cat-homeostasis:hover { border-color: rgba(16,185,129,0.4); box-shadow: 0 20px 60px rgba(16,185,129,0.15); }
-
-    .lib-cat-digestive { --sys-color-rgb: 251,146,60; }
-    .lib-cat-digestive::before { background: linear-gradient(90deg,#FB923C,#FBBF24); }
-    .lib-cat-digestive:hover { border-color: rgba(251,146,60,0.4); box-shadow: 0 20px 60px rgba(251,146,60,0.15); }
-
-    /* Background icon */
-    .lib-bg-icon {
-      position: absolute; right: 1rem; bottom: 1rem;
-      font-size: 5rem; opacity: 0.07;
-      transition: all 0.4s ease; pointer-events: none;
-      line-height: 1; user-select: none;
-    }
-
-    .lib-icon { font-size: 2.2rem; margin-bottom: 0.75rem; display:block; }
-    .lib-title { font-size: 1.05rem; font-weight: 700; margin-bottom: 0.5rem; }
-    .lib-excerpt { font-size: 0.85rem; color: rgba(255,255,255,0.6); line-height:1.6; margin-bottom:1rem; }
-
-    .lib-card-footer { display:flex; align-items:center; justify-content:space-between; }
-    .lib-organ-count {
-      font-size: 0.75rem; font-weight: 700;
-      color: rgba(255,255,255,0.4);
-      display: flex; align-items: center; gap: 0.35rem;
-    }
-    .lib-tags { display:flex; gap:0.4rem; flex-wrap:wrap; }
+    .lib-tags { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-top: 1rem; }
     .lib-tag {
-      padding: 0.2rem 0.6rem; background: rgba(124,58,237,0.15);
-      border-radius: 999px; font-size: 0.7rem; font-weight:700;
-      color: var(--color-primary-light); text-transform:uppercase; letter-spacing: 0.06em;
-    }
-    .lib-tag.tag-sgk { background: rgba(239,68,68,0.15); color: #FCA5A5; }
-    .lib-tag.tag-thucte { background: rgba(16,185,129,0.15); color: #6EE7B7; }
-
-    /* ══════════════════════════════════════════════════════
-       MODAL SHARED
-    ══════════════════════════════════════════════════════ */
-    .modal-overlay {
-      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-      transition: all 0.4s cubic-bezier(0.4,0,0.2,1);
-      opacity:0; visibility:hidden;
-    }
-    .modal-overlay.open { opacity:1; visibility:visible; }
-    .modal {
-      transition: all 0.4s cubic-bezier(0.34,1.56,0.64,1);
-      transform: scale(0.92) translateY(24px); opacity:0;
-      box-shadow: 0 32px 64px -16px rgba(0,0,0,0.6);
-      border: 1px solid rgba(255,255,255,0.1);
-    }
-    .modal-overlay.open .modal { transform: scale(1) translateY(0); opacity:1; }
-
-    /* ══════════════════════════════════════════════════════
-       MODAL CẤP 1: ORGAN LIST
-    ══════════════════════════════════════════════════════ */
-    #organs-modal .modal {
-      max-width: 780px; width: 95vw;
-      background: rgba(14,14,20,0.98);
-      border-radius: 1.5rem;
-      padding: 2rem;
-    }
-    .organs-header {
-      display: flex; align-items: center; justify-content: space-between;
-      margin-bottom: 1.75rem;
-    }
-    .organs-title { display: flex; align-items: center; gap: 0.75rem; }
-    .organs-title h2 { font-size: 1.3rem; margin: 0; }
-    .organs-title .sys-icon { font-size: 2rem; }
-
-    .organs-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 1rem;
-    }
-
-    .organ-card {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 1rem; padding: 1.25rem;
-      cursor: pointer; transition: all 0.25s ease;
-      text-align: center; position: relative; overflow: hidden;
-    }
-    .organ-card:hover {
+      padding: 0.2rem 0.6rem;
       background: rgba(124,58,237,0.15);
-      border-color: rgba(167,139,250,0.35);
-      transform: translateY(-4px);
-      box-shadow: 0 12px 32px rgba(124,58,237,0.2);
-    }
-    .organ-card:hover .organ-arrow { opacity: 1; transform: translateX(0); }
-    .organ-icon { font-size: 2.2rem; margin-bottom: 0.6rem; display:block; }
-    .organ-name { font-size: 0.9rem; font-weight:700; margin-bottom:0.35rem; }
-    .organ-desc { font-size: 0.75rem; color: rgba(255,255,255,0.5); line-height:1.4; }
-    .organ-arrow {
-      position: absolute; top: 0.75rem; right: 0.75rem;
-      font-size: 0.8rem; color: var(--color-primary-light);
-      opacity: 0; transform: translateX(-4px); transition: all 0.2s;
-    }
-
-    /* ══════════════════════════════════════════════════════
-       MODAL CẤP 2: DETAIL (AI)
-    ══════════════════════════════════════════════════════ */
-    #detail-modal .modal {
-      max-width: 860px; width: 95vw;
-      background: rgba(14,14,20,0.98);
-      border-radius: 1.5rem;
-    }
-    .detail-header {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 1.5rem 1.75rem 0;
-    }
-    .detail-header-left { display: flex; align-items: center; gap: 0.75rem; }
-    .detail-organ-icon { font-size: 2rem; }
-    .detail-organ-name { font-size: 1.2rem; font-weight: 700; margin: 0; }
-    .detail-system-breadcrumb {
-      font-size: 0.75rem; color: rgba(255,255,255,0.4);
-      display: flex; align-items: center; gap: 0.35rem; margin-top: 0.2rem;
-    }
-
-    .back-btn {
-      display: inline-flex; align-items: center; gap: 0.4rem;
-      padding: 0.4rem 1rem;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 999px; font-size: 0.8rem; font-weight: 600;
-      color: rgba(255,255,255,0.7); cursor: pointer;
-      transition: all 0.2s; font-family: var(--font-family);
-      margin-right: 0.5rem;
-    }
-    .back-btn:hover { background: rgba(124,58,237,0.2); color: var(--color-primary-light); border-color: rgba(167,139,250,0.4); }
-
-    /* Tabs */
-    .art-tabs {
-      display: flex; gap: 0.35rem; flex-wrap: wrap;
-      padding: 1.25rem 1.75rem;
-      border-bottom: 1px solid rgba(255,255,255,0.07);
-    }
-    .art-tab {
-      padding: 0.4rem 1rem;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 999px; font-size: 0.82rem; font-weight: 600;
-      color: rgba(255,255,255,0.6); cursor: pointer;
-      transition: all 0.3s; font-family: var(--font-family);
-    }
-    .art-tab:hover { color:white; transform: translateY(-2px); }
-    .art-tab.active {
-      background: rgba(124,58,237,0.3);
-      border-color: var(--color-primary-light);
+      border-radius: 999px;
+      font-size: 0.7rem;
+      font-weight: 700;
       color: var(--color-primary-light);
-      box-shadow: 0 4px 12px rgba(124,58,237,0.2);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
     }
 
-    .detail-body {
-      padding: 1.25rem 1.75rem 1.75rem;
-      max-height: 60vh; overflow-y: auto; scroll-behavior: smooth;
+    /* Modal Content */
+    .modal-article h4 { font-size: 1rem; margin: 1.25rem 0 0.5rem; color: var(--color-primary-light); }
+    .modal-article p  { font-size: 0.9rem; color: rgba(255,255,255,0.8); line-height: 1.7; margin-bottom: 0.75rem; }
+    .modal-article ul { list-style: none; margin-bottom: 1rem; }
+    .modal-article ul li {
+      padding: 0.35rem 0;
+      font-size: 0.875rem;
+      color: rgba(255,255,255,0.75);
+      border-bottom: 1px solid rgba(255,255,255,0.04);
     }
-    .detail-body::-webkit-scrollbar { width: 5px; }
-    .detail-body::-webkit-scrollbar-thumb { background: var(--color-primary); border-radius: 999px; }
+    .modal-article ul li::before { content: '✓ '; color: #10B981; font-weight: 700; }
 
-    .art-section { display:none; opacity:0; transform:translateY(8px); transition: all 0.35s ease; }
-    .art-section.active { display:block; opacity:1; transform:translateY(0); }
-    .art-section h4 { font-size:1.05rem; margin:1.25rem 0 0.65rem; color:var(--color-primary-light); border-left:3px solid var(--color-primary); padding-left:0.75rem; }
-    .art-section p { font-size:0.92rem; color:rgba(255,255,255,0.85); line-height:1.7; margin-bottom:0.875rem; }
-    .art-section ul { list-style:none; margin-bottom:1rem; background:rgba(0,0,0,0.15); border-radius:0.875rem; padding:0.875rem 1rem; }
-    .art-section ul li { padding:0.45rem 0; font-size:0.88rem; color:rgba(255,255,255,0.8); border-bottom:1px dashed rgba(255,255,255,0.05); display:flex; align-items:flex-start; gap:0.5rem; }
-    .art-section ul li:last-child { border-bottom:none; }
-    .art-section ul li::before { content:'👉'; display:block; font-size:0.85rem; flex-shrink:0; }
-
-    .sgk-box { background:linear-gradient(135deg,rgba(239,68,68,0.1),rgba(239,68,68,0.02)); border:1px solid rgba(239,68,68,0.3); border-radius:1rem; padding:1.25rem; margin:1.25rem 0; }
-    .sgk-box-title { font-size:0.82rem; font-weight:700; color:#FCA5A5; margin-bottom:0.75rem; text-transform:uppercase; letter-spacing:0.08em; display:flex; align-items:center; gap:0.5rem; }
-
-    .reallife-box { background:linear-gradient(135deg,rgba(16,185,129,0.1),rgba(16,185,129,0.02)); border:1px solid rgba(16,185,129,0.3); border-radius:1rem; padding:1.25rem; margin:1.25rem 0; }
-    .reallife-box-title { font-size:0.82rem; font-weight:700; color:#6EE7B7; margin-bottom:0.75rem; text-transform:uppercase; letter-spacing:0.08em; display:flex; align-items:center; gap:0.5rem; }
-
-    /* ── Skeleton Loader ── */
-    .skeleton-wrap { padding: 1.5rem 0; }
-    .sk-line {
-      height: 14px; border-radius: 999px;
-      background: linear-gradient(90deg, rgba(255,255,255,0.06) 25%, rgba(255,255,255,0.12) 50%, rgba(255,255,255,0.06) 75%);
-      background-size: 200% 100%;
-      animation: shimmer 1.5s infinite;
-      margin-bottom: 0.8rem;
-    }
-    .sk-line.sk-title { height: 20px; width: 40%; margin-bottom: 1.25rem; }
-    .sk-line.sk-short { width: 60%; }
-    .sk-line.sk-med   { width: 80%; }
-    .sk-line.sk-full  { width: 100%; }
-    .sk-block { height: 80px; border-radius: 1rem; background: linear-gradient(90deg, rgba(255,255,255,0.06) 25%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.06) 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; margin: 1rem 0; }
-    .sk-status { display:flex; align-items:center; gap:0.6rem; font-size:0.82rem; color: rgba(167,139,250,0.7); margin-bottom: 1.25rem; }
-    .sk-status-dot { width:8px; height:8px; border-radius:50%; background: var(--color-primary-light); animation: pulse 1s infinite; }
-    @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
-
-    /* ── Wikipedia ── */
-    .wiki-btn {
-      background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
-      color:white; border-radius:999px; padding:0.4rem 1rem;
-      font-size:0.78rem; font-weight:600; cursor:pointer;
-      display:inline-flex; align-items:center; gap:0.4rem; transition:all 0.2s;
-    }
-    .wiki-btn:hover { background:white; color:black; transform:scale(1.05); }
-    .wiki-popup {
-      position:fixed; top:50%; left:50%;
-      transform:translate(-50%,-50%) scale(0.9);
-      width:90vw; max-width:600px;
-      background:#111; border:1px solid rgba(255,255,255,0.15);
-      border-radius:1rem; padding:1.5rem; z-index:10000;
-      box-shadow:0 25px 50px rgba(0,0,0,0.8);
-      opacity:0; visibility:hidden; transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);
-    }
-    .wiki-popup.open { opacity:1; visibility:visible; transform:translate(-50%,-50%) scale(1); }
-    .wiki-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; padding-bottom:0.5rem; border-bottom:1px solid rgba(255,255,255,0.1); }
-    .wiki-content { font-size:0.88rem; line-height:1.6; color:rgba(255,255,255,0.8); max-height:50vh; overflow-y:auto; }
-    .wiki-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.6); backdrop-filter:blur(4px); z-index:9999; opacity:0; visibility:hidden; transition:0.3s; }
-    .wiki-overlay.open { opacity:1; visibility:visible; }
+    .hidden { display: none; }
   </style>
 </head>
 <body class="page-enter">
@@ -305,223 +142,175 @@
         <li><a href="index.html">🏠 Trang chủ</a></li>
         <li><a href="departments.html">🏥 Chuyên khoa</a></li>
         <li><a href="anatomy.html">🧬 Giải phẫu</a></li>
-        <li><a href="analysis.html">🔬 Phân tích</a></li>
         <li><a href="prediction.html">🔮 Dự đoán</a></li>
         <li><a href="library.html" class="active">📚 Thư viện</a></li>
-        <li><a href="chatbot.html">🤖 Tư vấn AI</a></li>
       </ul>
       <a href="reception.html" class="navbar-patient-btn btn btn-sm">🧑‍⚕️ Hồ sơ</a>
     </div>
   </nav>
 
   <main id="main">
-    <div class="page-header" style="background:linear-gradient(180deg,rgba(59,130,246,0.08) 0%,transparent 100%);border-bottom:1px solid rgba(255,255,255,0.05);">
+    <div class="page-header" style="background: linear-gradient(180deg, rgba(59,130,246,0.08) 0%, transparent 100%); border-bottom: 1px solid rgba(255,255,255,0.05);">
       <div class="container">
-        <div class="section-tag animate-fadeInUp" style="color:#93C5FD;border-color:rgba(59,130,246,0.3)">📚 Sinh Học 11</div>
-        <h1 class="animate-fadeInUp delay-100">Thư Viện Sinh Học</h1>
-        <p class="animate-fadeInUp delay-200">6 hệ cơ quan · Mỗi hệ có <strong>chi tiết từng bộ phận</strong> · AI phân tích từ PDF sách giáo khoa</p>
+        <div class="section-tag animate-fadeInUp" style="color:#93C5FD; border-color:rgba(59,130,246,0.3)">📚 Kiến Thức</div>
+        <h1 class="animate-fadeInUp delay-100">Thư Viện Sức Khoẻ</h1>
+        <p class="animate-fadeInUp delay-200">Kiến thức sinh học và sức khoẻ được tổng hợp, đơn giản hoá cho học sinh</p>
       </div>
     </div>
 
-    <div class="container" style="padding-top:2rem;padding-bottom:4rem">
+    <div class="container" style="padding-top:2rem; padding-bottom:4rem">
 
       <!-- Search -->
       <div class="search-bar animate-fadeInDown">
         <span>🔍</span>
-        <input type="text" id="search-input" placeholder="Tìm kiếm: tim, phổi, neuron, kháng thể..." aria-label="Tìm kiếm thư viện" />
+        <input type="text" id="search-input" placeholder="Tìm kiếm bài viết..." aria-label="Tìm kiếm thư viện" />
       </div>
 
       <!-- Filter tabs -->
       <div class="filter-tabs animate-fadeIn">
         <button class="filter-btn active" data-filter="all" id="filter-all">Tất cả</button>
-        <button class="filter-btn" data-filter="circulation" id="filter-circ">❤️ Tuần hoàn</button>
-        <button class="filter-btn" data-filter="respiratory" id="filter-resp">🫁 Hô hấp</button>
+        <button class="filter-btn" data-filter="circulation" id="filter-circ">🩸 Tuần hoàn</button>
+        <button class="filter-btn" data-filter="respiratory" id="filter-resp">🌬️ Hô hấp</button>
         <button class="filter-btn" data-filter="neuro" id="filter-neuro">🧠 Thần kinh</button>
+        <button class="filter-btn" data-filter="nutrition" id="filter-nutr">🍎 Dinh dưỡng</button>
         <button class="filter-btn" data-filter="immune" id="filter-immune">🛡️ Miễn dịch</button>
-        <button class="filter-btn" data-filter="homeostasis" id="filter-homeo">⚖️ Nội môi</button>
-        <button class="filter-btn" data-filter="digestive" id="filter-digest">🍽️ Tiêu hóa</button>
+        <button class="filter-btn" data-filter="bone" id="filter-bone">🦴 Xương khớp</button>
       </div>
 
       <!-- Article Grid -->
       <div class="library-grid stagger" id="library-grid">
 
-        <!-- 1: HỆ TUẦN HOÀN -->
-        <article class="lib-card lib-cat-circulation reveal" data-cat="circulation" data-title="Hệ Tuần Hoàn Tim mạch máu" onclick="openOrgansModal('circulation')">
-          <span class="lib-bg-icon">❤️</span>
-          <span class="lib-icon">❤️</span>
-          <h2 class="lib-title">Hệ Tuần Hoàn</h2>
-          <p class="lib-excerpt">Tim, mạch máu, tính tự động của tim. Chu kì co – giãn 0.8 giây. Vòng tuần hoàn lớn và nhỏ.</p>
-          <div class="lib-card-footer">
-            <div class="lib-organ-count">🔬 5 bộ phận →</div>
-            <div class="lib-tags">
-              <span class="lib-tag tag-sgk">SGK 11</span>
-              <span class="lib-tag tag-thucte">Thực tế</span>
-            </div>
+        <!-- 1 -->
+        <article class="lib-card lib-cat-circulation reveal" data-cat="circulation" data-title="Hệ Tuần Hoàn Máu"
+          onclick="openArticle('circulation-1')">
+          <span class="lib-icon">🩸</span>
+          <h2 class="lib-title">Hệ Tuần Hoàn Máu</h2>
+          <p class="lib-excerpt">Tim, mạch máu và hành trình của máu trong cơ thể — từ phổi đến mọi tế bào trong 60 giây.</p>
+          <div class="lib-tags">
+            <span class="lib-tag">STEM</span>
+            <span class="lib-tag">Cơ bản</span>
           </div>
         </article>
 
-        <!-- 2: HỆ HÔ HẤP -->
-        <article class="lib-card lib-cat-respiratory reveal delay-100" data-cat="respiratory" data-title="Hệ Hô Hấp Phổi khí" onclick="openOrgansModal('respiratory')">
-          <span class="lib-bg-icon">🫁</span>
+        <!-- 2 -->
+        <article class="lib-card lib-cat-respiratory reveal delay-100" data-cat="respiratory" data-title="Hệ Hô Hấp"
+          onclick="openArticle('respiratory-1')">
           <span class="lib-icon">🫁</span>
-          <h2 class="lib-title">Hệ Hô Hấp</h2>
-          <p class="lib-excerpt">Trao đổi khí O₂ – CO₂. Cơ chế hít vào – thở ra. Phế nang: 70m² trao đổi khí mỗi ngày.</p>
-          <div class="lib-card-footer">
-            <div class="lib-organ-count">🔬 4 bộ phận →</div>
-            <div class="lib-tags">
-              <span class="lib-tag tag-sgk">SGK 11</span>
-              <span class="lib-tag tag-thucte">Thực tế</span>
-            </div>
+          <h2 class="lib-title">Hệ Hô Hấp & Trao Đổi Khí</h2>
+          <p class="lib-excerpt">Cơ chế trao đổi O₂-CO₂, vai trò của phổi và tác hại của ô nhiễm không khí lên hệ hô hấp.</p>
+          <div class="lib-tags">
+            <span class="lib-tag">STEM</span>
+            <span class="lib-tag">Thực tế</span>
           </div>
         </article>
 
-        <!-- 3: HỆ THẦN KINH -->
-        <article class="lib-card lib-cat-neuro reveal delay-200" data-cat="neuro" data-title="Hệ Thần Kinh Não neuron phản xạ" onclick="openOrgansModal('nervous')">
-          <span class="lib-bg-icon">🧠</span>
+        <!-- 3 -->
+        <article class="lib-card lib-cat-neuro reveal delay-200" data-cat="neuro" data-title="Não Bộ & Trí Nhớ"
+          onclick="openArticle('neuro-1')">
           <span class="lib-icon">🧠</span>
-          <h2 class="lib-title">Hệ Thần Kinh</h2>
-          <p class="lib-excerpt">Phản xạ, cung phản xạ, điện thế hoạt động. Hệ thần kinh trung ương và ngoại biên.</p>
-          <div class="lib-card-footer">
-            <div class="lib-organ-count">🔬 5 bộ phận →</div>
-            <div class="lib-tags">
-              <span class="lib-tag tag-sgk">SGK 11</span>
-              <span class="lib-tag tag-thucte">Thực tế</span>
-            </div>
+          <h2 class="lib-title">Não Bộ & Trí Nhớ</h2>
+          <p class="lib-excerpt">Cách não ghi nhớ, quên và học hỏi. Tại sao giấc ngủ quan trọng đến mức này với trí nhớ.</p>
+          <div class="lib-tags">
+            <span class="lib-tag">Thú vị</span>
+            <span class="lib-tag">Học tập</span>
           </div>
         </article>
 
-        <!-- 4: HỆ MIỄN DỊCH -->
-        <article class="lib-card lib-cat-immune reveal delay-300" data-cat="immune" data-title="Hệ Miễn Dịch kháng thể tế bào B T" onclick="openOrgansModal('immune')">
-          <span class="lib-bg-icon">🛡️</span>
+        <!-- 4 -->
+        <article class="lib-card lib-cat-nutrition reveal delay-300" data-cat="nutrition" data-title="Dinh Dưỡng Cân Bằng"
+          onclick="openArticle('nutrition-1')">
+          <span class="lib-icon">🍎</span>
+          <h2 class="lib-title">Dinh Dưỡng Cân Bằng & BMI</h2>
+          <p class="lib-excerpt">Vai trò của protein, carb, chất béo và vi chất. Cách đọc nhãn thực phẩm và kiểm soát cân nặng.</p>
+          <div class="lib-tags">
+            <span class="lib-tag">Thực tế</span>
+            <span class="lib-tag">Khuyến nghị</span>
+          </div>
+        </article>
+
+        <!-- 5 -->
+        <article class="lib-card lib-cat-immune reveal delay-400" data-cat="immune" data-title="Hệ Miễn Dịch"
+          onclick="openArticle('immune-1')">
           <span class="lib-icon">🛡️</span>
-          <h2 class="lib-title">Hệ Miễn Dịch</h2>
-          <p class="lib-excerpt">Bảo vệ cơ thể khỏi mầm bệnh. Tế bào B, tế bào T, kháng thể. Miễn dịch đặc hiệu và không đặc hiệu.</p>
-          <div class="lib-card-footer">
-            <div class="lib-organ-count">🔬 5 bộ phận →</div>
-            <div class="lib-tags">
-              <span class="lib-tag tag-sgk">SGK 11</span>
-              <span class="lib-tag tag-thucte">Vaccine</span>
-            </div>
+          <h2 class="lib-title">Hệ Miễn Dịch – Lá Chắn Cơ Thể</h2>
+          <p class="lib-excerpt">Bạch cầu, kháng thể và cơ chế vaccine hoạt động thế nào? Cách tăng cường hệ miễn dịch.</p>
+          <div class="lib-tags">
+            <span class="lib-tag">STEM</span>
+            <span class="lib-tag">Vaccine</span>
           </div>
         </article>
 
-        <!-- 5: CÂN BẰNG NỘI MÔI -->
-        <article class="lib-card lib-cat-homeostasis reveal delay-400" data-cat="homeostasis" data-title="Cân Bằng Nội Môi thận insulin glucose" onclick="openOrgansModal('homeostasis')">
-          <span class="lib-bg-icon">⚖️</span>
-          <span class="lib-icon">⚖️</span>
-          <h2 class="lib-title">Cân Bằng Nội Môi</h2>
-          <p class="lib-excerpt">Ổn định môi trường trong: pH, nhiệt độ, áp suất thẩm thấu. Cơ chế phản hồi âm (negative feedback).</p>
-          <div class="lib-card-footer">
-            <div class="lib-organ-count">🔬 5 bộ phận →</div>
-            <div class="lib-tags">
-              <span class="lib-tag tag-sgk">SGK 11</span>
-              <span class="lib-tag tag-thucte">Thực tế</span>
-            </div>
+        <!-- 6 -->
+        <article class="lib-card lib-cat-bone reveal delay-500" data-cat="bone" data-title="Xương Khớp"
+          onclick="openArticle('bone-1')">
+          <span class="lib-icon">🦴</span>
+          <h2 class="lib-title">Hệ Xương Khớp & Calci</h2>
+          <p class="lib-excerpt">Cấu trúc xương, vai trò của calci và vitamin D. Phòng ngừa loãng xương từ trẻ.</p>
+          <div class="lib-tags">
+            <span class="lib-tag">Phòng ngừa</span>
+            <span class="lib-tag">Dinh dưỡng</span>
           </div>
         </article>
 
-        <!-- 6: HỆ TIÊU HÓA -->
-        <article class="lib-card lib-cat-digestive reveal delay-500" data-cat="digestive" data-title="Hệ Tiêu Hóa dạ dày ruột enzyme" onclick="openOrgansModal('digestive')">
-          <span class="lib-bg-icon">🍽️</span>
-          <span class="lib-icon">🍽️</span>
-          <h2 class="lib-title">Hệ Tiêu Hóa</h2>
-          <p class="lib-excerpt">Tiêu hóa cơ học và hóa học. Enzyme tiêu hóa, ruột non hấp thu dưỡng chất, vi khuẩn đường ruột.</p>
-          <div class="lib-card-footer">
-            <div class="lib-organ-count">🔬 6 bộ phận →</div>
-            <div class="lib-tags">
-              <span class="lib-tag tag-sgk">SGK 11</span>
-              <span class="lib-tag tag-thucte">Dinh dưỡng</span>
-            </div>
+        <!-- 7 -->
+        <article class="lib-card lib-cat-circulation reveal" data-cat="circulation" data-title="Huyết Áp"
+          onclick="openArticle('bp-1')">
+          <span class="lib-icon">📈</span>
+          <h2 class="lib-title">Huyết Áp & Sức Khoẻ Tim</h2>
+          <p class="lib-excerpt">Hiểu chỉ số huyết áp 120/80, tại sao cao huyết áp nguy hiểm và cách kiểm soát.</p>
+          <div class="lib-tags">
+            <span class="lib-tag">Thực tế</span>
+            <span class="lib-tag">Tim mạch</span>
+          </div>
+        </article>
+
+        <!-- 8 -->
+        <article class="lib-card lib-cat-neuro reveal delay-100" data-cat="neuro" data-title="Stress & Sức Khoẻ"
+          onclick="openArticle('stress-1')">
+          <span class="lib-icon">😰</span>
+          <h2 class="lib-title">Stress & Sức Khoẻ</h2>
+          <p class="lib-excerpt">Cortisol là gì? Stress mãn tính ảnh hưởng thế nào đến toàn bộ cơ thể từ tim đến hệ miễn dịch.</p>
+          <div class="lib-tags">
+            <span class="lib-tag">Tâm lý</span>
+            <span class="lib-tag">Thực tế</span>
+          </div>
+        </article>
+
+        <!-- 9 -->
+        <article class="lib-card lib-cat-nutrition reveal delay-200" data-cat="nutrition" data-title="Giấc Ngủ"
+          onclick="openArticle('sleep-1')">
+          <span class="lib-icon">😴</span>
+          <h2 class="lib-title">Khoa Học Giấc Ngủ</h2>
+          <p class="lib-excerpt">Các giai đoạn ngủ REM và non-REM, tại sao ngủ đủ giấc giúp học tốt hơn, phát triển chiều cao.</p>
+          <div class="lib-tags">
+            <span class="lib-tag">Học sinh</span>
+            <span class="lib-tag">STEM</span>
           </div>
         </article>
 
       </div>
+
     </div>
   </main>
 
   <footer>
     <div class="container">
-      <p>📚 Thư Viện Sinh Học 11 · Bệnh Viện Sinh Học Thông Minh · <a href="disclaimer.html">Nội quy</a></p>
+      <p>📚 Thư Viện Sức Khoẻ · Bệnh Viện Sinh Học Thông Minh · <a href="disclaimer.html">Nội quy</a></p>
     </div>
   </footer>
 
-  <!-- ══ MODAL CẤP 1: DANH SÁCH BỘ PHẬN ══ -->
-  <div class="modal-overlay" id="organs-modal" role="dialog" aria-modal="true" aria-label="Danh sách bộ phận">
-    <div class="modal" style="border-radius:1.5rem; padding:2rem;">
-      <div class="organs-header">
-        <div class="organs-title">
-          <span class="sys-icon" id="organs-modal-icon">❤️</span>
-          <div>
-            <h2 id="organs-modal-title">Hệ Tuần Hoàn</h2>
-            <div style="font-size:0.78rem; color:rgba(255,255,255,0.4); margin-top:0.15rem;">Chọn bộ phận để xem chi tiết</div>
-          </div>
-        </div>
-        <button class="modal-close" id="organs-modal-close" aria-label="Đóng">✕</button>
-      </div>
-      <div class="organs-grid" id="organs-grid"></div>
-    </div>
-  </div>
-
-  <!-- ══ MODAL CẤP 2: BỘ PHẬN CHI TIẾT (AI) ══ -->
-  <div class="modal-overlay" id="detail-modal" role="dialog" aria-modal="true" aria-labelledby="detail-organ-title">
+  <!-- Article Modal -->
+  <div class="modal-overlay" id="article-modal" role="dialog" aria-modal="true" aria-labelledby="modal-article-title">
     <div class="modal">
-      <div class="detail-header">
-        <div class="detail-header-left">
-          <span class="detail-organ-icon" id="detail-organ-icon">❤️</span>
-          <div>
-            <h2 class="detail-organ-name" id="detail-organ-title">Tim</h2>
-            <div class="detail-system-breadcrumb" id="detail-breadcrumb">
-              📚 Sinh Học 11 › ❤️ Hệ Tuần Hoàn › Tim
-            </div>
-          </div>
-        </div>
-        <div style="display:flex; align-items:center; gap:0.5rem;">
-          <button class="back-btn" id="back-to-organs-btn">← Quay lại</button>
-          <button class="wiki-btn" id="wiki-trigger-btn" onclick="openWiki('')">🌐 Wikipedia</button>
-          <button class="modal-close" id="detail-modal-close" aria-label="Đóng">✕</button>
-        </div>
-      </div>
-
-      <!-- Tabs -->
-      <div class="art-tabs" id="detail-tabs"></div>
-
-      <!-- Body -->
-      <div class="detail-body" id="detail-body">
-        <div id="detail-skeleton" class="skeleton-wrap">
-          <div class="sk-status">
-            <div class="sk-status-dot"></div>
-            <span id="sk-status-text">🧠 AI đang phân tích từ PDF Sinh học 11...</span>
-          </div>
-          <div class="sk-line sk-title"></div>
-          <div class="sk-line sk-full"></div>
-          <div class="sk-line sk-med"></div>
-          <div class="sk-line sk-short"></div>
-          <div class="sk-block"></div>
-          <div class="sk-line sk-full"></div>
-          <div class="sk-line sk-med"></div>
-          <div class="sk-line sk-full"></div>
-          <div class="sk-line sk-short"></div>
-        </div>
-        <div id="detail-content" style="display:none;"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Wikipedia Plugin -->
-  <div class="wiki-overlay" id="wiki-overlay" onclick="closeWiki()"></div>
-  <div class="wiki-popup" id="wiki-popup">
-    <div class="wiki-header">
-      <h3 style="display:flex;align-items:center;gap:0.5rem;font-size:1rem"><span style="font-size:1.4rem">🌐</span> Wikipedia Tiếng Việt</h3>
-      <button class="modal-close" style="position:static;margin:0;" onclick="closeWiki()">✕</button>
-    </div>
-    <div class="wiki-content" id="wiki-content">
-      <div style="text-align:center;padding:2rem;">🔍 Đang tìm thông tin...</div>
+      <button class="modal-close" id="modal-close-btn" aria-label="Đóng">✕</button>
+      <div id="modal-article-content" class="modal-article"></div>
     </div>
   </div>
 
   <script src="js/api.js"></script>
   <script src="js/patient.js"></script>
   <script>
+<<<<<<< HEAD
     /* ═══════════════════════════════════════════════════
        STATE
     ═══════════════════════════════════════════════════ */
@@ -574,9 +363,240 @@
               Hãy đảm bảo server Render đang hoạt động.
             </p>
           </div>`;
+=======
+    // Article data
+    const articles = {
+      'circulation-1': {
+        title: '🩸 Hệ Tuần Hoàn Máu',
+        content: `
+          <h2 id="modal-article-title" style="margin-bottom:0.5rem">Hệ Tuần Hoàn Máu</h2>
+          <div class="lib-tags" style="margin-bottom:1.5rem"><span class="lib-tag">STEM</span><span class="lib-tag">Cơ bản</span></div>
+          <h4>🔬 Tổng Quan</h4>
+          <p>Hệ tuần hoàn là "mạng lưới giao thông" của cơ thể, bao gồm tim và khoảng 100.000 km mạch máu — đủ để vòng quanh Trái Đất 2.5 lần!</p>
+          <h4>❤️ Vai Trò Của Tim</h4>
+          <p>Tim đập 100.000 lần/ngày, bơm khoảng 7.000 lít máu. Máu chạy qua 2 vòng tuần hoàn: vòng phổi (lấy oxy) và vòng hệ thống (cấp dưỡng chất cho toàn thân).</p>
+          <h4>💡 Sự Thật Thú Vị</h4>
+          <ul>
+            <li>Hồng cầu sống 120 ngày và được thay mới liên tục</li>
+            <li>Mỗi giây có 2.4 triệu hồng cầu mới được sản xuất</li>
+            <li>Máu chiếm khoảng 7-8% trọng lượng cơ thể</li>
+            <li>Nhóm máu O- là "người hiến vạn năng"</li>
+          </ul>
+          <h4>🛡️ Bảo Vệ Hệ Tuần Hoàn</h4>
+          <ul>
+            <li>Tập cardio 150 phút/tuần</li>
+            <li>Giảm muối (dưới 5g/ngày)</li>
+            <li>Không hút thuốc</li>
+            <li>Kiểm soát stress</li>
+          </ul>
+        `
+      },
+      'respiratory-1': {
+        title: '🫁 Hệ Hô Hấp',
+        content: `
+          <h2 id="modal-article-title" style="margin-bottom:0.5rem">Hệ Hô Hấp & Trao Đổi Khí</h2>
+          <div class="lib-tags" style="margin-bottom:1.5rem"><span class="lib-tag">STEM</span><span class="lib-tag">Thực tế</span></div>
+          <h4>🔬 Cơ Chế Trao Đổi Khí</h4>
+          <p>Tại phổi, O₂ từ không khí khuếch tán vào máu qua màng phế nang (mỏng 0.2 micromet), trong khi CO₂ đi ngược chiều ra ngoài.</p>
+          <h4>📊 Con Số Ấn Tượng</h4>
+          <ul>
+            <li>Hít thở 20.000 lần/ngày</li>
+            <li>Phổi có 300–500 triệu túi khí nhỏ (phế nang)</li>
+            <li>Diện tích trao đổi khí: 70m² (bằng sân tennis!)</li>
+            <li>Mỗi hơi thở hít vào khoảng 0.5 lít không khí</li>
+          </ul>
+          <h4>⚠️ Tác Hại Của Ô Nhiễm</h4>
+          <p>Bụi PM2.5 có thể xâm nhập sâu vào phổi, gây viêm mãn tính, tăng nguy cơ ung thư phổi và bệnh tim. Đeo khẩu trang chống bụi mịn khi ra đường.</p>
+          <h4>🛡️ Bảo Vệ Phổi</h4>
+          <ul>
+            <li>Không hút thuốc lá</li>
+            <li>Đeo khẩu trang khi ô nhiễm cao</li>
+            <li>Tập thở sâu và yoga thở</li>
+            <li>Giữ không khí trong nhà sạch (mở cửa thông gió)</li>
+          </ul>
+        `
+      },
+      'neuro-1': {
+        title: '🧠 Não Bộ & Trí Nhớ',
+        content: `
+          <h2 id="modal-article-title" style="margin-bottom:0.5rem">Não Bộ & Trí Nhớ</h2>
+          <div class="lib-tags" style="margin-bottom:1.5rem"><span class="lib-tag">Thú vị</span><span class="lib-tag">Học tập</span></div>
+          <h4>🔬 Não Ghi Nhớ Như Thế Nào?</h4>
+          <p>Ký ức không lưu ở một chỗ — chúng là "mạng lưới" kết nối các tế bào thần kinh. Khi học điều mới, synapse (khớp nối) mới hình thành, mỗi lần ôn lại giúp nó vững hơn.</p>
+          <h4>😴 Giấc Ngủ & Trí Nhớ</h4>
+          <p>Trong giấc ngủ REM, não "chuyển" ký ức ngắn hạn thành dài hạn và "dọn rác" các protein độc (beta-amyloid). Ngủ 7-9h giúp học tốt hơn 40%!</p>
+          <h4>💡 Sự Thật Thú Vị</h4>
+          <ul>
+            <li>Não có 86 tỷ tế bào thần kinh</li>
+            <li>Não dùng 20% năng lượng cơ thể dù chỉ nặng 1.4kg</li>
+            <li>Não vẫn tiếp tục phát triển đến 25 tuổi</li>
+            <li>Nghe nhạc Mozart không làm bạn thông minh hơn (myth!)</li>
+          </ul>
+          <h4>🛡️ Tăng Cường Não Bộ</h4>
+          <ul>
+            <li>Ngủ đủ 7-9 giờ mỗi đêm</li>
+            <li>Tập thể dục tăng BDNF (protein phát triển não)</li>
+            <li>Đọc sách và học kỹ năng mới</li>
+            <li>Thiền 10 phút/ngày giảm stress cortisol</li>
+          </ul>
+        `
+      },
+      'nutrition-1': {
+        title: '🍎 Dinh Dưỡng Cân Bằng',
+        content: `
+          <h2 id="modal-article-title" style="margin-bottom:0.5rem">Dinh Dưỡng Cân Bằng & BMI</h2>
+          <div class="lib-tags" style="margin-bottom:1.5rem"><span class="lib-tag">Thực tế</span><span class="lib-tag">Khuyến nghị</span></div>
+          <h4>🔬 3 Nhóm Chất Chính</h4>
+          <ul>
+            <li>Protein (thịt, cá, đậu): xây dựng và sửa chữa tế bào</li>
+            <li>Carbohydrate (gạo, bánh): nguồn năng lượng chính của não</li>
+            <li>Chất béo lành (dầu olive, cá hồi): bảo vệ tim và não</li>
+          </ul>
+          <h4>📊 BMI Là Gì?</h4>
+          <p>BMI = cân nặng(kg) / chiều cao²(m). Chỉ số 18.5–24.9 là bình thường. Tuy nhiên cũng cần xem tỷ lệ mỡ cơ thể và vòng bụng.</p>
+          <h4>💡 Mẹo Thực Tế</h4>
+          <ul>
+            <li>Ăn đa dạng màu sắc rau củ (7 màu = 7 loại dưỡng chất)</li>
+            <li>Uống 2 lít nước mỗi ngày</li>
+            <li>Không bỏ bữa sáng — boost trao đổi chất</li>
+            <li>Hạn chế đường tự do dưới 25g/ngày (WHO)</li>
+          </ul>
+        `
+      },
+      'immune-1': {
+        title: '🛡️ Hệ Miễn Dịch',
+        content: `
+          <h2 id="modal-article-title" style="margin-bottom:0.5rem">Hệ Miễn Dịch – Lá Chắn Cơ Thể</h2>
+          <div class="lib-tags" style="margin-bottom:1.5rem"><span class="lib-tag">STEM</span><span class="lib-tag">Vaccine</span></div>
+          <h4>🔬 Cách Hoạt Động</h4>
+          <p>Khi vi khuẩn xâm nhập, bạch cầu (đặc biệt tế bào B và T) nhận diện "địch" qua kháng nguyên và tạo ra kháng thể đặc hiệu — như chìa khóa vừa vặn ổ khóa.</p>
+          <h4>💉 Vaccine Hoạt Động Thế Nào?</h4>
+          <p>Vaccine đưa vào cơ thể một phiên bản an toàn của mầm bệnh (yếu đi, chết, hoặc chỉ một mảnh protein). Hệ miễn dịch "học nhớ" và chuẩn bị sẵn sàng kháng chiến.</p>
+          <h4>💡 Sự Thật Thú Vị</h4>
+          <ul>
+            <li>Cơ thể sản xuất 100–200 tỷ tế bào bạch cầu mỗi ngày</li>
+            <li>Hệ miễn dịch có "bộ nhớ" — đó là lý do vaccine hiệu quả</li>
+            <li>Căng thẳng làm yếu hệ miễn dịch trong vòng 24 giờ</li>
+          </ul>
+          <h4>🛡️ Tăng Cường Miễn Dịch</h4>
+          <ul>
+            <li>Ngủ đủ giấc (thiếu ngủ giảm NK cells 30%)</li>
+            <li>Vitamin C và D (ánh nắng mặt trời)</li>
+            <li>Tập thể dục vừa phải (không quá gắng)</li>
+            <li>Tránh rượu và thuốc lá</li>
+          </ul>
+        `
+      },
+      'bone-1': {
+        title: '🦴 Hệ Xương Khớp',
+        content: `
+          <h2 id="modal-article-title" style="margin-bottom:0.5rem">Hệ Xương Khớp & Calci</h2>
+          <div class="lib-tags" style="margin-bottom:1.5rem"><span class="lib-tag">Phòng ngừa</span><span class="lib-tag">Dinh dưỡng</span></div>
+          <h4>🔬 Xương Là Vật Sống</h4>
+          <p>Xương không phải "đá chết" — chúng liên tục được phá vỡ và tái tạo. Sau 10 năm, toàn bộ khối xương của bạn đã được thay mới!</p>
+          <h4>📊 Calci & Vitamin D</h4>
+          <p>Xương cần calci (đến từ sữa, rau xanh) nhưng chỉ hấp thu được khi có Vitamin D. Vitamin D chủ yếu được tổng hợp từ ánh nắng mặt trời (15-20 phút/ngày).</p>
+          <h4>💡 Thời Điểm Vàng</h4>
+          <ul>
+            <li>Xương đạt "đỉnh khối lượng" lúc 25-30 tuổi</li>
+            <li>Sau 30 tuổi, mật độ xương giảm dần → cần tích lũy từ trẻ</li>
+            <li>Phụ nữ sau mãn kinh mất xương nhanh hơn</li>
+          </ul>
+          <h4>🛡️ Cách Bảo Vệ Xương</h4>
+          <ul>
+            <li>Tập tạ và weight-bearing exercise</li>
+            <li>Uống đủ sữa hoặc thực phẩm giàu calci</li>
+            <li>Ra nắng sáng sớm 15-20 phút</li>
+            <li>Không hút thuốc (giảm mật độ xương)</li>
+          </ul>
+        `
+      },
+      'bp-1': {
+        title: '📈 Huyết Áp',
+        content: `
+          <h2 id="modal-article-title" style="margin-bottom:0.5rem">Huyết Áp & Sức Khoẻ Tim</h2>
+          <div class="lib-tags" style="margin-bottom:1.5rem"><span class="lib-tag">Thực tế</span><span class="lib-tag">Tim mạch</span></div>
+          <h4>📊 Đọc Chỉ Số Huyết Áp</h4>
+          <p>120/80 mmHg: 120 là áp suất khi tim co bóp (tâm thu), 80 là khi tim giãn ra (tâm trương). Huyết áp ≥140/90 là cao huyết áp.</p>
+          <h4>⚠️ Tại Sao Nguy Hiểm?</h4>
+          <p>Cao huyết áp kéo dài làm dày thành mạch máu, tăng nguy cơ nhồi máu cơ tim, đột quỵ và suy thận. Được gọi là "kẻ giết người thầm lặng" vì thường không có triệu chứng.</p>
+          <h4>💡 Bình Thường Là Bao Nhiêu?</h4>
+          <ul>
+            <li>Tối ưu: dưới 120/80</li>
+            <li>Bình thường: 120–129 / dưới 80</li>
+            <li>Tăng cao: 130–139 / 80–89</li>
+            <li>Cao huyết áp: từ 140/90 trở lên</li>
+          </ul>
+          <h4>🛡️ Kiểm Soát Huyết Áp</h4>
+          <ul>
+            <li>Giảm muối dưới 5g/ngày</li>
+            <li>Tập thể dục 30 phút/ngày</li>
+            <li>Duy trì cân nặng hợp lý</li>
+            <li>Hạn chế rượu và cafein</li>
+            <li>Quản lý stress hiệu quả</li>
+          </ul>
+        `
+      },
+      'stress-1': {
+        title: '😰 Stress & Sức Khoẻ',
+        content: `
+          <h2 id="modal-article-title" style="margin-bottom:0.5rem">Stress & Sức Khoẻ</h2>
+          <div class="lib-tags" style="margin-bottom:1.5rem"><span class="lib-tag">Tâm lý</span><span class="lib-tag">Thực tế</span></div>
+          <h4>🔬 Cortisol Là Gì?</h4>
+          <p>Cortisol là hormone stress do tuyến thượng thận tiết ra. Ngắn hạn, nó giúp cơ thể xử lý nguy hiểm ("fight or flight"). Dài hạn, nó phá huỷ nhiều hệ thống.</p>
+          <h4>⚠️ Stress Mãn Tính Gây Ra</h4>
+          <ul>
+            <li>Tăng huyết áp và nhịp tim</li>
+            <li>Suy yếu hệ miễn dịch (dễ bệnh)</li>
+            <li>Rối loạn giấc ngủ</li>
+            <li>Tăng cân (cortisol kích thích thèm ăn đường)</li>
+            <li>Giảm trí nhớ và khó tập trung</li>
+          </ul>
+          <h4>💡 Giải Pháp Khoa Học</h4>
+          <ul>
+            <li>Tập thể dục: giảm cortisol, tăng endorphin</li>
+            <li>Thiền định 10 phút/ngày: giảm 30% cortisol</li>
+            <li>Thở sâu 4-7-8: kích hoạt thần kinh phó giao cảm</li>
+            <li>Viết nhật ký: giải phóng cảm xúc</li>
+            <li>Ngủ đủ: nạp lại năng lượng thần kinh</li>
+          </ul>
+        `
+      },
+      'sleep-1': {
+        title: '😴 Khoa Học Giấc Ngủ',
+        content: `
+          <h2 id="modal-article-title" style="margin-bottom:0.5rem">Khoa Học Giấc Ngủ</h2>
+          <div class="lib-tags" style="margin-bottom:1.5rem"><span class="lib-tag">Học sinh</span><span class="lib-tag">STEM</span></div>
+          <h4>🔬 Các Giai Đoạn Ngủ</h4>
+          <p>Mỗi chu kỳ ngủ kéo dài ~90 phút và gồm 4 giai đoạn: N1 (buồn ngủ), N2 (ngủ nhẹ), N3 (ngủ sâu — tái tạo cơ thể), và REM (mơ — củng cố trí nhớ).</p>
+          <h4>📊 Nghiên Cứu Thú Vị</h4>
+          <ul>
+            <li>Thiếu ngủ 1 tuần = tương đương bị say rượu</li>
+            <li>Ngủ đủ tăng GPA học sinh trung bình 0.5 điểm</li>
+            <li>Hormone tăng trưởng tiết ra 70-80% trong giấc ngủ sâu</li>
+            <li>Người thiếu ngủ ăn thêm trung bình 400 calories/ngày</li>
+          </ul>
+          <h4>💡 Mẹo Ngủ Tốt</h4>
+          <ul>
+            <li>Ngủ cùng giờ mỗi ngày (kể cả cuối tuần)</li>
+            <li>Tắt màn hình 1 giờ trước khi ngủ (blue light)</li>
+            <li>Giữ phòng mát (18-20°C là lý tưởng)</li>
+            <li>Không cafein sau 14 giờ</li>
+            <li>Phòng ngủ chỉ dùng để ngủ (không mang bài tập vào)</li>
+          </ul>
+        `
+>>>>>>> 2a9cf3db908d4d5037f484876b3091cd867ab898
       }
+    };
+
+    function openArticle(id) {
+      const art = articles[id];
+      if (!art) return;
+      document.getElementById('modal-article-content').innerHTML = art.content;
+      document.getElementById('article-modal').classList.add('open');
     }
 
+<<<<<<< HEAD
     async function openDetailModal(systemId, organId, organName, organIcon) {
       currentOrganId = organId;
       currentOrganName = organName;
@@ -684,67 +704,28 @@
     });
     document.getElementById('detail-modal').addEventListener('click', e => {
       if (e.target === document.getElementById('detail-modal')) closeDetailModal();
+=======
+    document.getElementById('modal-close-btn').addEventListener('click', () => {
+      document.getElementById('article-modal').classList.remove('open');
+>>>>>>> 2a9cf3db908d4d5037f484876b3091cd867ab898
     });
 
-    // ESC key
-    document.addEventListener('keydown', e => {
-      if (e.key === 'Escape') {
-        if (document.getElementById('detail-modal').classList.contains('open')) closeDetailModal();
-        else if (document.getElementById('organs-modal').classList.contains('open')) closeOrgansModal();
-        else closeWiki();
+    document.getElementById('article-modal').addEventListener('click', (e) => {
+      if (e.target === document.getElementById('article-modal')) {
+        document.getElementById('article-modal').classList.remove('open');
       }
     });
 
-    /* ═══════════════════════════════════════════════════
-       WIKIPEDIA API
-    ═══════════════════════════════════════════════════ */
-    async function openWiki(keyword) {
-      if (!keyword) return;
-      document.getElementById('wiki-overlay').classList.add('open');
-      document.getElementById('wiki-popup').classList.add('open');
-      const content = document.getElementById('wiki-content');
-      content.innerHTML = `<div style="text-align:center;padding:2rem"><span style="font-size:2rem">🔍</span><br/>Đang kết nối Wikipedia...</div>`;
-
-      try {
-        const res = await fetch(`https://vi.wikipedia.org/w/api.php?action=query&prop=extracts&exintro&explaintext&format=json&origin=*&titles=${encodeURIComponent(keyword)}`);
-        const data = await res.json();
-        const pages = data.query.pages;
-        const pageId = Object.keys(pages)[0];
-
-        if (pageId === '-1') {
-          content.innerHTML = `<p style="color:#FCA5A5">Không tìm thấy bài viết cho "<strong>${keyword}</strong>" trên Wikipedia.</p>`;
-        } else {
-          const extract = pages[pageId].extract;
-          const url = `https://vi.wikipedia.org/wiki/${encodeURIComponent(pages[pageId].title)}`;
-          const paragraphs = extract.split('\n').filter(p => p.trim()).map(p => `<p style="margin-bottom:0.875rem">${p}</p>`).join('');
-          content.innerHTML = `
-            <h4 style="color:var(--color-primary-light);margin-bottom:1rem">${pages[pageId].title}</h4>
-            ${paragraphs}
-            <div style="margin-top:1.5rem;text-align:right">
-              <a href="${url}" target="_blank" class="btn btn-sm" style="display:inline-block">Đọc đầy đủ →</a>
-            </div>
-          `;
-        }
-      } catch (e) {
-        content.innerHTML = `<p style="color:#FCA5A5">Lỗi kết nối: ${e.message}</p>`;
-      }
-    }
-
-    function closeWiki() {
-      document.getElementById('wiki-overlay').classList.remove('open');
-      document.getElementById('wiki-popup').classList.remove('open');
-    }
-
-    /* ═══════════════════════════════════════════════════
-       SEARCH & FILTER
-    ═══════════════════════════════════════════════════ */
+    // Search
     document.getElementById('search-input').addEventListener('input', function() {
       const q = this.value.toLowerCase();
       document.querySelectorAll('.lib-card').forEach(card => {
-        card.style.display = (card.dataset.title || '').toLowerCase().includes(q) || !q ? '' : 'none';
+        const text = (card.dataset.title || '') + ' ' + card.textContent;
+        card.style.display = text.toLowerCase().includes(q) ? '' : 'none';
       });
     });
 
+    // Filter
     document.querySelectorAll('.filter-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));

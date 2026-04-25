@@ -1,0 +1,76 @@
+Phần 1: Chu kỳ tế bào và cơ chế chết theo chương trình (Apoptosis) ở người
+Chu kỳ tế bào: Là vòng đời của một tế bào từ khi sinh ra đến khi phân chia xong, bao gồm kỳ trung gian (các pha G1, S, G2) và pha phân chia (nguyên phân)
+. Đối với tế bào người nuôi cấy, một chu kỳ kéo dài khoảng 24 giờ
+. Tùy thuộc vào loại tế bào, thời gian chu kỳ sẽ khác nhau: tế bào ruột phân chia 2 lần/ngày, tế bào gan phân chia 2 lần/năm, trong khi tế bào thần kinh trưởng thành hầu như không phân chia (tiến vào trạng thái nghỉ G0) kéo dài suốt đời sống cơ thể
+.
+Hệ thống điểm kiểm soát (Checkpoints): Tế bào người có hệ thống kiểm soát chặt chẽ bằng các phân tử protein (Cyclin và enzyme Cdk)
+. Điểm kiểm soát R ở cuối pha G1 là quan trọng nhất, nếu tế bào không nhận được tín hiệu đi tiếp, nó sẽ biệt hóa và không phân chia
+. Ở động vật có vú, protein p53 làm nhiệm vụ rà soát ADN; nếu ADN hỏng nhẹ, chu kỳ dừng lại để sửa chữa; nếu hỏng nặng, p53 sẽ kích hoạt quá trình tự chết của tế bào
+. Sự mất kiểm soát quá trình này sẽ dẫn đến hình thành tế bào ung thư
+.
+Apoptosis (Chết theo chương trình): Đây là sự chết tế bào gọn gàng, không gây viêm nhiễm
+. Nó có vai trò thiết yếu ở người nhằm loại bỏ các tế bào nhiễm virus, tế bào phát triển sai chỗ, hoặc các tế bào thần kinh không kết nối được, giúp kiểm soát chất lượng tế bào trong cơ thể
+.
+Phần 2: Cơ sở di truyền học phân tử và cấu trúc nhiễm sắc thể (NST)
+Cấu trúc Nhiễm sắc thể ở người: Trong nhân tế bào nhân thực (như ở người), vật chất di truyền là NST, được cấu tạo từ ADN và protein histon
+. Phân tử ADN quấn quanh 8 phân tử histon tạo thành nucleosome
+. Qua nhiều cấp độ xoắn (sợi cơ bản 11nm → sợi nhiễm sắc 30nm → sợi siêu xoắn 300nm → sợi cromatit 700nm), chiều dài ADN được thu gọn hàng vạn lần để nằm gọn trong nhân tế bào và thuận lợi cho quá trình phân li khi phân bào
+.
+Sự biểu hiện gene (Phiên mã và Dịch mã): Thông tin di truyền từ ADN mạch kép được phiên mã thành mARN mạch đơn ở bên trong nhân tế bào
+. Mạch mARN này sau khi được cắt ghép, hoàn thiện sẽ đi ra tế bào chất để tham gia dịch mã
+. Tại riboxom, trình tự các nucleotide trên mARN sẽ được dịch thành trình tự các acid amin, tổng hợp nên các protein thực hiện mọi chức năng sống của cơ thể người
+.
+Phần 3: Chuyển hóa năng lượng tế bào (Quá trình hô hấp tế bào)
+Khái quát: Hô hấp tế bào là chuỗi phản ứng oxy hóa khử nhằm bẻ gãy từ từ các phân tử như glucose để giải phóng năng lượng tích lũy vào ATP cung cấp cho hoạt động của tế bào người
+. Gồm 3 giai đoạn: Đường phân, chu trình Krebs và chuỗi chuyền electron
+.
+Chu trình Krebs: Xảy ra ở chất nền ti thể, là giai đoạn thoái hóa cuối cùng của glucid, lipid và protein, cung cấp năng lượng và các chất chuyển hóa trung gian cho tế bào
+.
+Chuỗi chuyền electron: Xảy ra ở màng trong ti thể
+. Đây là giai đoạn tạo ra nhiều ATP nhất (thu được 34 trong tổng số 38 ATP của toàn bộ quá trình)
+. Oxi (O2) mà con người hít thở chính là chất nhận electron cuối cùng trong chuỗi này để tạo thành nước
+.
+Hiện tượng mỏi cơ: Khi con người vận động quá sức, cơ thể thiếu oxy cho hô hấp tế bào, các tế bào cơ sẽ chuyển sang hô hấp kị khí (lên men) tạo ra axit lactic. Chất này tích tụ gây hiện tượng đau mỏi cơ
+.
+Phần 4: Hệ thần kinh và cơ chế dẫn truyền tín hiệu
+Cấu trúc Synapse: Cơ thể người truyền thông tin qua các tế bào thần kinh (nơ-ron) nhờ Synapse (khớp thần kinh)
+. Đây là điểm tiếp xúc giữa nơ-ron với nơ-ron hoặc với tế bào cơ
+. Synapse hóa học phổ biến nhất, bao gồm màng trước (chứa túi chất dẫn truyền thần kinh), khe synapse và màng sau (chứa thụ thể)
+.
+Cơ chế hoạt động: Xung thần kinh kích thích mở kênh Canxi, đẩy các túi dự trữ hòa vào màng và giải phóng chất dẫn truyền thần kinh (như Dopamine, Serotonin, Acetylcholine...) vào khe synapse
+. Các chất này gắn vào thụ thể (receptor) ở màng sau như "ổ khóa và chìa khóa" để tạo ra tín hiệu kích thích hoặc ức chế ở tế bào tiếp theo
+. Sau khi truyền tin, chúng sẽ bị phân hủy hoặc tái hấp thu
+.
+Các bệnh lý thần kinh ở người: Mọi sự rối loạn chất dẫn truyền thần kinh đều sinh bệnh
+. Ví dụ: Suy giảm Acetylcholine gây bệnh Alzheimer (mất trí nhớ)
+; Suy giảm Dopamine gây bệnh Parkinson (rối loạn vận động, run rẩy)
+; Thiếu hụt Serotonin liên quan đến bệnh trầm cảm, tự kỷ
+.
+Phần 5: Hệ nội tiết và cơ chế điều hòa Hormone
+Hệ nội tiết: Gồm vùng dưới đồi, tuyến yên, tuyến giáp, tuyến tụy, tuyến thượng thận, tinh hoàn/buồng trứng...
+. Chúng sản sinh hormone đổ thẳng vào máu để tới cơ quan đích, giúp điều hòa trao đổi chất, tăng trưởng, nhịp tim và sinh sản
+.
+Cơ chế điều hòa:
+Điều hòa ngược âm tính (Negative feedback): Là cơ chế chủ yếu. Khi nồng độ hormone tuyến đích giảm, tuyến chỉ huy (vùng dưới đồi, tuyến yên) sẽ tăng tiết hormone kích thích. Khi nồng độ hormone tuyến đích đã đủ cao, nó sẽ quay lại ức chế tuyến chỉ huy giảm tiết
+. Cơ chế này giúp nồng độ hormone luôn ổn định
+.
+Điều hòa ngược dương tính: Xảy ra tức thời khi cơ thể bị stress hoặc ở phụ nữ khi phóng noãn. Hormone tuyến đích tăng lại tiếp tục kích thích tuyến chỉ huy tăng tiết
+.
+Các bệnh lý: Sự rối loạn hệ nội tiết dẫn đến các bệnh nguy hiểm như Đái tháo đường (do tuyến tụy), Suy giáp/Cường giáp (do tuyến giáp mất kiểm soát trao đổi chất), Hội chứng Cushing (do dư thừa cortisol từ tuyến thượng thận)
+.
+Phần 6: Các đột biến nhiễm sắc thể gây bệnh di truyền ở người Sự rối loạn phân chia tế bào ở người có thể tạo ra các đột biến số lượng NST, gây ra các hội chứng bệnh lý:
+Hội chứng Down: Do đột biến tạo ra 3 NST số 21
+. Trẻ sinh ra thường thiểu năng trí tuệ, có đặc điểm ngoại hình đặc trưng (mắt xếch, mũi tẹt) và hay mắc bệnh tim mạch
+. Tuổi mẹ càng cao, nguy cơ sinh con mắc bệnh Down càng lớn
+.
+Hội chứng Patau: Thừa 1 NST số 13
+. Trẻ mắc bệnh bị dị dạng nặng nề: sứt môi, hở hàm ếch, não không chia bán cầu, thậm chí biến dạng tay chân và trí tuệ
+.
+Hội chứng Siêu nữ (3X): Nữ giới có 3 NST giới tính X. Bệnh làm mất hoặc giảm khả năng học tập, chậm ngôn ngữ, kỹ năng vận động và dễ trầm cảm
+.
+Phần 7: Ứng dụng Công nghệ tế bào trong Y học con người
+Công nghệ tế bào động vật có ứng dụng vô cùng lớn trong việc chữa bệnh cho người. Tiêu biểu là việc nuôi cấy tế bào gốc để biệt hóa thành tế bào sụn, nguyên bào xương, mô cơ tim nhằm thay thế các mô bị tổn thương
+.
+Con người hiện nay cũng lập các "ngân hàng tế bào gốc cuống rốn" để dự trữ, dùng điều trị các bệnh hiểm nghèo như tổn thương tủy sống, tiểu đường, Parkinson và bệnh tim mạch
+. Việc nhân bản vô tính ở người bị nghiêm cấm vì lí do đạo đức, nhưng được ứng dụng trên động vật để tạo mô/cơ quan thay thế cho người hoặc làm mô hình sàng lọc thuốc
+.
