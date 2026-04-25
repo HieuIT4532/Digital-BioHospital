@@ -19,38 +19,54 @@ const knowledgeCache = {};
 let isLoaded = false;
 
 /**
- * Load all PDFs into memory cache on first call
+ * Load all PDFs and Script TXTs into memory cache on first call
  */
 async function loadAllPDFs() {
   if (isLoaded) return;
 
-  const files = fs.readdirSync(PDF_DIR).filter(f => f.toLowerCase().endsWith('.pdf'));
-
-  for (const file of files) {
+  // 1. Load PDFs
+  const pdfFiles = fs.readdirSync(PDF_DIR).filter(f => f.toLowerCase().endsWith('.pdf'));
+  for (const file of pdfFiles) {
     const fullPath = path.join(PDF_DIR, file);
     try {
       const buffer = fs.readFileSync(fullPath);
-      // Standard pdf-parse v1.1.1 usage
       const data = await pdfParse(buffer);
       const text = data.text.replace(/\s+/g, ' ').trim();
 
-      // Determine which system this PDF belongs to
       const key = detectSystem(file);
       if (key) {
-        knowledgeCache[key] = {
-          filename: file,
-          text: text.slice(0, 12000), // cap to avoid token overload
-          wordCount: text.split(' ').length
-        };
-        console.log(`📄 Loaded PDF: ${file} → system: ${key} (${text.split(' ').length} words)`);
+        if (!knowledgeCache[key]) knowledgeCache[key] = { text: '' };
+        knowledgeCache[key].text += "\n" + text.slice(0, 10000);
+        console.log(`📄 Loaded PDF: ${file} → system: ${key}`);
       }
     } catch (err) {
       console.warn(`⚠️ Could not parse PDF: ${file} – ${err.message}`);
     }
   }
 
+  // 2. Load Script TXTs
+  const txtFiles = fs.readdirSync(PDF_DIR).filter(f => f.toLowerCase().endsWith('.txt') && f.toLowerCase().includes('script'));
+  for (const file of txtFiles) {
+    const fullPath = path.join(PDF_DIR, file);
+    try {
+      const text = fs.readFileSync(fullPath, 'utf8').replace(/\s+/g, ' ').trim();
+      
+      // Scripts are comprehensive, add them to related systems or new ones
+      const systems = ['di truyền', 'tế bào', 'tiến hóa', 'thần kinh', 'nội môi'];
+      systems.forEach(sys => {
+        if (text.toLowerCase().includes(sys)) {
+          if (!knowledgeCache[sys]) knowledgeCache[sys] = { text: '' };
+          knowledgeCache[sys].text += "\n" + text;
+        }
+      });
+      console.log(`📝 Loaded Script: ${file}`);
+    } catch (err) {
+      console.warn(`⚠️ Could not read TXT: ${file} – ${err.message}`);
+    }
+  }
+
   isLoaded = true;
-  console.log(`✅ PDF Knowledge Base loaded: ${Object.keys(knowledgeCache).length} systems`);
+  console.log(`✅ Knowledge Base loaded: ${Object.keys(knowledgeCache).length} topics`);
 }
 
 function detectSystem(filename) {
@@ -79,6 +95,9 @@ function findRelevantKnowledge(question) {
     'miễn dịch':  ['miễn dịch', 'kháng thể', 'tế bào b', 'tế bào t', 'vaccine', 'kháng nguyên', 'lympho', 'bạch cầu'],
     'nội môi':    ['nội môi', 'cân bằng', 'ph máu', 'nhiệt độ', 'glucose', 'homeostasis', 'feedback', 'insulin', 'hormone'],
     'tiêu hóa':   ['tiêu hóa', 'dạ dày', 'ruột', 'enzyme', 'amylase', 'lipase', 'gan', 'tụy', 'hấp thu', 'ăn'],
+    'di truyền':  ['di truyền', 'gen', 'dna', 'adn', 'nst', 'nhiễm sắc thể', 'đột biến', 'ung thư', 'p53', 'di truyền học'],
+    'tế bào':     ['tế bào', 'chu kỳ', 'nguyên phân', 'apoptosis', 'ti thể', 'atp', 'hô hấp tế bào', 'chu trình krebs', 'tế bào gốc'],
+    'tiến hóa':   ['tiến hóa', 'nguồn gốc', 'linh trưởng', 'tinh tinh', 'homo sapiens', 'chọn lọc tự nhiên', 'foxp2'],
   };
 
   let bestMatch = null;

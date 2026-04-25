@@ -71,6 +71,38 @@ const ORGAN_MAP = {
       { id: 'ruot-gia',    icon: '🦠',  name: 'Ruột Già',          desc: 'Hấp thu nước, vi khuẩn đường ruột' },
     ]
   },
+  'genetics': {
+    systemKey: 'di truyền',
+    label: '🧬 Di Truyền Học',
+    organs: [
+      { id: 'nst',         icon: '🧬',  name: 'Nhiễm Sắc Thể',     desc: 'Cấu trúc mang gen, ADN & Histon' },
+      { id: 'dot-bien',    icon: '⚠️',  name: 'Đột Biến Gen',      desc: 'Thay đổi trình tự Nucleotide' },
+      { id: 'benh-di-truyen', icon: '🏥', name: 'Bệnh Di Truyền',   desc: 'Hội chứng Down, Patau, Siêu nữ' },
+      { id: 'ung-thu',     icon: '🦠',  name: 'Cơ Chế Ung Thư',    desc: 'Mất kiểm soát phân bào & p53' },
+      { id: 'he-gen-nguoi', icon: '🗺️',  name: 'Hệ Gen Người',      desc: '3.200 Mb và 20.500 gen mã hóa' },
+    ]
+  },
+  'cell': {
+    systemKey: 'tế bào',
+    label: '🧪 Sinh Học Tế Bào',
+    organs: [
+      { id: 'chu-ky-tb',   icon: '🔄',  name: 'Chu Kỳ Tế Bào',     desc: 'Kỳ trung gian & Nguyên phân' },
+      { id: 'apoptosis',   icon: '💀',  name: 'Chết Chương Trình', desc: 'Cơ chế tự hủy của tế bào lỗi' },
+      { id: 'ho-hap-tb',   icon: '🔋',  name: 'Hô Hấp Tế Bào',     desc: 'Đường phân, Krebs & Chuỗi chuyền e' },
+      { id: 'ti-the',      icon: '⚡',  name: 'Ti Thể',            desc: 'Nhà máy năng lượng ATP' },
+      { id: 'cong-nghe-tb', icon: '💉',  name: 'Công Nghệ Tế Bào',  desc: 'Nuôi cấy tế bào gốc & mô' },
+    ]
+  },
+  'evolution': {
+    systemKey: 'tiến hóa',
+    label: '🐒 Tiến Hóa Người',
+    organs: [
+      { id: 'linh-truong', icon: '🦧',  name: 'Nguồn Gốc',         desc: 'Mối quan hệ người & tinh tinh' },
+      { id: 'nst-dung-hop', icon: '🧩',  name: 'Dung Hợp NST',      desc: 'Sự kiện n=23 ở người hiện đại' },
+      { id: 'gen-ngon-ngu', icon: '🗣️',  name: 'Gen Ngôn Ngữ',      desc: 'Sự tiến hóa của gen FOXP2' },
+      { id: 'chon-loc',    icon: '⚖️',  name: 'Chọn Lọc Tự Nhiên', desc: 'Cơ chế hình thành loài người' },
+    ]
+  },
 };
 
 // ── RAM Cache ─────────────────────────────────────────────────────────────────
