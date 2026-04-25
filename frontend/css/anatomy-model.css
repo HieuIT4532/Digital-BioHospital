@@ -1,29 +1,50 @@
-/* Scoped styles for the anatomy model */
-#anatomy-model-container {
+/* ============================================================
+   HUMAN ANATOMY 2D MODEL - PREMIUM STYLESHEET V2
+   Popup modal + full interactive parts
+   ============================================================ */
+
+/* === CSS Custom Properties === */
+:root {
+    --bg-primary: #0a0e1a;
+    --bg-secondary: #0f1525;
+    --bg-card: rgba(15, 22, 42, 0.85);
+    --glass-bg: rgba(15, 25, 50, 0.6);
+    --glass-border: rgba(0, 240, 255, 0.12);
+    --glass-shadow: rgba(0, 0, 0, 0.4);
+
+    --text-primary: #e8eaf6;
+    --text-secondary: #8892b0;
+    --text-muted: #5a6380;
+
     --accent-cyan: #00f0ff;
     --accent-purple: #7b2ffc;
     --accent-blue: #2196f3;
     --accent-pink: #ff3366;
     --accent-gold: #ffd700;
-    --text-primary: #e8eaf6;
-    --text-secondary: #8892b0;
-    --text-muted: #5a6380;
-    --glass-bg: rgba(15, 25, 50, 0.6);
-    --glass-border: rgba(0, 240, 255, 0.12);
-    --glass-shadow: rgba(0, 0, 0, 0.4);
-    --radius-lg: 20px;
-    --radius-md: 12px;
-    --radius-sm: 8px;
-    --radius-xl: 28px;
-    --font-display: 'Orbitron', monospace;
+
     --gradient-primary: linear-gradient(135deg, #00f0ff, #7b2ffc);
+    --gradient-warm: linear-gradient(135deg, #ff3366, #ff8c42);
+    --gradient-cool: linear-gradient(135deg, #2196f3, #00f0ff);
     --gradient-popup: linear-gradient(160deg, #1a1035 0%, #0d0a1a 40%, #15102a 100%);
-    --transition-normal: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+
+    --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-display: 'Orbitron', monospace;
+
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 20px;
+    --radius-xl: 28px;
+
     --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-normal: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-slow: 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+
+    --shadow-glow-cyan: 0 0 20px rgba(0, 240, 255, 0.15);
+    --shadow-glow-purple: 0 0 20px rgba(123, 47, 252, 0.15);
 }
 
-#anatomy-model-container .glass-panel {
+/* === Glassmorphism Panel === */
+.glass-panel {
     background: var(--glass-bg);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
@@ -33,61 +54,639 @@
     overflow: hidden;
 }
 
-#anatomy-model-container .panel-header {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 1rem 1.25rem; border-bottom: 1px solid rgba(255,255,255,0.05);
+/* ============================================================
+   MAIN CONTENT LAYOUT
+   ============================================================ */
+#main-content {
+    display: grid;
+    grid-template-columns: 280px 1fr 240px;
+    gap: 1.5rem;
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 1.5rem 2rem;
+    min-height: calc(100vh - 140px);
+    position: relative;
+    z-index: 1;
 }
 
-#anatomy-model-container .panel-header h2 {
-    font-family: var(--font-display); font-size: 0.85rem; font-weight: 600;
-    letter-spacing: 1.5px; text-transform: uppercase;
-    background: var(--gradient-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+.panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
 }
 
-#anatomy-model-container .panel-body { padding: 1.25rem; }
-
-#anatomy-model-container #main-content {
-    display: grid; grid-template-columns: 280px 1fr 240px; gap: 1.5rem;
-    padding: 1.5rem 0; min-height: 700px;
+.panel-header h2 {
+    font-family: var(--font-display);
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
-#anatomy-model-container #body-container { position: relative; display: flex; flex-direction: column; align-items: center; }
-#anatomy-model-container .model-wrapper { position: relative; width: 100%; max-width: 450px; aspect-ratio: 500 / 900; }
-#anatomy-model-container #human-body-svg { width: 100%; height: 100%; }
+.panel-body { padding: 1.25rem; }
 
-#anatomy-model-container .interactive-part { cursor: pointer; transition: filter 0.25s ease; }
-#anatomy-model-container .interactive-part:hover { filter: brightness(1.35) drop-shadow(0 0 10px rgba(0,240,255,0.45)); }
-#anatomy-model-container .interactive-part.selected { filter: brightness(1.5) drop-shadow(0 0 16px rgba(0,240,255,0.7)); }
-
-/* Internal Nav */
-#anatomy-model-container #main-nav { display: flex; justify-content: center; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
-#anatomy-model-container .nav-btn {
-    display: flex; align-items: center; gap: 0.4rem; padding: 0.5rem 1rem;
-    background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1);
-    border-radius: var(--radius-xl); color: var(--text-secondary); cursor: pointer;
+/* Pulse dot */
+.pulse-dot {
+    width: 8px; height: 8px;
+    background: var(--accent-cyan);
+    border-radius: 50%;
+    animation: pulse 2s ease-in-out infinite;
 }
-#anatomy-model-container .nav-btn.active { border-color: var(--accent-cyan); color: var(--accent-cyan); background: rgba(0,240,255,0.1); }
 
-/* Popup */
+@keyframes pulse {
+    0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(0,240,255,0.4); }
+    50% { opacity: 0.6; box-shadow: 0 0 0 8px rgba(0,240,255,0); }
+}
+
+/* === Info Panel (Left) === */
+#info-panel {
+    align-self: start;
+    position: sticky;
+    top: 85px;
+}
+
+.info-intro {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+}
+
+.info-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+}
+
+.stat-item {
+    text-align: center;
+    padding: 0.75rem 0.5rem;
+    background: rgba(0,240,255,0.04);
+    border: 1px solid rgba(0,240,255,0.08);
+    border-radius: var(--radius-md);
+    transition: var(--transition-normal);
+}
+
+.stat-item:hover {
+    background: rgba(0,240,255,0.08);
+    border-color: rgba(0,240,255,0.2);
+    transform: translateY(-2px);
+}
+
+.stat-value {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--accent-cyan);
+    margin-bottom: 0.25rem;
+}
+
+.stat-label {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Organ Detail (left panel) */
+.organ-detail { animation: fadeSlideIn 0.3s ease forwards; }
+
+@keyframes fadeSlideIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.organ-detail h3 {
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    color: var(--accent-cyan);
+    letter-spacing: 0.5px;
+}
+
+.organ-detail .organ-name-vi {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+    font-style: italic;
+}
+
+.organ-detail p {
+    font-size: 0.82rem;
+    line-height: 1.7;
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+}
+
+.organ-detail .detail-list {
+    list-style: none; padding: 0;
+}
+
+.organ-detail .detail-list li {
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    padding: 0.4rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.organ-detail .detail-list li::before {
+    content: '▸';
+    color: var(--accent-cyan);
+    font-size: 0.7rem;
+}
+
+/* ============================================================
+   BODY MODEL CONTAINER (Center)
+   ============================================================ */
+#body-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.model-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 500px;
+    aspect-ratio: 500 / 900;
+    margin: 0 auto;
+    transition: transform var(--transition-normal);
+}
+
+#human-body-svg {
+    width: 100%;
+    height: 100%;
+    filter: drop-shadow(0 0 30px rgba(0,100,200,0.1));
+}
+
+/* ============================================================
+   INTERACTIVE PARTS (All systems)
+   ============================================================ */
+.interactive-part {
+    cursor: pointer;
+    transition: filter 0.25s ease, opacity 0.25s ease;
+}
+
+.interactive-part:hover {
+    filter: brightness(1.35) drop-shadow(0 0 10px rgba(0,240,255,0.45));
+}
+
+/* Selected / Active state */
+.interactive-part.selected {
+    filter: brightness(1.5) drop-shadow(0 0 16px rgba(0,240,255,0.7)) drop-shadow(0 0 30px rgba(123,47,252,0.4));
+    animation: selectedPulse 2s ease-in-out infinite;
+}
+
+@keyframes selectedPulse {
+    0%, 100% {
+        filter: brightness(1.4) drop-shadow(0 0 14px rgba(0,240,255,0.6)) drop-shadow(0 0 28px rgba(123,47,252,0.35));
+    }
+    50% {
+        filter: brightness(1.6) drop-shadow(0 0 22px rgba(0,240,255,0.8)) drop-shadow(0 0 40px rgba(123,47,252,0.5));
+    }
+}
+
+/* Highlighted (from legend hover) */
+.interactive-part.highlighted {
+    filter: brightness(1.4) drop-shadow(0 0 18px rgba(0,240,255,0.6));
+    animation: organPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes organPulse {
+    0%, 100% { filter: brightness(1.3) drop-shadow(0 0 12px rgba(0,240,255,0.4)); }
+    50% { filter: brightness(1.5) drop-shadow(0 0 20px rgba(0,240,255,0.7)); }
+}
+
+/* System layer transitions */
+.system-layer {
+    transition: opacity var(--transition-slow);
+}
+
+.system-layer.hidden {
+    opacity: 0 !important;
+    pointer-events: none;
+}
+
+.system-layer.active { opacity: 1; }
+
+/* Heart beating */
+@keyframes heartbeat {
+    0%, 100% { transform: scale(1); }
+    15% { transform: scale(1.08); }
+    30% { transform: scale(1); }
+    45% { transform: scale(1.05); }
+    60% { transform: scale(1); }
+}
+
+#organ-heart {
+    transform-origin: 250px 270px;
+    animation: heartbeat 1.5s ease-in-out infinite;
+}
+
+/* Lung breathing */
+@keyframes breathe {
+    0%, 100% { transform: scaleX(1); }
+    50% { transform: scaleX(1.03); }
+}
+
+#organ-lungs {
+    transform-origin: 250px 265px;
+    animation: breathe 4s ease-in-out infinite;
+}
+
+/* Blood flow */
+@keyframes bloodFlow {
+    0% { stroke-dashoffset: 20; }
+    100% { stroke-dashoffset: 0; }
+}
+
+#circulatory-system path {
+    stroke-dasharray: 5 15;
+    animation: bloodFlow 2s linear infinite;
+}
+
+/* Nerve signal */
+@keyframes nerveSignal {
+    0% { stroke-dashoffset: 30; }
+    100% { stroke-dashoffset: 0; }
+}
+
+#nervous-system path,
+#nervous-system line {
+    stroke-dasharray: 3 12;
+    animation: nerveSignal 3s linear infinite;
+}
+
+/* === Tooltip === */
+.organ-tooltip {
+    position: absolute;
+    padding: 0.5rem 1rem;
+    background: rgba(10, 14, 26, 0.95);
+    border: 1px solid var(--accent-cyan);
+    border-radius: var(--radius-sm);
+    color: var(--accent-cyan);
+    font-family: var(--font-display);
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 1px;
+    pointer-events: none;
+    opacity: 0;
+    transform: translateY(5px);
+    transition: opacity 0.2s, transform 0.2s;
+    z-index: 50;
+    white-space: nowrap;
+    box-shadow: 0 4px 20px rgba(0,240,255,0.15);
+}
+
+.organ-tooltip.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* === Zoom Controls === */
+.zoom-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    position: absolute;
+    bottom: 20px; right: 20px;
+    z-index: 10;
+}
+
+.zoom-btn {
+    width: 38px; height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-sm);
+    color: var(--text-primary);
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+
+.zoom-btn:hover {
+    background: rgba(0,240,255,0.1);
+    border-color: var(--accent-cyan);
+    color: var(--accent-cyan);
+    box-shadow: var(--shadow-glow-cyan);
+}
+
+/* ============================================================
+   LEGEND PANEL (Right)
+   ============================================================ */
+#legend-panel {
+    align-self: start;
+    position: sticky;
+    top: 85px;
+}
+
+.legend-section { margin-bottom: 1.5rem; }
+.legend-section:last-child { margin-bottom: 0; }
+
+.legend-section h3 {
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--text-muted);
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.45rem 0.6rem;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: var(--transition-fast);
+    margin-bottom: 0.2rem;
+}
+
+.legend-item:hover { background: rgba(0,240,255,0.06); }
+.legend-item.active { background: rgba(0,240,255,0.1); }
+
+.legend-color {
+    width: 14px; height: 14px;
+    border-radius: 4px;
+    flex-shrink: 0;
+    box-shadow: 0 0 6px rgba(0,0,0,0.3);
+}
+
+.legend-color.split-color {
+    display: flex; overflow: hidden;
+    background: none; box-shadow: none;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.legend-color.split-color span { flex: 1; height: 100%; }
+
+.legend-item span:last-child {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    transition: color var(--transition-fast);
+}
+
+.legend-item:hover span:last-child { color: var(--text-primary); }
+
+/* ============================================================
+   POPUP MODAL (Organ/Part Detail)
+   ============================================================ */
 .popup-overlay {
-    position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px);
-    z-index: 2000; display: flex; align-items: center; justify-content: center;
-    opacity: 0; visibility: hidden; transition: 0.3s;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.35s ease, visibility 0.35s ease;
 }
-.popup-overlay.active { opacity: 1; visibility: visible; }
-.popup-modal {
-    width: 450px; max-width: 90vw; background: var(--gradient-popup);
-    border-radius: 20px; border: 1px solid rgba(123,47,252,0.3); padding: 2rem;
-    transform: scale(0.9); transition: 0.3s; color: white;
-}
-.popup-overlay.active .popup-modal { transform: scale(1); }
-.popup-close { position: absolute; top: 15px; right: 15px; cursor: pointer; background: none; border: none; color: white; font-size: 1.2rem; }
-.popup-ai-section { background: rgba(123,47,252,0.1); padding: 1rem; border-radius: 12px; margin: 1rem 0; border-left: 3px solid var(--accent-cyan); }
-.popup-func-list { list-style: none; padding: 0; }
-.popup-func-list li { padding: 0.5rem 0; display: flex; gap: 0.5rem; }
-.popup-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem; }
-.popup-tag { padding: 0.2rem 0.6rem; border-radius: 10px; font-size: 0.75rem; background: rgba(255,255,255,0.1); }
 
-/* Animation */
-@keyframes heartbeat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
-#organ-heart { transform-origin: center; animation: heartbeat 1.5s infinite; }
+.popup-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.popup-modal {
+    position: relative;
+    width: 420px;
+    max-width: 92vw;
+    max-height: 88vh;
+    background: var(--gradient-popup);
+    border: 1px solid rgba(123, 47, 252, 0.25);
+    border-radius: var(--radius-lg);
+    box-shadow:
+        0 25px 80px rgba(0, 0, 0, 0.6),
+        0 0 40px rgba(123, 47, 252, 0.12),
+        inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    overflow: hidden;
+    transform: translateY(30px) scale(0.95);
+    transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.popup-overlay.active .popup-modal {
+    transform: translateY(0) scale(1);
+}
+
+.popup-scroll {
+    max-height: 85vh;
+    overflow-y: auto;
+    padding: 2rem 1.75rem 1.5rem;
+}
+
+/* Close button */
+.popup-close {
+    position: absolute;
+    top: 12px; right: 14px;
+    width: 32px; height: 32px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 50%;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    cursor: pointer;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition-fast);
+}
+
+.popup-close:hover {
+    background: rgba(255,60,60,0.15);
+    border-color: rgba(255,60,60,0.3);
+    color: #ff6b6b;
+    transform: rotate(90deg);
+}
+
+/* Header */
+.popup-header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.popup-icon {
+    font-size: 3rem;
+    margin-bottom: 0.5rem;
+    filter: drop-shadow(0 4px 12px rgba(0,0,0,0.3));
+}
+
+.popup-title {
+    font-family: var(--font-primary);
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.3rem;
+}
+
+.popup-system-tag {
+    display: inline-block;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    padding: 0.2rem 0.8rem;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 20px;
+}
+
+/* AI Section */
+.popup-ai-section {
+    background: rgba(123, 47, 252, 0.08);
+    border: 1px solid rgba(123, 47, 252, 0.2);
+    border-radius: var(--radius-md);
+    padding: 1rem 1.15rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.popup-ai-section::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px; height: 100%;
+    background: linear-gradient(180deg, #00f0ff, #7b2ffc);
+}
+
+.popup-ai-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.6rem;
+}
+
+.ai-badge {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--accent-cyan);
+}
+
+.popup-ai-text {
+    font-size: 0.88rem;
+    line-height: 1.65;
+    color: var(--text-secondary);
+}
+
+/* Functions section */
+.popup-functions {
+    margin-bottom: 1.5rem;
+}
+
+.popup-section-title {
+    font-family: var(--font-primary);
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--text-muted);
+    margin-bottom: 0.85rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+
+.popup-func-list {
+    list-style: none;
+    padding: 0;
+}
+
+.popup-func-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.65rem;
+    padding: 0.55rem 0;
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    border-bottom: 1px solid rgba(255,255,255,0.025);
+}
+
+/* Disease tags */
+.popup-diseases { margin-bottom: 1.5rem; }
+
+.popup-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.popup-tag {
+    display: inline-block;
+    font-size: 0.78rem;
+    font-weight: 500;
+    padding: 0.35rem 0.85rem;
+    border-radius: 20px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: var(--text-secondary);
+}
+
+/* Tag colors */
+.popup-tag.tag-red { background: rgba(255,50,50,0.12); border-color: rgba(255,50,50,0.25); color: #ff8888; }
+.popup-tag.tag-blue { background: rgba(33,150,243,0.12); border-color: rgba(33,150,243,0.25); color: #80c8ff; }
+.popup-tag.tag-orange { background: rgba(255,140,66,0.12); border-color: rgba(255,140,66,0.25); color: #ffb380; }
+.popup-tag.tag-purple { background: rgba(123,47,252,0.12); border-color: rgba(123,47,252,0.25); color: #b088ff; }
+
+/* Action button */
+.popup-action-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+    padding: 0.85rem 1.5rem;
+    background: linear-gradient(135deg, rgba(123,47,252,0.25), rgba(0,240,255,0.15));
+    border: 1px solid rgba(123,47,252,0.3);
+    border-radius: var(--radius-md);
+    color: var(--accent-cyan);
+    font-family: var(--font-primary);
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition-normal);
+}
+
+.popup-action-btn:hover {
+    background: linear-gradient(135deg, rgba(123,47,252,0.4), rgba(0,240,255,0.25));
+    border-color: var(--accent-cyan);
+    box-shadow: 0 0 25px rgba(0,240,255,0.2);
+    transform: translateY(-2px);
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 1100px) {
+    #main-content {
+        grid-template-columns: 240px 1fr;
+    }
+    #legend-panel { display: none; }
+}
+
+@media (max-width: 768px) {
+    #main-content {
+        grid-template-columns: 1fr;
+    }
+    #info-panel { display: none; }
+}

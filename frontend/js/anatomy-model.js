@@ -869,6 +869,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function showLeftPanelInfo(partId, data) {
+        if (!infoTitle || !infoContent) return;
         infoTitle.textContent = data.name;
         const detailHTML = `
             <div class="organ-detail">
@@ -887,6 +888,7 @@ document.addEventListener('DOMContentLoaded', () => {
     //  POPUP MODAL
     // ============================================================
     function openPopup(data) {
+        if (!popupOverlay || !popupIcon || !popupTitle) return;
         // Fill popup content
         popupIcon.textContent = data.icon;
         popupTitle.textContent = data.name;
@@ -915,29 +917,28 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function closePopup() {
+        if (!popupOverlay) return;
         popupOverlay.classList.remove('active');
         document.body.style.overflow = '';
     }
 
-    popupClose.addEventListener('click', closePopup);
+    if (popupClose) popupClose.addEventListener('click', closePopup);
 
-    popupOverlay.addEventListener('click', (e) => {
-        if (e.target === popupOverlay) closePopup();
-    });
+    if (popupOverlay) {
+        popupOverlay.addEventListener('click', (e) => {
+            if (e.target === popupOverlay) closePopup();
+        });
+    }
 
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') closePopup();
     });
 
-    popupActionBtn.addEventListener('click', () => {
-        closePopup();
-    });
-
-    const wikiBtn = document.getElementById('wiki-btn');
-    wikiBtn.addEventListener('click', () => {
-        const query = popupTitle.textContent;
-        window.open(`https://vi.wikipedia.org/wiki/${encodeURIComponent(query)}`, '_blank');
-    });
+    if (popupActionBtn) {
+        popupActionBtn.addEventListener('click', () => {
+            closePopup();
+        });
+    }
 
     // ============================================================
     //  LEGEND INTERACTION
@@ -982,123 +983,131 @@ document.addEventListener('DOMContentLoaded', () => {
     const ZOOM_MIN = 0.5;
     const ZOOM_MAX = 2.5;
 
-    document.getElementById('zoom-in').addEventListener('click', () => {
+    const zoomInBtn = document.getElementById('zoom-in');
+    const zoomOutBtn = document.getElementById('zoom-out');
+    const zoomResetBtn = document.getElementById('zoom-reset');
+
+    if (zoomInBtn) zoomInBtn.addEventListener('click', () => {
         zoomLevel = Math.min(ZOOM_MAX, zoomLevel + ZOOM_STEP);
         applyZoom();
     });
 
-    document.getElementById('zoom-out').addEventListener('click', () => {
+    if (zoomOutBtn) zoomOutBtn.addEventListener('click', () => {
         zoomLevel = Math.max(ZOOM_MIN, zoomLevel - ZOOM_STEP);
         applyZoom();
     });
 
-    document.getElementById('zoom-reset').addEventListener('click', () => {
+    if (zoomResetBtn) zoomResetBtn.addEventListener('click', () => {
         zoomLevel = 1;
         applyZoom();
     });
 
     function applyZoom() {
-        modelWrapper.style.transform = `scale(${zoomLevel})`;
+        if (modelWrapper) modelWrapper.style.transform = `scale(${zoomLevel})`;
     }
 
-    modelWrapper.addEventListener('wheel', (e) => {
-        e.preventDefault();
-        if (e.deltaY < 0) {
-            zoomLevel = Math.min(ZOOM_MAX, zoomLevel + ZOOM_STEP * 0.5);
-        } else {
-            zoomLevel = Math.max(ZOOM_MIN, zoomLevel - ZOOM_STEP * 0.5);
-        }
-        applyZoom();
-    }, { passive: false });
+    if (modelWrapper) {
+        modelWrapper.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            if (e.deltaY < 0) {
+                zoomLevel = Math.min(ZOOM_MAX, zoomLevel + ZOOM_STEP * 0.5);
+            } else {
+                zoomLevel = Math.max(ZOOM_MIN, zoomLevel - ZOOM_STEP * 0.5);
+            }
+            applyZoom();
+        }, { passive: false });
+    }
 
     // ============================================================
     //  PARTICLE BACKGROUND
     // ============================================================
     const canvas = document.getElementById('particleCanvas');
-    const ctx = canvas.getContext('2d');
-    let particles = [];
+    if (canvas) {
+        const ctx = canvas.getContext('2d');
+        let particles = [];
 
-    function resizeCanvas() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-    }
-
-    class Particle {
-        constructor() { this.reset(); }
-        reset() {
-            this.x = Math.random() * canvas.width;
-            this.y = Math.random() * canvas.height;
-            this.size = Math.random() * 2 + 0.5;
-            this.speedX = (Math.random() - 0.5) * 0.3;
-            this.speedY = (Math.random() - 0.5) * 0.3;
-            this.opacity = Math.random() * 0.3 + 0.05;
-            this.hue = Math.random() > 0.5 ? 190 : 260;
-            this.life = Math.random() * 400 + 200;
-            this.maxLife = this.life;
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
         }
-        update() {
-            this.x += this.speedX;
-            this.y += this.speedY;
-            this.life--;
-            if (this.life <= 0 || this.x < -10 || this.x > canvas.width + 10 || this.y < -10 || this.y > canvas.height + 10) {
-                this.reset();
+
+        class Particle {
+            constructor() { this.reset(); }
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2 + 0.5;
+                this.speedX = (Math.random() - 0.5) * 0.3;
+                this.speedY = (Math.random() - 0.5) * 0.3;
+                this.opacity = Math.random() * 0.3 + 0.05;
+                this.hue = Math.random() > 0.5 ? 190 : 260;
+                this.life = Math.random() * 400 + 200;
+                this.maxLife = this.life;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                this.life--;
+                if (this.life <= 0 || this.x < -10 || this.x > canvas.width + 10 || this.y < -10 || this.y > canvas.height + 10) {
+                    this.reset();
+                }
+            }
+            draw() {
+                const fadeRatio = this.life / this.maxLife;
+                const alpha = this.opacity * fadeRatio;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = `hsla(${this.hue}, 100%, 70%, ${alpha})`;
+                ctx.fill();
             }
         }
-        draw() {
-            const fadeRatio = this.life / this.maxLife;
-            const alpha = this.opacity * fadeRatio;
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-            ctx.fillStyle = `hsla(${this.hue}, 100%, 70%, ${alpha})`;
-            ctx.fill();
+
+        function initParticles() {
+            resizeCanvas();
+            const count = Math.min(80, Math.floor((canvas.width * canvas.height) / 15000));
+            particles = [];
+            for (let i = 0; i < count; i++) particles.push(new Particle());
         }
-    }
 
-    function initParticles() {
-        resizeCanvas();
-        const count = Math.min(80, Math.floor((canvas.width * canvas.height) / 15000));
-        particles = [];
-        for (let i = 0; i < count; i++) particles.push(new Particle());
-    }
-
-    function drawConnections() {
-        for (let i = 0; i < particles.length; i++) {
-            for (let j = i + 1; j < particles.length; j++) {
-                const dx = particles[i].x - particles[j].x;
-                const dy = particles[i].y - particles[j].y;
-                const dist = Math.sqrt(dx * dx + dy * dy);
-                if (dist < 120) {
-                    const alpha = (1 - dist / 120) * 0.08;
-                    ctx.beginPath();
-                    ctx.strokeStyle = `rgba(0, 240, 255, ${alpha})`;
-                    ctx.lineWidth = 0.5;
-                    ctx.moveTo(particles[i].x, particles[i].y);
-                    ctx.lineTo(particles[j].x, particles[j].y);
-                    ctx.stroke();
+        function drawConnections() {
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < 120) {
+                        const alpha = (1 - dist / 120) * 0.08;
+                        ctx.beginPath();
+                        ctx.strokeStyle = `rgba(0, 240, 255, ${alpha})`;
+                        ctx.lineWidth = 0.5;
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.stroke();
+                    }
                 }
             }
         }
-    }
 
-    function animateParticles() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        particles.forEach(p => { p.update(); p.draw(); });
-        drawConnections();
-        requestAnimationFrame(animateParticles);
-    }
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => { p.update(); p.draw(); });
+            drawConnections();
+            requestAnimationFrame(animateParticles);
+        }
 
-    initParticles();
-    animateParticles();
-    window.addEventListener('resize', () => {
-        resizeCanvas();
-        if (particles.length === 0) initParticles();
-    });
+        initParticles();
+        animateParticles();
+        window.addEventListener('resize', () => {
+            resizeCanvas();
+            if (particles.length === 0) initParticles();
+        });
+    }
 
     // ============================================================
     //  KEYBOARD SHORTCUTS
     // ============================================================
     document.addEventListener('keydown', (e) => {
-        if (popupOverlay.classList.contains('active') && e.key === 'Escape') return;
+        if (popupOverlay && popupOverlay.classList.contains('active') && e.key === 'Escape') return;
         switch (e.key) {
             case '1': navBtns[0]?.click(); break;
             case '2': navBtns[1]?.click(); break;
