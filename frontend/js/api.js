@@ -21,10 +21,18 @@ async function apiFetch(endpoint, options = {}) {
   };
 
   const response = await fetch(url, defaultOptions);
-  const data = await response.json();
+  
+  let data;
+  const contentType = response.headers.get('content-type');
+  if (contentType && contentType.includes('application/json')) {
+    data = await response.json();
+  } else {
+    const text = await response.text();
+    throw new Error(`Phản hồi từ server không phải JSON (Status ${response.status}). Có thể server đang gặp lỗi hoặc endpoint không tồn tại.`);
+  }
 
   if (!response.ok) {
-    throw new Error(data.error || `Lỗi ${response.status}: ${response.statusText}`);
+    throw new Error(data?.error || `Lỗi ${response.status}: ${response.statusText}`);
   }
 
   return data;
@@ -139,11 +147,31 @@ const ChatAPI = {
    * @param {Object} patientData
    * @param {string} message
    */
-  async send(patientData, message) {
+  async send(patientData, message, history = []) {
     return apiFetch('/api/chat', {
       method: 'POST',
-      body: JSON.stringify({ patient: patientData, message })
+      body: JSON.stringify({ patient: patientData, message, history })
     });
+  }
+};
+
+// ════════════════════════════════════════════════════════════════════════════
+// LIBRARY API
+// ════════════════════════════════════════════════════════════════════════════
+
+const LibraryAPI = {
+  /**
+   * Lấy danh sách bộ phận của một hệ
+   */
+  async getSystem(systemId) {
+    return apiFetch(`/api/library/${systemId}`);
+  },
+
+  /**
+   * Lấy chi tiết bộ phận (AI)
+   */
+  async getOrgan(systemId, organId) {
+    return apiFetch(`/api/library/${systemId}/${organId}`);
   }
 };
 
@@ -169,5 +197,7 @@ window.API = {
   Predict: PredictAPI,
   Personalize: PersonalizeAPI,
   Chat: ChatAPI,
-  checkHealth: checkAPIHealth
+  Library: LibraryAPI,
+  checkHealth: checkAPIHealth,
+  baseUrl: API_BASE
 };

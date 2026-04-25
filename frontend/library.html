@@ -549,8 +549,7 @@
       grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:2rem;opacity:0.5">Đang tải...</div>`;
 
       try {
-        const res = await fetch(`${BASE_URL}/api/library/${systemId}`);
-        const data = await res.json();
+        const data = await API.Library.getSystem(systemId);
 
         currentSystemLabel = data.label;
         document.getElementById('organs-modal-title').textContent = data.label;
@@ -611,9 +610,7 @@
       }
 
       try {
-        const res = await fetch(`${BASE_URL}/api/library/${systemId}/${organId}`);
-        if (!res.ok) { const e = await res.json(); throw new Error(e.error); }
-        const data = await res.json();
+        const data = await API.Library.getOrgan(systemId, organId);
 
         // Save to localStorage
         localStorage.setItem(cacheKey(systemId, organId), JSON.stringify(data));
