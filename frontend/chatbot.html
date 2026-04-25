@@ -19,71 +19,65 @@
     }
 
     /* ── LEFT PANEL ── */
-    .chat-sidebar { position: sticky; top: 90px; }
+    .chat-sidebar {
+      position: sticky;
+      top: 90px;
+    }
 
     .ai-avatar-card {
-      background: linear-gradient(145deg, rgba(124,58,237,0.12), rgba(236,72,153,0.05));
-      border: 1px solid rgba(167,139,250,0.25);
+      background: rgba(124,58,237,0.1);
+      border: 1px solid rgba(167,139,250,0.2);
       border-radius: 1.5rem;
-      padding: 1.75rem 1.5rem;
-      text-align: center; margin-bottom: 1rem;
-      backdrop-filter: blur(30px);
-      box-shadow: 0 8px 32px rgba(124,58,237,0.12), inset 0 1px 0 rgba(255,255,255,0.07);
+      padding: 1.5rem;
+      text-align: center;
+      margin-bottom: 1rem;
     }
 
-    /* Holographic Avatar */
-    .ai-avatar-wrap { position: relative; width: 88px; height: 88px; margin: 0 auto 1rem; }
-    .ai-avatar-ring {
-      position: absolute; inset: -4px; border-radius: 50%;
-      background: conic-gradient(from 0deg, #7C3AED, #EC4899, #06B6D4, #A78BFA, #7C3AED);
-      animation: rotateSlow 3s linear infinite;
-      padding: 3px;
-    }
-    .ai-avatar-ring-inner {
-      background: rgba(8,3,22,0.95); border-radius: 50%; width: 100%; height: 100%;
-    }
     .ai-avatar {
-      position: absolute; inset: 4px;
+      width: 80px; height: 80px;
       border-radius: 50%;
       background: linear-gradient(135deg, #7C3AED, #EC4899);
-      display: flex; align-items: center; justify-content: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       font-size: 2.2rem;
-      box-shadow: 0 0 40px rgba(167,139,250,0.5), inset 0 0 20px rgba(124,58,237,0.3);
-      animation: glowPulse 3s ease-in-out infinite;
-    }
-
-    .ai-name {
-      font-family: var(--font-heading); font-size: 1.05rem; font-weight: 800;
-      background: linear-gradient(135deg, #A78BFA, #F9A8D4);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip:text;
-      margin-bottom: 0.3rem;
+      margin: 0 auto 1rem;
+      box-shadow: 0 0 30px rgba(167,139,250,0.4);
+      animation: pulseShadow 3s infinite;
     }
 
     .ai-status {
-      display: flex; align-items: center; justify-content: center;
-      gap: 0.5rem; font-size: 0.78rem; color: #6EE7B7; margin-bottom: 0.75rem;
-    }
-    .ai-status-dot {
-      width: 8px; height: 8px; border-radius: 50%;
-      background: #10B981; box-shadow: 0 0 8px #10B981;
-      animation: pulse 2s infinite;
-    }
-    .ai-model-tag {
-      display: inline-flex; align-items: center; gap: 4px;
-      padding: 3px 10px; border-radius: 999px;
-      background: rgba(124,58,237,0.15); border: 1px solid rgba(167,139,250,0.25);
-      font-size: 0.68rem; font-weight: 700; color: rgba(167,139,250,0.7);
-      text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      font-size: 0.8rem;
+      color: #6EE7B7;
+      margin-bottom: 0.75rem;
     }
 
-    .quick-questions { display: flex; flex-direction: column; gap: 0.5rem; }
+    .ai-status-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: #10B981;
+      animation: pulse 2s infinite;
+    }
+
+    .quick-questions {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
     .quick-q-btn {
       background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.08);
       border-radius: 0.875rem;
       padding: 0.65rem 0.875rem;
-      text-align: left; font-size: 0.78rem;
-      color: rgba(255,255,255,0.7); cursor: pointer;
+      text-align: left;
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.7);
+      cursor: pointer;
       transition: all 0.2s ease;
       font-family: var(--font-family);
       line-height: 1.4;
@@ -396,20 +390,14 @@
         <!-- LEFT SIDEBAR -->
         <div class="chat-sidebar">
           <div class="ai-avatar-card">
-            <!-- Holographic Avatar -->
-            <div class="ai-avatar-wrap">
-              <div class="ai-avatar-ring"><div class="ai-avatar-ring-inner"></div></div>
-              <div class="ai-avatar">🤖</div>
-            </div>
-            <div class="ai-name">BioAI Assistant</div>
+            <div class="ai-avatar">🤖</div>
+            <h3 style="font-size:1rem; margin-bottom:0.25rem">BioAI Assistant</h3>
             <div class="ai-status">
               <div class="ai-status-dot"></div>
               Đang hoạt động
             </div>
-            <div class="ai-model-tag">✨ Gemini AI · SGK 11</div>
-            <p style="font-size:0.75rem; color:rgba(255,255,255,0.45); line-height:1.5">Multi-turn · Nhớ ngữ cảnh<br/>Phân tích PDF Sinh học</p>
+            <p style="font-size:0.78rem; color:rgba(255,255,255,0.5)">Phân tích dựa trên Sinh học 11<br/>+ Logic điều kiện y tế</p>
           </div>
-
 
           <div class="card" style="padding:1.25rem; margin-bottom:1rem">
             <h4 style="font-size:0.85rem; font-weight:700; color:rgba(255,255,255,0.5); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:0.75rem">💬 Câu Hỏi Nhanh</h4>
@@ -648,7 +636,17 @@
         const patientData = PatientManager.get();
 
         // Send with last 8 turns of history
-        const response = await API.Chat.send(patientData, question);
+        const res = await fetch('http://localhost:5000/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            message: question,
+            patient: patientData,
+            history: conversationHistory.slice(-8)
+          })
+        });
+        const response = await res.json();
+        if (!res.ok) throw new Error(response.error || 'Lỗi máy chủ');
 
         removeTypingIndicator();
 
