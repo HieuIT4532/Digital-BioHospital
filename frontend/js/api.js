@@ -139,10 +139,10 @@ const ChatAPI = {
    * @param {Object} patientData
    * @param {string} message
    */
-  async send(patientData, message, history = []) {
+  async send(patientData, message) {
     return apiFetch('/api/chat', {
       method: 'POST',
-      body: JSON.stringify({ patient: patientData, message, history })
+      body: JSON.stringify({ patient: patientData, message })
     });
   }
 };
@@ -169,6 +169,5 @@ window.API = {
   Predict: PredictAPI,
   Personalize: PersonalizeAPI,
   Chat: ChatAPI,
-  checkHealth: checkAPIHealth,
-  baseUrl: API_BASE
+  checkHealth: checkAPIHealth
 };
