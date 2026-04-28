@@ -3,12 +3,212 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Phân Tích Liên Kết Cơ Quan – Bệnh Viện Sinh Học Thông Minh</title>
-  <meta name="description" content="AI phân tích chuỗi ảnh hưởng giữa các hệ cơ quan – tư duy sinh học hệ thống." />
+  <title>Phân Tích Liên Kết Hệ Cơ Thể – Bệnh Viện Sinh Học Thông Minh</title>
+  <meta name="description" content="Mô phỏng sinh học 3 hệ: Hô hấp - Tuần hoàn - Thần kinh. Animation O₂, tim đập, phổi thở. Phân tích liên kết cơ quan AI - Sinh học 11." />
   <link rel="stylesheet" href="css/global.css" />
   <link rel="stylesheet" href="css/components.css" />
   <link rel="stylesheet" href="css/animations.css" />
   <style>
+    /* ── Page Header ── */
+    .page-header { padding: 2.5rem 0; }
+
+    /* ══════════════════════════════════════════
+       SƠ ĐỒ LIÊN KẾT HỆ (SYSTEM MAP)
+    ══════════════════════════════════════════ */
+    .system-map-section {
+      padding: 3rem 0 2rem;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .system-map-title {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1.75rem;
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+
+    .system-map-title .dot {
+      width: 12px; height: 12px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #A78BFA, #EC4899);
+      box-shadow: 0 0 10px rgba(167,139,250,0.6);
+      animation: pulse 2s infinite;
+    }
+
+    /* The LIVE simulation canvas */
+    .bio-sim-wrapper {
+      position: relative;
+      background: rgba(0,0,0,0.3);
+      border: 1px solid rgba(167,139,250,0.25);
+      border-radius: 1.5rem;
+      padding: 2rem;
+      overflow: hidden;
+      min-height: 260px;
+    }
+
+    .bio-sim-wrapper::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 30% 50%, rgba(124,58,237,0.08) 0%, transparent 60%),
+                  radial-gradient(ellipse at 70% 50%, rgba(14,165,233,0.08) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    /* System nodes */
+    .sys-nodes {
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      gap: 1rem;
+      position: relative;
+      z-index: 2;
+    }
+
+    .sys-node {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 1.5rem 1rem;
+      background: rgba(255,255,255,0.05);
+      border: 2px solid rgba(255,255,255,0.1);
+      border-radius: 1.25rem;
+      cursor: pointer;
+      transition: all 0.4s ease;
+      min-width: 140px;
+      position: relative;
+    }
+
+    .sys-node:hover, .sys-node.active {
+      transform: translateY(-4px);
+      border-color: var(--node-color, rgba(167,139,250,0.6));
+      box-shadow: 0 12px 40px var(--node-glow, rgba(167,139,250,0.3));
+      background: rgba(255,255,255,0.08);
+    }
+
+    .sys-node.highlighted {
+      border-color: var(--node-color);
+      background: rgba(255,255,255,0.1);
+      box-shadow: 0 0 30px var(--node-glow);
+      animation: sysNodePulse 1s ease-in-out;
+    }
+
+    @keyframes sysNodePulse {
+      0%,100% { transform: translateY(-4px) scale(1); }
+      50% { transform: translateY(-4px) scale(1.05); }
+    }
+
+    .sys-node[data-sys="respiratory"] { --node-color: #38BDF8; --node-glow: rgba(56,189,248,0.4); }
+    .sys-node[data-sys="circulatory"] { --node-color: #F87171; --node-glow: rgba(248,113,113,0.4); }
+    .sys-node[data-sys="nervous"]     { --node-color: #A78BFA; --node-glow: rgba(167,139,250,0.4); }
+    .sys-node[data-sys="immune"]      { --node-color: #34D399; --node-glow: rgba(52,211,153,0.4); }
+    .sys-node[data-sys="homeostasis"] { --node-color: #FBBF24; --node-glow: rgba(251,191,36,0.4); }
+    .sys-node[data-sys="digestive"]   { --node-color: #FB923C; --node-glow: rgba(251,146,60,0.4); }
+
+    .sys-node-org {
+      font-size: 2.5rem;
+      position: relative;
+    }
+
+    /* Heartbeat animation ON the heart node */
+    .sys-node[data-sys="circulatory"] .sys-node-org {
+      animation: heartbeat 1.2s ease-in-out infinite;
+    }
+
+    /* Breathing lungs animation */
+    .sys-node[data-sys="respiratory"] .sys-node-org {
+      animation: breathe 3s ease-in-out infinite;
+    }
+
+    @keyframes breathe {
+      0%, 100% { transform: scale(1); }
+      40% { transform: scale(1.15); }
+      70% { transform: scale(0.92); }
+    }
+
+    .sys-node-name {
+      font-size: 0.875rem;
+      font-weight: 700;
+      text-align: center;
+      color: rgba(255,255,255,0.9);
+    }
+
+    .sys-node-desc {
+      font-size: 0.72rem;
+      color: rgba(255,255,255,0.5);
+      text-align: center;
+      line-height: 1.4;
+    }
+
+    /* Arrows between nodes */
+    .sys-arrows {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* O₂ Particle Canvas */
+    #o2-canvas {
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      pointer-events: none;
+    }
+
+    /* System connection label */
+    .sys-conn-info {
+      margin-top: 1.5rem;
+      padding: 1rem 1.25rem;
+      background: rgba(124,58,237,0.1);
+      border: 1px solid rgba(167,139,250,0.2);
+      border-radius: 0.875rem;
+      font-size: 0.875rem;
+      color: rgba(255,255,255,0.8);
+      text-align: center;
+      min-height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      transition: all 0.4s ease;
+    }
+
+    /* ══════════════════════════════════════════
+       CHUỖI NHÂN QUẢ (CAUSE-EFFECT)
+    ══════════════════════════════════════════ */
+    .cause-effect-row {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 0.75rem;
+    }
+
+    .ce-node {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.35rem 0.85rem;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .ce-arrow {
+      color: var(--color-primary-light);
+      font-size: 1.1rem;
+      font-weight: 900;
+    }
+
+    /* ══════════════════════════════════════════
+       PHÂN TÍCH LỐI SỐNG — LAYOUT
+    ══════════════════════════════════════════ */
     .analysis-layout {
       display: grid;
       grid-template-columns: 360px 1fr;
@@ -51,11 +251,7 @@
     .lifestyle-item input { display: none; }
 
     /* Chain Visualization */
-    .chain-vis {
-      display: flex;
-      flex-direction: column;
-      gap: 0;
-    }
+    .chain-vis { display: flex; flex-direction: column; gap: 0; }
 
     .chain-node {
       display: flex;
@@ -68,6 +264,12 @@
       margin-bottom: 0.25rem;
       animation: slideInLeft 0.4s ease forwards;
       opacity: 0;
+    }
+
+    .chain-node.highlighted-node {
+      border-color: var(--highlight-color, rgba(167,139,250,0.5));
+      background: var(--highlight-bg, rgba(124,58,237,0.12));
+      box-shadow: 0 0 20px var(--highlight-shadow, rgba(167,139,250,0.2));
     }
 
     .chain-arrow {
@@ -84,11 +286,7 @@
       font-weight: 900;
     }
 
-    .chain-icon {
-      font-size: 1.75rem;
-      flex-shrink: 0;
-    }
-
+    .chain-icon { font-size: 1.75rem; flex-shrink: 0; }
     .chain-info h4 { font-size: 0.95rem; margin-bottom: 0.2rem; }
     .chain-info p  { font-size: 0.8rem; color: rgba(255,255,255,0.6); margin: 0; }
 
@@ -102,12 +300,7 @@
     }
 
     /* Impact bars */
-    .impact-list {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-    }
-
+    .impact-list { display: flex; flex-direction: column; gap: 1rem; }
     .impact-item { }
     .impact-header {
       display: flex;
@@ -116,23 +309,42 @@
       margin-bottom: 0.4rem;
       font-size: 0.875rem;
     }
+    .impact-organ { display: flex; align-items: center; gap: 0.5rem; font-weight: 600; }
+    .impact-reason { font-size: 0.8rem; color: rgba(255,255,255,0.5); margin-top: 0.25rem; }
 
-    .impact-organ {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-weight: 600;
+    /* ══════════════════════════════════════════
+       INLINE HỆ LIÊN KẾT CARD (beneath the canvas)
+    ══════════════════════════════════════════ */
+    .micro-connections {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-top: 1.5rem;
     }
 
-    .impact-reason {
-      font-size: 0.8rem;
-      color: rgba(255,255,255,0.5);
-      margin-top: 0.25rem;
+    .micro-conn-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 1rem;
+      padding: 1rem;
+      transition: all 0.3s ease;
     }
+
+    .micro-conn-card:hover {
+      border-color: rgba(167,139,250,0.3);
+      background: rgba(124,58,237,0.08);
+    }
+
+    .micro-conn-title { font-size: 0.8rem; font-weight: 700; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.4rem; }
+    .micro-conn-body { font-size: 0.75rem; color: rgba(255,255,255,0.6); line-height: 1.5; }
+    .micro-conn-example { margin-top: 0.5rem; font-size: 0.72rem; color: var(--color-primary-light); font-style: italic; }
 
     @media (max-width: 900px) {
       .analysis-layout  { grid-template-columns: 1fr; }
       .lifestyle-grid   { grid-template-columns: 1fr; }
+      .sys-nodes        { flex-wrap: wrap; }
+      .sys-node         { min-width: 110px; }
+      .micro-connections { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -150,12 +362,9 @@
         <li><a href="anatomy.html">🧬 Giải phẫu</a></li>
         <li><a href="analysis.html" class="active">🔬 Phân tích</a></li>
         <li><a href="prediction.html">🔮 Dự đoán</a></li>
-        <li><a href="personalize.html">🌱 Kế hoạch</a></li>
+        <li><a href="library.html">📚 Thư viện</a></li>
+        <li><a href="chatbot.html">🤖 Tư vấn AI</a></li>
       </ul>
-      <div class="user-actions" style="margin-right: 1rem;">
-        <a href="#" class="btn btn-sm btn-outline" id="nav-login-btn">Đăng nhập</a>
-        <a href="profile.html" class="btn btn-sm btn-glass" id="nav-profile-btn" style="display:none; color: var(--color-text);">👤 Profile</a>
-      </div>
       <a href="reception.html" class="navbar-patient-btn btn btn-sm">🧑‍⚕️ Hồ sơ</a>
     </div>
   </nav>
@@ -164,13 +373,129 @@
     <div class="page-header" style="background: linear-gradient(180deg, rgba(124,58,237,0.08) 0%, transparent 100%); border-bottom: 1px solid rgba(255,255,255,0.05);">
       <div class="container">
         <div class="section-tag animate-fadeInUp">🔬 Tư Duy Hệ Thống</div>
-        <h1 class="animate-fadeInUp delay-100">Phân Tích Liên Kết Cơ Quan</h1>
-        <p class="animate-fadeInUp delay-200">AI phân tích chuỗi ảnh hưởng giữa các hệ cơ quan — thấy cả bức tranh toàn thể</p>
+        <h1 class="animate-fadeInUp delay-100">Phân Tích Liên Kết Cơ Thể</h1>
+        <p class="animate-fadeInUp delay-200">Mô phỏng sinh học thực tế: tim đập, phổi thở, dòng chảy O₂ — đúng chuẩn Sinh học 11</p>
       </div>
     </div>
 
     <div class="container">
-      <div class="analysis-layout">
+
+      <!-- ══ SƠ ĐỒ LIÊN KẾT HỆ (QUAN TRỌNG NHẤT) ══ -->
+      <div class="system-map-section">
+        <div class="system-map-title">
+          <div class="dot"></div>
+          🔗 Sơ Đồ Liên Kết Hệ Cơ Thể — Mô Phỏng Thời Gian Thực
+        </div>
+
+        <div class="bio-sim-wrapper" id="bio-sim">
+          <!-- O₂ Particle Canvas -->
+          <canvas id="o2-canvas"></canvas>
+
+          <div class="sys-nodes" id="sys-nodes">
+            <div class="sys-node" data-sys="respiratory" id="node-resp" onclick="activateSystem('respiratory')" title="Click để khám phá">
+              <div class="sys-node-org">🫁</div>
+              <div class="sys-node-name">Hô Hấp</div>
+              <div class="sys-node-desc">Lấy O₂<br/>Thải CO₂</div>
+            </div>
+
+            <div style="display:flex;flex-direction:column;align-items:center;gap:0.5rem;z-index:2">
+              <div style="font-size:1.5rem;color:#38BDF8;font-weight:900;animation:slideRight 1s ease-in-out infinite alternate">→</div>
+              <div style="font-size:0.65rem;color:rgba(56,189,248,0.7);font-weight:700">O₂</div>
+            </div>
+
+            <div class="sys-node" data-sys="circulatory" id="node-circ" onclick="activateSystem('circulatory')" title="Click để khám phá">
+              <div class="sys-node-org">❤️</div>
+              <div class="sys-node-name">Tuần Hoàn</div>
+              <div class="sys-node-desc">Vận chuyển<br/>máu + dưỡng chất</div>
+            </div>
+
+            <div style="display:flex;flex-direction:column;align-items:center;gap:0.5rem;z-index:2">
+              <div style="font-size:1.5rem;color:#A78BFA;font-weight:900;animation:slideRight 1s 0.3s ease-in-out infinite alternate">→</div>
+              <div style="font-size:0.65rem;color:rgba(167,139,250,0.7);font-weight:700">⚡ ATP</div>
+            </div>
+
+            <div class="sys-node" data-sys="nervous" id="node-nerv" onclick="activateSystem('nervous')" title="Click để khám phá">
+              <div class="sys-node-org">🧠</div>
+              <div class="sys-node-name">Thần Kinh</div>
+              <div class="sys-node-desc">Điều khiển<br/>phản xạ</div>
+            </div>
+
+            <div style="display:flex;flex-direction:column;align-items:center;gap:0.5rem;z-index:2">
+              <div style="font-size:1.5rem;color:#FBBF24;font-weight:900;animation:slideRight 1s 0.6s ease-in-out infinite alternate">↔</div>
+              <div style="font-size:0.65rem;color:rgba(251,191,36,0.7);font-weight:700">Nội môi</div>
+            </div>
+
+            <div class="sys-node" data-sys="homeostasis" id="node-home" onclick="activateSystem('homeostasis')" title="Click để khám phá">
+              <div class="sys-node-org">⚖️</div>
+              <div class="sys-node-name">Cân Bằng<br/>Nội Môi</div>
+              <div class="sys-node-desc">Ổn định<br/>pH, nhiệt độ</div>
+            </div>
+          </div>
+
+          <!-- Connection info bar -->
+          <div class="sys-conn-info" id="sys-conn-info">
+            💡 Click vào từng hệ để xem quan hệ liên kết và cơ chế hoạt động
+          </div>
+        </div>
+
+        <!-- 3 micro connection cards -->
+        <div class="micro-connections">
+          <div class="micro-conn-card">
+            <div class="micro-conn-title" style="color:#38BDF8">🫁 → ❤️ Hô Hấp → Tuần Hoàn</div>
+            <div class="micro-conn-body">Phổi hấp thu O₂ từ không khí qua phế nang → chuyển vào máu qua mao mạch → tim bơm máu giàu O₂ đến toàn thân</div>
+            <div class="micro-conn-example">Nếu thiếu O₂ → tim phải hoạt động mạnh hơn để bù đắp</div>
+          </div>
+          <div class="micro-conn-card">
+            <div class="micro-conn-title" style="color:#A78BFA">❤️ → 🧠 Tuần Hoàn → Thần Kinh</div>
+            <div class="micro-conn-body">Não cần 20% lượng O₂ toàn cơ thể. Tim cung cấp máu liên tục cho não. Gián đoạn 4 phút → tế bào thần kinh bắt đầu chết</div>
+            <div class="micro-conn-example">Nhịp tim nhanh khi stress → não nhận tín hiệu báo động</div>
+          </div>
+          <div class="micro-conn-card">
+            <div class="micro-conn-title" style="color:#FBBF24">🧠 → ⚖️ Thần Kinh → Nội Môi</div>
+            <div class="micro-conn-body">Hệ thần kinh điều khiển cân bằng nội môi qua cơ chế phản hồi âm (negative feedback). Giữ pH = 7.35–7.45, nhiệt độ 37°C</div>
+            <div class="micro-conn-example">Nóng → não lệnh toát mồ hôi → nhiệt độ giảm</div>
+          </div>
+        </div>
+
+        <!-- Cause-Effect examples -->
+        <div class="card" style="margin-top:1.5rem; padding:1.5rem">
+          <h3 style="font-size:1rem; margin-bottom:1rem">⚡ Ví Dụ Chuỗi Nhân Quả — Đúng Chuẩn Sinh 11</h3>
+          <div class="cause-effect-row">
+            <div class="ce-node">😴 Thiếu ngủ</div>
+            <span class="ce-arrow">→</span>
+            <div class="ce-node">🧠 Não mệt</div>
+            <span class="ce-arrow">→</span>
+            <div class="ce-node">❤️ Tim quá tải</div>
+            <span class="ce-arrow">→</span>
+            <div class="ce-node">📈 Huyết áp tăng</div>
+            <span class="ce-arrow">→</span>
+            <div class="ce-node">🫘 Thận chịu áp lực</div>
+          </div>
+          <div class="cause-effect-row">
+            <div class="ce-node">🚬 Hút thuốc</div>
+            <span class="ce-arrow">→</span>
+            <div class="ce-node">🫁 Phổi tổn thương</div>
+            <span class="ce-arrow">→</span>
+            <div class="ce-node">📉 O₂ giảm</div>
+            <span class="ce-arrow">→</span>
+            <div class="ce-node">❤️ Tim bù đắp</div>
+            <span class="ce-arrow">→</span>
+            <div class="ce-node">⚠️ Suy tim nguy cơ</div>
+          </div>
+          <div class="cause-effect-row">
+            <div class="ce-node">😰 Stress cao</div>
+            <span class="ce-arrow">→</span>
+            <div class="ce-node">⬆️ Cortisol tăng</div>
+            <span class="ce-arrow">→</span>
+            <div class="ce-node">🛡️ Miễn dịch yếu</div>
+            <span class="ce-arrow">→</span>
+            <div class="ce-node">🦠 Dễ bệnh</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ PHÂN TÍCH LỐI SỐNG (BELOW SIM) ══ -->
+      <div class="analysis-layout" style="margin-top:2rem">
         <!-- LEFT: Input -->
         <div class="animate-slideLeft">
           <div class="card" style="position:sticky; top:100px">
@@ -214,12 +539,12 @@
 
             <div style="margin-top:1.5rem">
               <button class="btn btn-primary btn-lg btn-ripple" id="btn-analyze-organs" style="width:100%">
-                🔬 Phân Tích Liên Kết
+                🔬 Phân Tích + Highlight Hệ
               </button>
             </div>
 
             <div style="margin-top:1rem; padding:0.75rem; background:rgba(124,58,237,0.08); border-radius:0.75rem; font-size:0.8rem; color:rgba(255,255,255,0.6)">
-              💡 Chọn nhiều yếu tố để thấy rõ mạng lưới ảnh hưởng phức tạp
+              💡 Sau khi phân tích, hệ cơ quan bị ảnh hưởng sẽ tự động được highlight trên sơ đồ trên
             </div>
           </div>
         </div>
@@ -231,7 +556,7 @@
             <div class="empty-state" style="padding:4rem 2rem">
               <div style="font-size:4rem; margin-bottom:1rem; opacity:0.5">🔬</div>
               <h3>Kết Quả Phân Tích</h3>
-              <p>Chọn các yếu tố lối sống bên trái và nhấn "Phân Tích Liên Kết" để AI vẽ bản đồ ảnh hưởng.</p>
+              <p>Chọn các yếu tố lối sống bên trái và nhấn "Phân Tích" để AI vẽ bản đồ ảnh hưởng và highlight hệ bị tác động.</p>
               <div style="margin-top:2rem; padding:1rem; background:rgba(124,58,237,0.08); border-radius:1rem; font-size:0.875rem; color:rgba(255,255,255,0.6); text-align:left">
                 <strong style="color:var(--color-primary-light)">Ví dụ:</strong><br/>
                 Thiếu ngủ → Não giảm tập trung → Tim hoạt động quá tải → Huyết áp tăng → Thận chịu áp lực...
@@ -255,6 +580,12 @@
               </div>
             </div>
 
+            <!-- Highlighted systems -->
+            <div class="card" style="margin-bottom:1.5rem" id="sys-highlight-card">
+              <h3 style="margin-bottom:1rem; font-size:1rem">🎯 Hệ Cơ Quan Bị Ảnh Hưởng</h3>
+              <div id="sys-highlight-list" style="display:flex; flex-wrap:wrap; gap:0.5rem"></div>
+            </div>
+
             <!-- Chains -->
             <div class="card" style="margin-bottom:1.5rem">
               <h3 style="margin-bottom:1.25rem; font-size:1.1rem">⛓️ Chuỗi Ảnh Hưởng</h3>
@@ -270,6 +601,7 @@
           </div>
         </div>
       </div>
+
     </div>
   </main>
 
@@ -281,9 +613,160 @@
 
   <script src="js/api.js"></script>
   <script src="js/patient.js"></script>
-  <script type="module" src="js/auth.js"></script>
   <script>
-    // Lifestyle toggle
+    /* ═══════════════════════════════════
+       O₂ PARTICLE ANIMATION
+    ═══════════════════════════════════ */
+    const canvas = document.getElementById('o2-canvas');
+    const simWrapper = document.getElementById('bio-sim');
+    let particles = [];
+    let animRunning = true;
+
+    function resizeCanvas() {
+      canvas.width  = simWrapper.offsetWidth;
+      canvas.height = simWrapper.offsetHeight;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    const ctx = canvas.getContext('2d');
+
+    // Get node positions for particle path
+    function getNodeCenter(id) {
+      const el = document.getElementById(id);
+      const wrap = simWrapper.getBoundingClientRect();
+      const r = el.getBoundingClientRect();
+      return {
+        x: r.left - wrap.left + r.width/2,
+        y: r.top  - wrap.top  + r.height/2
+      };
+    }
+
+    // Particle: moves from lung → heart → brain
+    class O2Particle {
+      constructor(delay) {
+        this.delay = delay;
+        this.t = -delay;
+        this.alive = true;
+        this.reset();
+      }
+
+      reset() {
+        this.t = -this.delay;
+      }
+
+      getPos() {
+        // Path: lung (node-resp) -> circ (node-circ) -> nervous (node-nerv)
+        const A = getNodeCenter('node-resp');
+        const B = getNodeCenter('node-circ');
+        const C = getNodeCenter('node-nerv');
+
+        const duration = 3.5; // seconds per full trip
+        const tt = ((this.t % duration) + duration) % duration;
+        const seg = tt / duration;
+
+        if (seg < 0.5) {
+          // A → B
+          const s = seg / 0.5;
+          return { x: A.x + (B.x - A.x)*s, y: A.y + (B.y - A.y)*s + Math.sin(s*Math.PI)*(-20) };
+        } else {
+          // B → C
+          const s = (seg - 0.5) / 0.5;
+          return { x: B.x + (C.x - B.x)*s, y: B.y + (C.y - B.y)*s + Math.sin(s*Math.PI)*(-25) };
+        }
+      }
+
+      update(dt) {
+        this.t += dt;
+      }
+
+      draw(ctx) {
+        if (this.t < 0) return;
+        const pos = this.getPos();
+        const seg = ((this.t % 3.5) + 3.5) % 3.5 / 3.5;
+
+        // Color: cyan at lung side, purple near brain
+        const r = Math.round(56 + (167-56)*seg);
+        const g = Math.round(189 + (139-189)*seg);
+        const b = Math.round(248 + (250-248)*seg);
+
+        ctx.beginPath();
+        ctx.arc(pos.x, pos.y, 4, 0, Math.PI*2);
+        ctx.fillStyle = `rgba(${r},${g},${b}, 0.9)`;
+        ctx.fill();
+
+        // glow
+        ctx.beginPath();
+        ctx.arc(pos.x, pos.y, 8, 0, Math.PI*2);
+        ctx.fillStyle = `rgba(${r},${g},${b}, 0.25)`;
+        ctx.fill();
+
+        // label
+        ctx.font = '8px Inter, sans-serif';
+        ctx.fillStyle = `rgba(${r},${g},${b}, 0.9)`;
+        ctx.fillText('O₂', pos.x+6, pos.y-5);
+      }
+    }
+
+    // Create staggered particles
+    for (let i = 0; i < 6; i++) {
+      particles.push(new O2Particle(i * 0.58));
+    }
+
+    let lastTime = performance.now();
+    function animateParticles(now) {
+      const dt = Math.min((now - lastTime)/1000, 0.05);
+      lastTime = now;
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(p => {
+        p.update(dt);
+        p.draw(ctx);
+      });
+      requestAnimationFrame(animateParticles);
+    }
+    requestAnimationFrame(animateParticles);
+
+    /* ═══════════════════════════════════
+       SYSTEM NODE ACTIVATION
+    ═══════════════════════════════════ */
+    const sysInfo = {
+      respiratory: {
+        text: '🫁 HÔ HẤP → cung cấp O₂ cho máu. Phổi thở 20.000 lần/ngày, diện tích trao đổi khí 70m² — tương đương sân tennis!',
+        affected: ['node-resp']
+      },
+      circulatory: {
+        text: '❤️ TUẦN HOÀN → vận chuyển O₂, dưỡng chất và hormone đến mọi tế bào. Tim đập 100.000 lần/ngày, bơm 7.000 lít máu.',
+        affected: ['node-circ']
+      },
+      nervous: {
+        text: '🧠 THẦN KINH → điều khiển toàn bộ cơ thể qua phản xạ và cung phản xạ. Não cần 20% O₂ toàn thân — gián đoạn 4 phút là nguy hiểm.',
+        affected: ['node-nerv']
+      },
+      homeostasis: {
+        text: '⚖️ CÂN BẰNG NỘI MÔI → duy trì pH = 7.35–7.45, nhiệt độ 37°C, áp suất thẩm thấu ổn định. Cơ chế phản hồi âm (negative feedback).',
+        affected: ['node-home']
+      }
+    };
+
+    function activateSystem(sys) {
+      const info = sysInfo[sys];
+      if (!info) return;
+
+      // Update info text
+      document.getElementById('sys-conn-info').textContent = info.text;
+
+      // Highlight node
+      document.querySelectorAll('.sys-node').forEach(n => n.classList.remove('highlighted'));
+      info.affected.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.classList.add('highlighted');
+      });
+    }
+
+    /* ═══════════════════════════════════
+       LIFESTYLE TOGGLE
+    ═══════════════════════════════════ */
     document.querySelectorAll('.lifestyle-item').forEach(item => {
       item.addEventListener('click', () => {
         const cb = item.querySelector('input');
@@ -292,7 +775,18 @@
       });
     });
 
-    // Analyze
+    /* ═══════════════════════════════════
+       ANALYZE
+    ═══════════════════════════════════ */
+    const organToSys = {
+      'Não': 'node-nerv',
+      'Tim': 'node-circ',
+      'Phổi': 'node-resp',
+      'Gan': null,
+      'Thận': null,
+      'Dạ dày': null
+    };
+
     document.getElementById('btn-analyze-organs').addEventListener('click', async () => {
       const selected = Array.from(document.querySelectorAll('.lifestyle-item input:checked'))
         .map(cb => cb.value);
@@ -315,6 +809,33 @@
         // Summary
         document.getElementById('analysis-summary').textContent = a.summary || '';
         document.getElementById('analysis-priority').textContent = a.topPriority || '';
+
+        // Highlight affected systems on the map
+        const affectedOrgans = (a.mostAffectedOrgans || []).map(o => o.organ);
+        const affectedNodes = new Set();
+        affectedOrgans.forEach(or => {
+          const nodeId = organToSys[or];
+          if (nodeId) affectedNodes.add(nodeId);
+        });
+
+        document.querySelectorAll('.sys-node').forEach(n => n.classList.remove('highlighted'));
+        affectedNodes.forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.classList.add('highlighted');
+        });
+
+        // Display highlighted systems
+        const sysHighlightList = document.getElementById('sys-highlight-list');
+        sysHighlightList.innerHTML = '';
+        affectedNodes.forEach(id => {
+          const el = document.getElementById(id);
+          if (el) {
+            const badge = document.createElement('span');
+            badge.className = 'badge badge-purple';
+            badge.textContent = el.querySelector('.sys-node-org').textContent + ' ' + el.querySelector('.sys-node-name').textContent;
+            sysHighlightList.appendChild(badge);
+          }
+        });
 
         // Chains
         const chainsCt = document.getElementById('chains-container');
@@ -368,11 +889,6 @@
             <div class="impact-reason">${organ.reason}</div>
           `;
           impactCt.appendChild(div);
-
-          // Cập nhật BioAuth Map (Sinh học 11 - Cơ quan)
-          if(window.BioAuth && window.BioAuth.currentUser) {
-             window.BioAuth.addKnowledge('biology11', organ.organ);
-          }
         });
 
         // Animate progress bars
@@ -382,14 +898,27 @@
           });
         }, 200);
 
+        // Scroll to result
+        document.getElementById('analysis-result').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
         hideLoading();
-        showToast('Phân tích liên kết hoàn tất!', 'success');
+        showToast('Phân tích hoàn tất — xem sơ đồ highlight ở trên!', 'success');
 
       } catch (err) {
         hideLoading();
         showToast('Lỗi: ' + err.message, 'error');
       }
     });
+
+    /* sliding arrow keyframes */
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes slideRight {
+        from { transform: translateX(-3px); opacity: 0.5; }
+        to   { transform: translateX(3px);  opacity: 1;   }
+      }
+    `;
+    document.head.appendChild(style);
   </script>
 </body>
 </html>

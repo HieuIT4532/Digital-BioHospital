@@ -172,14 +172,11 @@
         <li><a href="index.html">🏠 Trang chủ</a></li>
         <li><a href="departments.html">🏥 Chuyên khoa</a></li>
         <li><a href="anatomy.html">🧬 Giải phẫu</a></li>
-        <li><a href="analysis.html">🔬 Phân tích</a></li>
         <li><a href="prediction.html">🔮 Dự đoán</a></li>
         <li><a href="personalize.html" class="active">🌱 Kế hoạch</a></li>
+        <li><a href="library.html">📚 Thư viện</a></li>
+        <li><a href="chatbot.html">🤖 Tư vấn AI</a></li>
       </ul>
-      <div class="user-actions" style="margin-right: 1rem;">
-        <a href="#" class="btn btn-sm btn-outline" id="nav-login-btn">Đăng nhập</a>
-        <a href="profile.html" class="btn btn-sm btn-glass" id="nav-profile-btn" style="display:none; color: var(--color-text);">👤 Profile</a>
-      </div>
       <a href="reception.html" class="navbar-patient-btn btn btn-sm">🧑‍⚕️ Hồ sơ</a>
     </div>
   </nav>
@@ -194,51 +191,6 @@
     </div>
 
     <div class="container" style="padding-top:2rem; padding-bottom:4rem">
-
-      <!-- DIGITAL TWIN SECTION -->
-      <div class="card" id="digital-twin-config" style="max-width:800px; margin:0 auto 2rem; border-color: rgba(167,139,250,0.4); background: rgba(124,58,237,0.05);">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 1rem;">
-           <h3 style="margin: 0;">👤 Cập nhật Bản sao số (Digital Twin)</h3>
-           <span class="badge badge-purple">Hôm nay</span>
-        </div>
-        <p style="font-size:0.875rem; margin-bottom:1.25rem; color:rgba(255,255,255,0.6)">
-          Ghi nhận các thói quen bạn đã làm trong 24h qua. AI sẽ tính toán tổn thất và cảnh báo y khoa trực tiếp lên cơ thể ảo của bạn.
-        </p>
-
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
-           <div>
-             <label style="display:block; font-size: 0.8rem; margin-bottom: 0.5rem; color: rgba(255,255,255,0.7)">Bạn ngủ mấy tiếng đêm qua?</label>
-             <input type="number" id="dt-sleep" class="form-input" placeholder="VD: 5" style="width:100%" />
-           </div>
-           <div>
-             <label style="display:block; font-size: 0.8rem; margin-bottom: 0.5rem; color: rgba(255,255,255,0.7)">Lượng nước đã uống (lít)?</label>
-             <input type="number" id="dt-water" class="form-input" placeholder="VD: 1.5" step="0.1" style="width:100%" />
-           </div>
-           <div style="grid-column: 1 / -1">
-             <label style="display:block; font-size: 0.8rem; margin-bottom: 0.5rem; color: rgba(255,255,255,0.7)">Ghi chú thêm (Ăn đồ dầu mỡ, uống bia, chạy deadline...)</label>
-             <input type="text" id="dt-notes" class="form-input" placeholder="Tôi thức đến 2h sáng..." style="width:100%" />
-           </div>
-        </div>
-
-        <button class="btn btn-primary" id="btn-update-twin" style="width:100%">
-           Cập nhật Tình trạng Cơ thể
-        </button>
-
-        <!-- Twin Result -->
-        <div id="twin-result-container" style="display:none; margin-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1.5rem;">
-           <div style="display:flex; justify-content:space-around; text-align:center; margin-bottom: 1rem;">
-             <div><div style="font-size:2rem" id="tw-heart-icon">❤️</div><div style="font-size:0.8rem">Tim: <span id="tw-heart-val">100</span>%</div></div>
-             <div><div style="font-size:2rem" id="tw-liver-icon">🟤</div><div style="font-size:0.8rem">Gan: <span id="tw-liver-val">100</span>%</div></div>
-             <div><div style="font-size:2rem" id="tw-brain-icon">🧠</div><div style="font-size:0.8rem">Não: <span id="tw-brain-val">100</span>%</div></div>
-           </div>
-           <div style="padding:0.75rem; background:rgba(239,68,68,0.1); border-radius:0.75rem; font-size:0.85rem; color:#FCA5A5;">
-             <strong style="display:block; margin-bottom: 0.4rem;">🚨 AI Cảnh báo (SGK Sinh học 11):</strong>
-             <span id="twin-ai-alert">Khả năng chuyển hóa glycogen tại gan của bạn đang suy giảm do thiếu ngủ.</span>
-           </div>
-        </div>
-      </div>
-
-      <hr style="border:0; border-top: 1px dashed rgba(255,255,255,0.1); margin-bottom: 3rem; max-width:800px; margin-left:auto; margin-right:auto;" />
 
       <!-- Goal Selection Form -->
       <div class="card" id="goal-form" style="max-width:680px; margin:0 auto 2rem">
@@ -354,55 +306,7 @@
 
   <script src="js/api.js"></script>
   <script src="js/patient.js"></script>
-  <script type="module" src="js/auth.js"></script>
   <script>
-    // Xử lý Digital Twin (AI Simulator)
-    document.getElementById('btn-update-twin').addEventListener('click', async () => {
-       const sleep = parseFloat(document.getElementById('dt-sleep').value || 7);
-       const water = parseFloat(document.getElementById('dt-water').value || 2);
-       const notes = document.getElementById('dt-notes').value || 'Bình thường';
-
-       const btn = document.getElementById('btn-update-twin');
-       btn.disabled = true;
-       btn.textContent = "AI đang xử lý thông số cơ thể...";
-
-       try {
-           const patient = PatientManager.get();
-           const habits = { sleep, water, notes };
-           
-           const res = await API.Personalize.twin(patient, habits);
-           const twinState = res.twinState; // { heartHealth, liverHealth, brainHealth, aiAlert }
-
-           let heart = twinState.heartHealth || 100;
-           let liver = twinState.liverHealth || 100;
-           let brain = twinState.brainHealth || 100;
-           
-           document.getElementById('tw-heart-val').textContent = heart;
-           document.getElementById('tw-liver-val').textContent = liver;
-           document.getElementById('tw-brain-val').textContent = brain;
-
-           // Calculate inverted grayscale
-           document.getElementById('tw-heart-icon').style.filter = `grayscale(${Math.max(0, 100 - heart)}%)`;
-           document.getElementById('tw-liver-icon').style.filter = `grayscale(${Math.max(0, 100 - liver)}%)`;
-           document.getElementById('tw-brain-icon').style.filter = `grayscale(${Math.max(0, 100 - brain)}%)`;
-
-           document.getElementById('twin-ai-alert').textContent = twinState.aiAlert || "Phân tích không có dữ liệu phù hợp.";
-           document.getElementById('twin-result-container').style.display = 'block';
-
-           // Cập nhật lên Mock DB
-           if (window.BioAuth && window.BioAuth.currentUser) {
-              window.BioAuth.updateDigitalTwin({ heart, liver, brain });
-           }
-
-       } catch(error) {
-           console.error(error);
-           alert("Lỗi khi kết nối AI: " + error.message);
-       } finally {
-           btn.disabled = false;
-           btn.textContent = "Cập nhật Tình trạng Cơ thể";
-       }
-    });
-
     // Check patient
     const patient = PatientManager.get();
     if (!patient) {

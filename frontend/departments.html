@@ -138,6 +138,7 @@
         <li><a href="analysis.html">🔬 Phân tích</a></li>
         <li><a href="prediction.html">🔮 Dự đoán</a></li>
         <li><a href="library.html">📚 Thư viện</a></li>
+        <li><a href="chatbot.html">🤖 Tư vấn AI</a></li>
       </ul>
       <a href="reception.html" class="navbar-patient-btn btn btn-sm">🧑‍⚕️ Hồ sơ</a>
     </div>
@@ -343,8 +344,8 @@
           </div>
 
           <div id="dept-result-card" style="display:none" class="analysis-result">
-            <div class="card" id="zoom-macro-tier">
-              <h3 style="margin-bottom:1.25rem" id="result-dept-title">Kết Quả Hệ Cơ Quan (Sinh 11)</h3>
+            <div class="card">
+              <h3 style="margin-bottom:1.25rem" id="result-dept-title">Kết Quả</h3>
               <div class="risk-indicator">
                 <div class="risk-circle" id="result-risk-circle"><span id="result-risk-text">--</span></div>
                 <div>
@@ -354,53 +355,31 @@
               </div>
 
               <div class="ai-result" style="margin-bottom:1.25rem">
-                <h4 style="font-size:0.9rem; margin-bottom:0.5rem; color:var(--color-primary-light)">🤖 Chẩn đoán mô hình tuyến tính:</h4>
-                <p id="result-diagnosis-macro" style="font-size:0.9rem; margin-bottom:0.75rem; color:rgba(255,255,255,0.9)">--</p>
-                <h4 style="font-size:0.9rem; margin-bottom:0.5rem; color:var(--color-primary-light)">📝 Giải thích vĩ mô:</h4>
-                <p id="result-explanation-macro" style="font-size:0.85rem; color:rgba(255,255,255,0.7)">--</p>
+                <h4 style="font-size:0.9rem; margin-bottom:0.5rem; color:var(--color-primary-light)">🤖 AI nhận định:</h4>
+                <p id="result-diagnosis" style="font-size:0.9rem; margin-bottom:0.75rem; color:rgba(255,255,255,0.9)">--</p>
+                <p id="result-explanation" style="font-size:0.85rem; color:rgba(255,255,255,0.7)">--</p>
               </div>
 
               <div style="margin-bottom:1rem">
                 <h4 style="font-size:0.85rem; font-weight:700; color:rgba(255,255,255,0.5); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:0.5rem">
-                  Cơ quan ảnh hưởng (Sinh 11)
+                  Cơ quan có thể bị ảnh hưởng
                 </h4>
-                <div id="result-organs-macro" class="recommendation-tags"></div>
-              </div>
-              
-              <div style="margin-top:1rem; text-align: center;">
-                <button class="btn btn-outline btn-sm" id="btn-unlock-micro" style="width:100%; border-color: #6EE7B7; color: #6EE7B7;">
-                  🔍 Phóng to cấp Tế bào (Cần 10 EXP)
-                </button>
-              </div>
-            </div>
-
-            <!-- Tầng Vi mô (Sinh 10) -->
-            <div class="card" id="zoom-micro-tier" style="display:none; margin-top: 1rem; background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.2);">
-              <h3 style="margin-bottom:1.25rem; color:#6EE7B7;">🔬 Cấp độ Tế bào (Sinh 10)</h3>
-              <div class="ai-result" style="margin-bottom:1.25rem">
-                <h4 style="font-size:0.9rem; margin-bottom:0.5rem; color:#6EE7B7" id="result-title-micro">--</h4>
-                <p id="result-explanation-micro" style="font-size:0.85rem; color:rgba(255,255,255,0.8)">--</p>
-              </div>
-              <div id="result-keywords-micro" class="recommendation-tags" style="margin-bottom: 1rem"></div>
-
-              <div style="text-align: center;">
-                <button class="btn btn-outline btn-sm" id="btn-unlock-genetic" style="width:100%; border-color: #F472B6; color: #F472B6;">
-                  🧬 Giải mã Di truyền (Cần 20 EXP)
-                </button>
-              </div>
-            </div>
-
-            <!-- Tầng Di truyền (Sinh 12) -->
-            <div class="card" id="zoom-genetic-tier" style="display:none; margin-top: 1rem; background: rgba(244, 114, 182, 0.05); border: 1px solid rgba(244, 114, 182, 0.2);">
-              <h3 style="margin-bottom:1.25rem; color:#F472B6;">🧬 Cấp độ Di truyền (Sinh 12)</h3>
-              <div class="ai-result" style="margin-bottom:1.25rem">
-                <h4 style="font-size:0.9rem; margin-bottom:0.5rem; color:#F472B6" id="result-title-genetic">--</h4>
-                <p id="result-explanation-genetic" style="font-size:0.85rem; color:rgba(255,255,255,0.8)">--</p>
-                <div id="result-inheritable-genetic" style="margin-top:0.5rem; font-size: 0.8rem;"></div>
+                <div id="result-organs" class="recommendation-tags"></div>
               </div>
 
-              <div style="padding:0.75rem; background:rgba(245,158,11,0.08); border:1px solid rgba(245,158,11,0.2); border-radius:0.75rem; font-size:0.8rem; color:rgba(255,255,255,0.6); margin-top: 1rem;">
+              <div style="margin-bottom:1rem">
+                <h4 style="font-size:0.85rem; font-weight:700; color:rgba(255,255,255,0.5); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:0.5rem">
+                  Khuyến nghị
+                </h4>
+                <ul id="result-recommendations" class="info-list"></ul>
+              </div>
+
+              <div style="padding:0.75rem; background:rgba(245,158,11,0.08); border:1px solid rgba(245,158,11,0.2); border-radius:0.75rem; font-size:0.8rem; color:rgba(255,255,255,0.6)">
                 ⚠️ <em id="result-disclaimer">Đây là phân tích giáo dục, không thay thế chẩn đoán y tế chuyên nghiệp.</em>
+              </div>
+
+              <div style="margin-top:1rem;">
+                <a href="library.html" class="btn btn-outline btn-sm" style="width:100%">📚 Xem Thư Viện Liên Quan</a>
               </div>
             </div>
           </div>
@@ -418,7 +397,6 @@
 
   <script src="js/api.js"></script>
   <script src="js/patient.js"></script>
-  <script type="module" src="js/auth.js"></script>
   <script>
     // ── Patient banner ─────────────────────────────────────────────────────
     const patient = PatientManager.get();
@@ -456,10 +434,6 @@
         // Reset result
         document.getElementById('dept-empty-card').style.display = 'block';
         document.getElementById('dept-result-card').style.display = 'none';
-        document.getElementById('zoom-micro-tier').style.display = 'none';
-        document.getElementById('zoom-genetic-tier').style.display = 'none';
-        document.getElementById('btn-unlock-micro').style.display = 'block';
-        document.getElementById('btn-unlock-genetic').style.display = 'block';
       });
     });
 
@@ -494,26 +468,18 @@
         // Show result
         document.getElementById('dept-empty-card').style.display = 'none';
         document.getElementById('dept-result-card').style.display = 'block';
-        
-        // Reset sub tiers
-        document.getElementById('zoom-micro-tier').style.display = 'none';
-        document.getElementById('zoom-genetic-tier').style.display = 'none';
-        document.getElementById('btn-unlock-micro').style.display = 'inline-block';
-        document.getElementById('btn-unlock-genetic').style.display = 'inline-block';
 
-        // Bind Macro
-        document.getElementById('result-dept-title').textContent = `Hệ Cơ Quan (Sinh 11) – Khoa ${currentDept}`;
-        document.getElementById('result-diagnosis-macro').textContent = a.macro?.diagnosis || '--';
-        document.getElementById('result-explanation-macro').textContent = a.macro?.explanation || '--';
+        document.getElementById('result-dept-title').textContent = `Kết Quả – ${currentDept}`;
+        document.getElementById('result-diagnosis').textContent = a.diagnosis || '--';
+        document.getElementById('result-explanation').textContent = a.explanation || '--';
         document.getElementById('result-disclaimer').textContent = a.disclaimer || '';
 
-        // Risk
+        // Risk circle
         const circle = document.getElementById('result-risk-circle');
         const riskText = document.getElementById('result-risk-text');
-        riskText.textContent = a.riskLevel || 'Thấp';
+        riskText.textContent = a.riskLevel;
         circle.className = 'risk-circle ' +
-          (a.riskLevel === 'Cao' || a.riskLevel === 'Rất cao' ? 'high' : 
-           a.riskLevel === 'Trung bình' ? 'medium' : 'low');
+          (a.riskScore >= 70 ? 'high' : a.riskScore >= 40 ? 'medium' : 'low');
 
         // Urgency badge
         const urgency = document.getElementById('result-urgency');
@@ -523,66 +489,24 @@
            a.urgency === 'Cần khám sớm' ? 'badge-yellow' :
            a.urgency === 'Nên khám' ? 'badge-blue' : 'badge-green');
 
-        // Organs Macro
-        const orgEls = document.getElementById('result-organs-macro');
+        // Organs
+        const orgEls = document.getElementById('result-organs');
         orgEls.innerHTML = '';
-        (a.macro?.affectedOrgans || []).forEach(o => {
+        (a.affectedOrgans || []).forEach(o => {
           const tag = document.createElement('span');
           tag.className = 'badge badge-purple';
           tag.textContent = o;
           orgEls.appendChild(tag);
         });
 
-        // ── Logic Mở Khóa Tầng Vi mô (Sinh 10) ──
-        window.currentAnalyzeResult = a; // lưu tạm
-        document.getElementById('btn-unlock-micro').onclick = async () => {
-           document.getElementById('zoom-micro-tier').style.display = 'block';
-           document.getElementById('btn-unlock-micro').style.display = 'none';
-           
-           // Bind data
-           const m = window.currentAnalyzeResult.micro;
-           document.getElementById('result-title-micro').textContent = `Bài học: ${m.title || '--'}`;
-           document.getElementById('result-explanation-micro').textContent = m.explanation || '--';
-           
-           const kwEls = document.getElementById('result-keywords-micro');
-           kwEls.innerHTML = '';
-           (m.keywords || []).forEach(k => {
-             const tag = document.createElement('span');
-             tag.className = 'badge';
-             tag.style.background = 'rgba(16,185,129,0.2)';
-             tag.style.color = '#10B981';
-             tag.textContent = k;
-             kwEls.appendChild(tag);
-             
-             // Lưu vào BioAuth mock tree
-             if(window.BioAuth && window.BioAuth.currentUser) {
-                window.BioAuth.addKnowledge('biology10', k);
-             }
-           });
-        };
-
-        // ── Logic Mở Khóa Tầng Di truyền (Sinh 12) ──
-        document.getElementById('btn-unlock-genetic').onclick = async () => {
-           document.getElementById('zoom-genetic-tier').style.display = 'block';
-           document.getElementById('btn-unlock-genetic').style.display = 'none';
-
-           const g = window.currentAnalyzeResult.genetic;
-           document.getElementById('result-title-genetic').textContent = `Bài học: ${g.title || '--'}`;
-           document.getElementById('result-explanation-genetic').textContent = g.explanation || '--';
-           
-           const inh = document.getElementById('result-inheritable-genetic');
-           if (g.isInheritable !== undefined) {
-             inh.innerHTML = g.isInheritable 
-               ? '<span class="badge badge-red">⚠️ Có khả năng di truyền</span>' 
-               : '<span class="badge badge-green">✅ Khó di truyền đột biến</span>';
-           } else {
-             inh.innerHTML = '';
-           }
-
-           if(window.BioAuth && window.BioAuth.currentUser) {
-              window.BioAuth.addKnowledge('biology12', g.title);
-           }
-        };
+        // Recommendations
+        const recList = document.getElementById('result-recommendations');
+        recList.innerHTML = '';
+        (a.recommendations || []).forEach(r => {
+          const li = document.createElement('li');
+          li.textContent = r;
+          recList.appendChild(li);
+        });
 
         hideLoading();
         showToast('Phân tích hoàn tất!', 'success');

@@ -23,27 +23,17 @@ router.post('/department', async (req, res) => {
 Chuyên khoa: ${department} — Lĩnh vực: ${departmentPrompts[department] || department}
 Triệu chứng người dùng báo cáo: ${symptoms.join(', ')}
 
-Phân tích triệu chứng theo cơ chế "Zoom-in" (từ Vĩ mô đến Vi mô theo chương trình Sinh học SGK) và trả về JSON:
+Phân tích triệu chứng và trả về JSON:
 {
-  "macro": {
-    "diagnosis": "<Chẩn đoán sơ bộ ở cấp độ hệ cơ quan (sinh học 11), 1-2 câu>",
-    "explanation": "<Giải thích vì sao xuất hiện triệu chứng ở cấp độ vĩ mô, dễ hiểu>",
-    "affectedOrgans": ["<cơ quan 1>", "<cơ quan 2>"]
-  },
-  "micro": {
-    "title": "<Tên bài học sinh 10 (ví dụ: Hô hấp tế bào, Cấu tạo màng...)>",
-    "explanation": "<Phân tích chuyên sâu ở cấp độ tế bào: nguyên nhân sâu xa của triệu chứng (ATP, ti thể, enzym,...)>",
-    "keywords": ["<từ khóa 1>", "<từ khóa 2>"]
-  },
-  "genetic": {
-    "title": "<Tên kiến thức sinh 12 (ví dụ: Đột biến gen, Biểu hiện gen...)>",
-    "explanation": "<Phân tích cấp độ phân tử/di truyền học: nguy cơ tiềm ẩn, liên kết biểu hiện kiểu hình>",
-    "isInheritable": <true/false>
-  },
-  "riskLevel": "<Thấp/Trung bình/Cao/Rất cao>",
-  "urgency": "<Không cần thiết/Nên khám/Khẩn cấp>",
-  "lifestyle": "<1 lời khuyên thực tế>",
-  "disclaimer": "Đây là phân tích giáo dục STEM, không thay thế chẩn đoán y tế chuyên nghiệp."
+  "riskLevel": <"Thấp" hoặc "Trung bình" hoặc "Cao" hoặc "Rất cao">,
+  "riskScore": <số 0-100>,
+  "diagnosis": "<chẩn đoán sơ bộ giáo dục, 1-2 câu>",
+  "explanation": "<giải thích chi tiết 3-4 câu về các triệu chứng và cơ chế sinh học>",
+  "affectedOrgans": ["<cơ quan bị ảnh hưởng 1>", "<cơ quan 2>"],
+  "recommendations": ["<khuyến nghị 1>", "<khuyến nghị 2>", "<khuyến nghị 3>"],
+  "urgency": "<Không cần thiết / Nên khám / Cần khám sớm / Khẩn cấp>",
+  "lifestyle": "<1 lời khuyên lối sống cụ thể>",
+  "disclaimer": "Đây là phân tích giáo dục, không thay thế chẩn đoán y tế chuyên nghiệp."
 }`;
 
     const result = await askGeminiJSON(prompt);

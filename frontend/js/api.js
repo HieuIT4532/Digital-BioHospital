@@ -6,7 +6,7 @@
 // ── Cấu hình API ──────────────────────────────────────────────────────────
 const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
   ? 'http://localhost:5000'
-  : 'https://bio-ai-hospital-api.onrender.com'; // Thay bằng URL Render thật sau deploy
+  : 'https://digital-biohospital.onrender.com'; // URL Render thật
 
 // ── Helper: Fetch với error handling ─────────────────────────────────────
 async function apiFetch(endpoint, options = {}) {
@@ -21,10 +21,18 @@ async function apiFetch(endpoint, options = {}) {
   };
 
   const response = await fetch(url, defaultOptions);
-  const data = await response.json();
+  
+  let data;
+  const contentType = response.headers.get('content-type');
+  if (contentType && contentType.includes('application/json')) {
+    data = await response.json();
+  } else {
+    const text = await response.text();
+    throw new Error(`Phản hồi từ server không phải JSON (Status ${response.status}). Có thể server đang gặp lỗi hoặc endpoint không tồn tại.`);
+  }
 
   if (!response.ok) {
-    throw new Error(data.error || `Lỗi ${response.status}: ${response.statusText}`);
+    throw new Error(data?.error || `Lỗi ${response.status}: ${response.statusText}`);
   }
 
   return data;
@@ -126,18 +134,44 @@ const PersonalizeAPI = {
       method: 'POST',
       body: JSON.stringify({ patientData, goals })
     });
+  }
+};
+
+// ════════════════════════════════════════════════════════════════════════════
+// CHAT API
+// ════════════════════════════════════════════════════════════════════════════
+
+const ChatAPI = {
+  /**
+   * Nhắn tin với AI, lấy thông tin từ PDF hoặc kiến thức ngoài
+   * @param {Object} patientData
+   * @param {string} message
+   */
+  async send(patientData, message, history = []) {
+    return apiFetch('/api/chat', {
+      method: 'POST',
+      body: JSON.stringify({ patient: patientData, message, history })
+    });
+  }
+};
+
+// ════════════════════════════════════════════════════════════════════════════
+// LIBRARY API
+// ════════════════════════════════════════════════════════════════════════════
+
+const LibraryAPI = {
+  /**
+   * Lấy danh sách bộ phận của một hệ
+   */
+  async getSystem(systemId) {
+    return apiFetch(`/api/library/${systemId}`);
   },
 
   /**
-   * Cập nhật Digital Twin dựa trên thói quen (gọi AI)
-   * @param {Object} patientData
-   * @param {Object} habits - Thói quen (sleep, water, notes)
+   * Lấy chi tiết bộ phận (AI)
    */
-  async twin(patientData, habits) {
-    return apiFetch('/api/personalize/twin', {
-      method: 'POST',
-      body: JSON.stringify({ patientData, habits })
-    });
+  async getOrgan(systemId, organId) {
+    return apiFetch(`/api/library/${systemId}/${organId}`);
   }
 };
 
@@ -162,5 +196,8 @@ window.API = {
   Analyze: AnalyzeAPI,
   Predict: PredictAPI,
   Personalize: PersonalizeAPI,
-  checkHealth: checkAPIHealth
+  Chat: ChatAPI,
+  Library: LibraryAPI,
+  checkHealth: checkAPIHealth,
+  baseUrl: API_BASE
 };

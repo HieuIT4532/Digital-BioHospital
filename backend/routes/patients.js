@@ -1,7 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const Patient = require('../models/Patient');
 const { askGeminiJSON, buildMedicalContext } = require('../utils/gemini');
+
+// Local in-memory DB since Firebase was removed
+const patientsDB = [];
 
 // POST /api/patients — Tạo hồ sơ bệnh nhân mới + AI phân tích
 router.post('/', async (req, res) => {
@@ -16,15 +18,22 @@ router.post('/', async (req, res) => {
     // Tính BMI trước
     const hm = height / 100;
     const bmi = Math.round((weight / (hm * hm)) * 10) / 10;
+    
+    let bmiCategory = 'Bình thường';
+    if (bmi < 18.5) bmiCategory = 'Gầy';
+    else if (bmi < 25) bmiCategory = 'Bình thường';
+    else if (bmi < 30) bmiCategory = 'Thừa cân';
+    else bmiCategory = 'Béo phì';
 
     // Gọi AI phân tích sức khỏe
     const patientData = {
       name, age, gender, height, weight, bmi,
-      bmiCategory: bmi < 18.5 ? 'Gầy' : bmi < 25 ? 'Bình thường' : bmi < 30 ? 'Thừa cân' : 'Béo phì',
-      sleepHours, exerciseDaysPerWeek,
+      bmiCategory,
+      sleepHours: Number(sleepHours) || 7,
+      exerciseDaysPerWeek: Number(exerciseDaysPerWeek) || 0,
       smokingStatus: smokingStatus || 'Không hút',
       alcoholStatus: alcoholStatus || 'Không uống',
-      stressLevel: stressLevel || 5,
+      stressLevel: Number(stressLevel) || 5,
       medicalHistory: medicalHistory || []
     };
 
@@ -49,20 +58,27 @@ Hãy phân tích sức khỏe toàn diện của bệnh nhân này và trả v�
       healthScore = calculateLocalHealthScore(patientData);
     }
 
-    // Lưu vào MongoDB
-    const patient = new Patient({
+    // Tạo mã bệnh nhân (BN + hash short)
+    const patientCode = 'BN' + Date.now().toString(36).toUpperCase();
+
+    // Lưu vào array tạm
+    const newPatient = {
+      id: "local_" + Date.now().toString(36) + Math.random().toString(36).substr(2, 5),
       ...patientData,
+      patientCode,
       healthScore,
       riskLevel: aiResult.riskLevel || 'Trung bình',
       recommendedDepartments: aiResult.recommendedDepartments || [],
-      aiSummary: aiResult.summary || ''
-    });
+      aiSummary: aiResult.summary || '',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
 
-    await patient.save();
-
+    patientsDB.push(newPatient);
+    
     res.status(201).json({
       success: true,
-      patient: patient.toObject(),
+      patient: newPatient,
       aiAnalysis: aiResult
     });
 
@@ -75,11 +91,13 @@ Hãy phân tích sức khỏe toàn diện của bệnh nhân này và trả v�
 // GET /api/patients/:id — Lấy hồ sơ bệnh nhân
 router.get('/:id', async (req, res) => {
   try {
-    const patient = await Patient.findById(req.params.id);
-    if (!patient) {
+    const doc = patientsDB.find(p => p.id === req.params.id);
+    
+    if (!doc) {
       return res.status(404).json({ error: 'Không tìm thấy hồ sơ bệnh nhân' });
     }
-    res.json({ success: true, patient });
+    
+    res.json({ success: true, patient: doc });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -88,11 +106,13 @@ router.get('/:id', async (req, res) => {
 // GET /api/patients/code/:code — Tìm bằng mã bệnh nhân
 router.get('/code/:code', async (req, res) => {
   try {
-    const patient = await Patient.findOne({ patientCode: req.params.code.toUpperCase() });
-    if (!patient) {
+    const doc = patientsDB.find(p => p.patientCode === req.params.code.toUpperCase());
+    
+    if (!doc) {
       return res.status(404).json({ error: 'Không tìm thấy hồ sơ' });
     }
-    res.json({ success: true, patient });
+    
+    res.json({ success: true, patient: doc });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
