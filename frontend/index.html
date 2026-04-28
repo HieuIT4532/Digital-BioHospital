@@ -230,36 +230,6 @@
       .hero-title { font-size: 2.2rem; }
       .cta-card   { padding: 2rem; }
     }
-
-    /* ── Counter Animation ── */
-    .num[data-count] { transition: none; }
-
-    /* ── Feature Card Micro-Animations ── */
-    .feature-card { position: relative; overflow: hidden; }
-    .feature-icon {
-      display: inline-block;
-      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-    .feature-card:hover .feature-icon { transform: scale(1.2) rotate(-5deg); }
-
-    /* Shimmer on feature card hover */
-    .feature-card::after {
-      content: '';
-      position: absolute;
-      top: -50%; left: -60%;
-      width: 40%; height: 200%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent);
-      transform: skewX(-20deg);
-      transition: left 0.6s ease;
-      pointer-events: none;
-    }
-    .feature-card:hover::after { left: 130%; }
-
-    /* Wow card icon pulse */
-    .wow-card .wow-icon-wrap {
-      display: inline-block;
-      animation: float 3s ease-in-out infinite;
-    }
   </style>
 </head>
 <body class="page-enter">
@@ -282,9 +252,12 @@
         <li><a href="prediction.html"               id="nav-predict">🔮 Dự đoán</a></li>
         <li><a href="personalize.html"              id="nav-personal">🌱 Kế hoạch</a></li>
         <li><a href="library.html"                  id="nav-lib">📚 Thư viện</a></li>
-        <li><a href="chatbot.html"                  id="nav-chatbot">🤖 Tư vấn AI</a></li>
       </ul>
 
+      <div class="user-actions" style="margin-right: 1rem;">
+        <a href="#" class="btn btn-sm btn-outline" id="nav-login-btn">Đăng nhập</a>
+        <a href="profile.html" class="btn btn-sm btn-glass" id="nav-profile-btn" style="display:none; color: var(--color-text);">👤 Profile</a>
+      </div>
       <a href="reception.html" class="navbar-patient-btn btn btn-sm" id="btn-start-exam">
         🧑‍⚕️ Bắt đầu khám
       </a>
@@ -419,24 +392,6 @@
             </article>
           </a>
 
-          <a href="library.html" class="feature-link" id="feat-library">
-            <article class="feature-card" role="listitem">
-              <span class="feature-icon">📚</span>
-              <h3>Thư Viện Sinh Học 11</h3>
-              <p>6 hệ cơ quan × 5 phần: Khái niệm, Cấu tạo, Chức năng, Kiến thức SGK 11, Liên hệ thực tế.</p>
-              <div class="badge badge-blue" style="margin-top:1rem">SGK 11</div>
-            </article>
-          </a>
-
-          <a href="chatbot.html" class="feature-link" id="feat-chatbot">
-            <article class="feature-card" role="listitem">
-              <span class="feature-icon">🤖</span>
-              <h3>Tư Vấn AI BioAI</h3>
-              <p>Hỏi bất kỳ điều gì về sức khỏe — AI phân tích liên hệ các hệ cơ quan dựa trên Sinh học 11.</p>
-              <div class="badge badge-purple" style="margin-top:1rem">BioAI</div>
-            </article>
-          </a>
-
         </div>
       </div>
     </section>
@@ -453,7 +408,7 @@
         <div class="wow-features reveal">
           <div class="wow-card card-purple" id="wow-predict">
             <div class="wow-badge">🔮 Độc Quyền</div>
-            <div style="font-size:2.5rem; margin-bottom:1rem" class="wow-icon-wrap">🔮</div>
+            <div style="font-size:2.5rem; margin-bottom:1rem">🔮</div>
             <h3 style="margin-bottom:0.75rem">AI Dự Đoán Tương Lai</h3>
             <p style="margin-bottom:1.5rem">Không chỉ phân tích hiện tại — AI dự đoán xu hướng sức khỏe theo thời gian và cảnh báo nguy cơ.<br/><br/>
               <em style="color:var(--color-primary-light)">"Ngủ 4h/ngày — sau 30 ngày nguy cơ suy giảm trí nhớ tăng 40%..."</em>
@@ -463,7 +418,7 @@
 
           <div class="wow-card card-pink" id="wow-organs">
             <div class="wow-badge">🔬 AI Hệ Thống</div>
-            <div style="font-size:2.5rem; margin-bottom:1rem" class="wow-icon-wrap" style="animation-delay:0.5s">🔬</div>
+            <div style="font-size:2.5rem; margin-bottom:1rem">🔬</div>
             <h3 style="margin-bottom:0.75rem">Liên Kết Cơ Quan</h3>
             <p style="margin-bottom:1.5rem">AI vẽ đồ thị nhân-quả giữa các hệ cơ quan. Tư duy sinh học hệ thống — cực ăn điểm.<br/><br/>
               <em style="color:var(--color-accent-light)">"Thiếu ngủ → Não mệt → Tim quá tải → Huyết áp tăng..."</em>
@@ -473,7 +428,7 @@
 
           <div class="wow-card card-green" id="wow-plan">
             <div class="wow-badge" style="background:rgba(16,185,129,0.2);color:#6EE7B7">🌱 Cá Nhân Hóa</div>
-            <div style="font-size:2.5rem; margin-bottom:1rem" class="wow-icon-wrap" style="animation-delay:1s">🌱</div>
+            <div style="font-size:2.5rem; margin-bottom:1rem">🌱</div>
             <h3 style="margin-bottom:0.75rem">Kế Hoạch Cá Nhân</h3>
             <p style="margin-bottom:1.5rem">AI Gemini tạo lịch sinh hoạt 7 ngày hoàn toàn cá nhân hóa: ăn gì, tập gì, ngủ ra sao.<br/><br/>
               <em style="color:#6EE7B7">"Dành riêng cho bạn — không kế hoạch nào giống nhau."</em>
@@ -532,42 +487,8 @@
 
   <script src="js/api.js"></script>
   <script src="js/patient.js"></script>
+  <script type="module" src="js/auth.js"></script>
   <script>
-    // ── Counter animation on scroll ──────────────────────────────────────────
-    function animateCounter(el, target, duration = 1500) {
-      const start = performance.now();
-      const isPercent = String(target).includes('%');
-      const numTarget = parseInt(target);
-      function frame(now) {
-        const elapsed = now - start;
-        const progress = Math.min(elapsed / duration, 1);
-        // Ease out cubic
-        const eased = 1 - Math.pow(1 - progress, 3);
-        const current = Math.round(eased * numTarget);
-        el.textContent = current + (isPercent ? '%' : '');
-        if (progress < 1) requestAnimationFrame(frame);
-      }
-      requestAnimationFrame(frame);
-    }
-
-    const counterObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting && !entry.target.dataset.animated) {
-          entry.target.dataset.animated = '1';
-          const raw = entry.target.dataset.count;
-          animateCounter(entry.target, raw);
-        }
-      });
-    }, { threshold: 0.5 });
-
-    document.querySelectorAll('.num').forEach(el => {
-      const val = el.textContent.trim();
-      el.dataset.count = val;
-      el.textContent = '0';
-      if (val.includes('%')) el.dataset.count = val.replace('%','');
-      counterObserver.observe(el);
-    });
-
     // Particles background
     (function() {
       const canvas = document.createElement('canvas');

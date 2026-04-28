@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bản Đồ Tri Thức – Bệnh Viện Sinh Học Thông Minh</title>
+  <link rel="stylesheet" href="css/global.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/animations.css" />
+  <style>
+    .profile-layout {
+      display: grid;
+      grid-template-columns: 340px 1fr;
+      gap: 2rem;
+      align-items: start;
+      padding: 2rem 0 4rem;
+    }
+
+    /* SVG Body Map for Profile */
+    .body-map-wrapper {
+      position: relative;
+      width: 320px;
+      height: 520px;
+      margin: 0 auto;
+      background: rgba(255,255,255,0.03);
+      border-radius: 2rem;
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+    
+    .body-svg-bg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .organ-btn {
+      position: absolute;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      transition: all 0.3s ease;
+      z-index: 10;
+      opacity: 0.3; /* Mờ đi nếu chưa mở khóa */
+      filter: grayscale(1);
+    }
+
+    /* Khi được mở khóa, sáng lên */
+    .organ-btn.unlocked {
+      opacity: 1;
+      filter: grayscale(0);
+      box-shadow: 0 0 15px rgba(167,139,250,0.6);
+      transform: scale(1.1);
+    }
+
+    /* Vị trí trên MAP (giống Anatomy) */
+    .organ-brain  { top:  30px; left: 50%; transform: translateX(-50%); width:50px; height:50px; }
+    .organ-heart  { top: 165px; left: 38%; transform: translateX(-50%); width:44px; height:44px; }
+    .organ-lung-l { top: 165px; left: 27%; width:38px; height:38px; }
+    .organ-lung-r { top: 165px; right: 27%; width:38px; height:38px; }
+    .organ-liver  { top: 230px; left: 38%; transform: translateX(-50%); width:42px; height:42px; }
+    .organ-stomach{ top: 265px; left: 50%; transform: translateX(-50%); width:40px; height:40px; }
+    .organ-kidney { top: 285px; left: 30%; width:36px; height:36px; }
+
+    /* Tags knowledge */
+    .knowledge-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 1rem;
+    }
+    .knowledge-column {
+      background: rgba(255,255,255,0.03);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+    .kn-item {
+      padding: 0.5rem 0.8rem;
+      margin-bottom: 0.5rem;
+      background: rgba(124,58,237,0.15);
+      border-radius: 0.5rem;
+      font-size: 0.85rem;
+      color: var(--color-primary-light);
+      border: 1px solid rgba(167,139,250,0.3);
+    }
+    .kn-item.bio10 { background: rgba(16,185,129,0.15); border-color: rgba(16,185,129,0.3); color: #6EE7B7; }
+    .kn-item.bio12 { background: rgba(244,114,182,0.15); border-color: rgba(244,114,182,0.3); color: #F472B6; }
+  </style>
+</head>
+<body class="page-enter">
+
+  <nav class="navbar">
+    <div class="container navbar-inner">
+      <a href="index.html" class="navbar-brand">
+        <div class="brand-icon">🏥</div>
+        <span>Digital BioHospital</span>
+      </a>
+      <ul class="navbar-nav">
+        <li><a href="index.html">🏠 Trang chủ</a></li>
+        <li><a href="departments.html">🏥 Chuyên khoa</a></li>
+        <li><a href="anatomy.html">🧬 Giải phẫu</a></li>
+        <li><a href="analysis.html">🔬 Phân tích</a></li>
+        <li><a href="prediction.html">🔮 Dự đoán</a></li>
+      </ul>
+      <div class="user-actions" style="margin-right: 1rem;">
+        <a href="#" class="btn btn-sm btn-outline" id="nav-login-btn">Đăng nhập</a>
+        <a href="profile.html" class="btn btn-sm btn-glass" id="nav-profile-btn" style="display:none; color: var(--color-text);">👤 Profile</a>
+      </div>
+      <a href="#" id="nav-logout-btn" style="margin-left:auto; font-size: 0.8rem; color: rgba(255,255,255,0.5)">Đăng xuất</a>
+    </div>
+  </nav>
+
+  <main id="main">
+    <div class="page-header" style="background: linear-gradient(180deg, rgba(124,58,237,0.08) 0%, transparent 100%); border-bottom: 1px solid rgba(255,255,255,0.05);">
+      <div class="container">
+        <div class="section-tag animate-fadeInUp">🎓 Bio-Map</div>
+        <h1 class="animate-fadeInUp delay-100">Bản Đồ Tri Thức Của Tôi</h1>
+        <p class="animate-fadeInUp delay-200">Thắp sáng cơ thể sinh học thông qua quá trình khám chữa bệnh AI.</p>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="profile-layout animate-fadeInUp">
+        
+        <!-- LEFT: SVG Map -->
+        <div>
+           <div class="body-map-wrapper" id="profile-bio-map">
+             <!-- SVG Body Silhouette -->
+             <svg class="body-svg-bg" viewBox="0 0 260 520" fill="none" xmlns="http://www.w3.org/2000/svg">
+               <ellipse cx="130" cy="55" rx="38" ry="45" fill="rgba(167,139,250,0.08)" stroke="rgba(167,139,250,0.25)" stroke-width="1.5"/>
+               <rect x="115" y="95" width="30" height="30" rx="4" fill="rgba(167,139,250,0.06)" stroke="rgba(167,139,250,0.2)" stroke-width="1.5"/>
+               <path d="M75 125 C60 135 50 170 52 230 L55 310 L205 310 L208 230 C210 170 200 135 185 125 Z" fill="rgba(167,139,250,0.06)" stroke="rgba(167,139,250,0.2)" stroke-width="1.5"/>
+               <path d="M75 130 C60 140 40 170 38 220 C37 250 42 270 50 280" fill="none" stroke="rgba(167,139,250,0.2)" stroke-width="14" stroke-linecap="round"/>
+               <path d="M185 130 C200 140 220 170 222 220 C223 250 218 270 210 280" fill="none" stroke="rgba(167,139,250,0.2)" stroke-width="14" stroke-linecap="round"/>
+               <path d="M100 310 L90 420 L85 500" fill="none" stroke="rgba(167,139,250,0.2)" stroke-width="22" stroke-linecap="round"/>
+               <path d="M160 310 L170 420 L175 500" fill="none" stroke="rgba(167,139,250,0.2)" stroke-width="22" stroke-linecap="round"/>
+               <!-- Ribcage -->
+               <path d="M95 155 Q130 160 165 155" stroke="rgba(167,139,250,0.12)" stroke-width="1" fill="none"/>
+               <path d="M92 170 Q130 176 168 170" stroke="rgba(167,139,250,0.12)" stroke-width="1" fill="none"/>
+               <path d="M90 185 Q130 192 170 185" stroke="rgba(167,139,250,0.12)" stroke-width="1" fill="none"/>
+             </svg>
+             <!-- Organ hotspots -->
+             <div class="organ-btn organ-brain" id="map-brain">🧠</div>
+             <div class="organ-btn organ-heart" id="map-heart">❤️</div>
+             <div class="organ-btn organ-lung-l" id="map-lung">🫁</div>
+             <div class="organ-btn organ-liver" id="map-liver">🟤</div>
+             <div class="organ-btn organ-stomach" id="map-stomach">🟡</div>
+           </div>
+        </div>
+
+        <!-- RIGHT: Unlocked Knowledge -->
+        <div>
+           <div class="card" style="margin-bottom: 2rem;">
+             <h3>Chào, <span id="profile-name">Bạn</span>!</h3>
+             <p style="font-size: 0.9rem; color: rgba(255,255,255,0.6)">Hành trình thu thập kiến thức của bạn. Khám các chuyên khoa để thắp sáng thêm trí tuệ.</p>
+           </div>
+           
+           <div class="knowledge-grid">
+             <div class="knowledge-column">
+               <h4 style="margin-bottom: 1rem; color: #6EE7B7">Sinh học 10</h4>
+               <div id="list-bio10"></div>
+             </div>
+             <div class="knowledge-column">
+               <h4 style="margin-bottom: 1rem; color: var(--color-primary-light)">Sinh học 11</h4>
+               <div id="list-bio11"></div>
+             </div>
+             <div class="knowledge-column">
+               <h4 style="margin-bottom: 1rem; color: #F472B6">Sinh học 12</h4>
+               <div id="list-bio12"></div>
+             </div>
+           </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <script type="module">
+    import { MockFirebase } from './js/firebase-config.js';
+
+    window.addEventListener('load', async () => {
+      // Chờ init
+      setTimeout(async () => {
+         const user = window.BioAuth?.currentUser;
+         if (!user) {
+             alert('Bạn cần đăng nhập (mock) để xem trang này!');
+             window.location.href = 'index.html';
+             return;
+         }
+
+         const doc = window.BioAuth.currentDoc;
+         document.getElementById('profile-name').textContent = doc.displayName;
+
+         const bio10 = doc.unlockedKnowledge?.biology10 || [];
+         const bio11 = doc.unlockedKnowledge?.biology11 || [];
+         const bio12 = doc.unlockedKnowledge?.biology12 || [];
+
+         const renderList = (id, items, className) => {
+             const div = document.getElementById(id);
+             if (items.length === 0) {
+                 div.innerHTML = '<span style="font-size:0.8rem; color:rgba(255,255,255,0.4)">Chưa học thuật ngữ nào</span>';
+                 return;
+             }
+             items.forEach(k => {
+                 const d = document.createElement('div');
+                 d.className = `kn-item ${className}`;
+                 d.textContent = k;
+                 div.appendChild(d);
+                 
+                 // Fake logic để bật organ map nếu chứa một số từ khóa đặc biệt
+                 if(k.toLowerCase().includes('não') || k.toLowerCase().includes('thần kinh') || k.toLowerCase().includes('đầu')) {
+                    document.getElementById('map-brain').classList.add('unlocked');
+                 }
+                 if(k.toLowerCase().includes('tim') || k.toLowerCase().includes('mạch máu')) {
+                    document.getElementById('map-heart').classList.add('unlocked');
+                 }
+                 if(k.toLowerCase().includes('phổi') || k.toLowerCase().includes('hô hấp') || k.toLowerCase().includes('oxy')) {
+                    document.getElementById('map-lung').classList.add('unlocked');
+                 }
+                 if(k.toLowerCase().includes('gan') || k.toLowerCase().includes('tiêu hóa') || k.toLowerCase().includes('dạ dày')) {
+                    document.getElementById('map-liver').classList.add('unlocked');
+                    document.getElementById('map-stomach').classList.add('unlocked');
+                 }
+             });
+         };
+
+         renderList('list-bio10', bio10, 'bio10');
+         renderList('list-bio11', bio11, 'bio11');
+         renderList('list-bio12', bio12, 'bio12');
+
+      }, 500);
+    });
+  </script>
+  <script type="module" src="js/auth.js"></script>
+</body>
+</html>
