@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="vi">
 <head>
   <meta charset="UTF-8" />
@@ -8,13 +8,193 @@
   <link rel="stylesheet" href="css/global.css" />
   <link rel="stylesheet" href="css/components.css" />
   <link rel="stylesheet" href="css/animations.css" />
-  <link rel="stylesheet" href="css/anatomy-model.css" />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    .anatomy-layout {
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 2rem;
+      align-items: start;
+      padding: 2rem 0 4rem;
+    }
+
+    /* SVG Body Map */
+    .body-map-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: sticky;
+      top: 100px;
+    }
+
+    .body-map-wrapper {
+      position: relative;
+      width: 320px;
+      height: 520px;
+      margin: 0 auto;
+    }
+
+    .body-svg-bg {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Organ hotspot buttons */
+    .organ-btn {
+      position: absolute;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      transition: all 0.3s ease;
+      z-index: 10;
+    }
+
+    .organ-btn::before {
+      content: '';
+      position: absolute;
+      inset: -4px;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      transition: all 0.3s ease;
+    }
+
+    .organ-btn:hover { transform: scale(1.3); }
+    .organ-btn:hover::before {
+      border-color: rgba(167,139,250,0.8);
+      box-shadow: 0 0 20px rgba(167,139,250,0.6);
+    }
+
+    .organ-btn.active::before {
+      border-color: var(--color-primary-light);
+      box-shadow: 0 0 30px rgba(167,139,250,0.8);
+      animation: pulseShadow 2s infinite;
+    }
+
+    /* Organ positions */
+    .organ-brain  { top:  30px; left: 50%; transform: translateX(-50%); width:50px; height:50px; }
+    .organ-heart  { top: 165px; left: 38%; transform: translateX(-50%); width:44px; height:44px; animation: heartbeat 1.5s infinite; }
+    .organ-lung-l { top: 165px; left: 27%; width:38px; height:38px; }
+    .organ-lung-r { top: 165px; right: 27%; width:38px; height:38px; }
+    .organ-liver  { top: 230px; left: 38%; transform: translateX(-50%); width:42px; height:42px; }
+    .organ-stomach{ top: 265px; left: 50%; transform: translateX(-50%); width:40px; height:40px; }
+    .organ-kidney { top: 285px; left: 30%; width:36px; height:36px; }
+    .organ-kidney-r { top: 285px; right: 25%; width:36px; height:36px; }
+
+    /* Legend */
+    .organ-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      justify-content: center;
+      margin-top: 1.5rem;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.3rem 0.75rem;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 999px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .legend-item:hover, .legend-item.active {
+      background: rgba(124,58,237,0.2);
+      border-color: rgba(167,139,250,0.4);
+    }
+
+    /* Right: Organ Info */
+    .organ-info-panel {
+      /* scrolls normally */
+    }
+
+    .organ-detail-card {
+      display: none;
+      animation: scaleIn 0.4s ease;
+    }
+
+    .organ-detail-card.active { display: block; }
+
+    .organ-header {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .organ-icon-large {
+      font-size: 3.5rem;
+      filter: drop-shadow(0 0 20px rgba(167,139,250,0.6));
+    }
+
+    .function-list {
+      list-style: none;
+      margin-bottom: 1.25rem;
+    }
+
+    .function-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      padding: 0.6rem 0;
+      font-size: 0.9rem;
+      color: rgba(255,255,255,0.8);
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+
+    .function-list li:last-child { border-bottom: none; }
+
+    .disease-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .disease-tag {
+      padding: 0.3rem 0.75rem;
+      background: rgba(239,68,68,0.1);
+      border: 1px solid rgba(239,68,68,0.2);
+      border-radius: 999px;
+      font-size: 0.8rem;
+      color: #FCA5A5;
+    }
+
+    /* Welcome state */
+    .anatomy-welcome {
+      text-align: center;
+      padding: 3rem 1.5rem;
+    }
+
+    .pulse-ring {
+      display: inline-block;
+      width: 80px; height: 80px;
+      border-radius: 50%;
+      background: rgba(124,58,237,0.15);
+      border: 2px solid rgba(167,139,250,0.4);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2.5rem;
+      margin: 0 auto 1.5rem;
+      animation: pulseShadow 3s infinite;
+    }
+
+    @media (max-width: 900px) {
+      .anatomy-layout { grid-template-columns: 1fr; }
+      .body-map-container { position: static; }
+    }
+  </style>
 </head>
 <body class="page-enter">
-  <canvas id="particleCanvas"></canvas>
 
   <nav class="navbar">
     <div class="container navbar-inner">
@@ -29,7 +209,6 @@
         <li><a href="analysis.html">🔬 Phân tích</a></li>
         <li><a href="prediction.html">🔮 Dự đoán</a></li>
         <li><a href="library.html">📚 Thư viện</a></li>
-        <li><a href="chatbot.html">🤖 Tư vấn AI</a></li>
       </ul>
       <a href="reception.html" class="navbar-patient-btn btn btn-sm">🧑‍⚕️ Hồ sơ</a>
     </div>
@@ -45,229 +224,283 @@
     </div>
 
     <div class="container">
-    <!-- PREMIUM ANATOMY MODEL SECTION -->
-    <div class="anatomy-model-container">
-      <header id="model-header" style="padding: 1rem 0; text-align: center;">
-        <nav id="main-nav" style="display: flex; justify-content: center; gap: 0.5rem; flex-wrap: wrap;">
-            <button class="nav-btn active" data-system="all" id="nav-all">🧬 Tất cả</button>
-            <button class="nav-btn" data-system="skeletal" id="nav-skeletal">🦴 Xương</button>
-            <button class="nav-btn" data-system="organs" id="nav-organs">🫀 Nội tạng</button>
-            <button class="nav-btn" data-system="circulatory" id="nav-circulatory">🩸 Tuần hoàn</button>
-            <button class="nav-btn" data-system="nervous" id="nav-nervous">⚡ Thần kinh</button>
-        </nav>
-      </header>
+      <div class="anatomy-layout">
 
-      <div id="main-content">
-        <!-- Left Panel - Info -->
-        <aside id="info-panel" class="glass-panel">
-            <div class="panel-header">
-                <h2 id="info-title">Cơ Thể Người</h2>
-                <div class="pulse-dot"></div>
+        <!-- LEFT: Body Map -->
+        <div class="body-map-container animate-fadeIn">
+          <div class="body-map-wrapper">
+            <!-- SVG Body Silhouette -->
+            <svg class="body-svg-bg" viewBox="0 0 260 520" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Head -->
+              <ellipse cx="130" cy="55" rx="38" ry="45" fill="rgba(167,139,250,0.08)" stroke="rgba(167,139,250,0.25)" stroke-width="1.5"/>
+              <!-- Neck -->
+              <rect x="115" y="95" width="30" height="30" rx="4" fill="rgba(167,139,250,0.06)" stroke="rgba(167,139,250,0.2)" stroke-width="1.5"/>
+              <!-- Torso -->
+              <path d="M75 125 C60 135 50 170 52 230 L55 310 L205 310 L208 230 C210 170 200 135 185 125 Z"
+                    fill="rgba(167,139,250,0.06)" stroke="rgba(167,139,250,0.2)" stroke-width="1.5"/>
+              <!-- Left Arm -->
+              <path d="M75 130 C60 140 40 170 38 220 C37 250 42 270 50 280"
+                    fill="none" stroke="rgba(167,139,250,0.2)" stroke-width="14" stroke-linecap="round"/>
+              <!-- Right Arm -->
+              <path d="M185 130 C200 140 220 170 222 220 C223 250 218 270 210 280"
+                    fill="none" stroke="rgba(167,139,250,0.2)" stroke-width="14" stroke-linecap="round"/>
+              <!-- Left Leg -->
+              <path d="M100 310 L90 420 L85 500"
+                    fill="none" stroke="rgba(167,139,250,0.2)" stroke-width="22" stroke-linecap="round"/>
+              <!-- Right Leg -->
+              <path d="M160 310 L170 420 L175 500"
+                    fill="none" stroke="rgba(167,139,250,0.2)" stroke-width="22" stroke-linecap="round"/>
+              <!-- Ribcage lines (decorative) -->
+              <path d="M95 155 Q130 160 165 155" stroke="rgba(167,139,250,0.12)" stroke-width="1" fill="none"/>
+              <path d="M92 170 Q130 176 168 170" stroke="rgba(167,139,250,0.12)" stroke-width="1" fill="none"/>
+              <path d="M90 185 Q130 192 170 185" stroke="rgba(167,139,250,0.12)" stroke-width="1" fill="none"/>
+              <path d="M90 200 Q130 207 170 200" stroke="rgba(167,139,250,0.1)" stroke-width="1" fill="none"/>
+            </svg>
+
+            <!-- Organ Buttons -->
+            <button class="organ-btn organ-brain" id="btn-brain" data-organ="brain" title="Não bộ" aria-label="Não bộ">🧠</button>
+            <button class="organ-btn organ-heart" id="btn-heart" data-organ="heart" title="Tim" aria-label="Tim">❤️</button>
+            <button class="organ-btn organ-lung-l" id="btn-lung-l" data-organ="lung" title="Phổi trái" aria-label="Phổi">🫁</button>
+            <button class="organ-btn organ-lung-r" id="btn-lung-r" data-organ="lung" title="Phổi phải" aria-label="Phổi">🫁</button>
+            <button class="organ-btn organ-liver" id="btn-liver" data-organ="liver" title="Gan" aria-label="Gan">🟤</button>
+            <button class="organ-btn organ-stomach" id="btn-stomach" data-organ="stomach" title="Dạ dày" aria-label="Dạ dày">🟡</button>
+            <button class="organ-btn organ-kidney" id="btn-kidney-l" data-organ="kidney" title="Thận" aria-label="Thận">🫘</button>
+            <button class="organ-btn organ-kidney-r" id="btn-kidney-r" data-organ="kidney" title="Thận" aria-label="Thận">🫘</button>
+          </div>
+
+          <!-- Legend -->
+          <div class="organ-legend">
+            <button class="legend-item" data-organ="brain">🧠 Não</button>
+            <button class="legend-item" data-organ="heart">❤️ Tim</button>
+            <button class="legend-item" data-organ="lung">🫁 Phổi</button>
+            <button class="legend-item" data-organ="liver">🟤 Gan</button>
+            <button class="legend-item" data-organ="stomach">🟡 Dạ dày</button>
+            <button class="legend-item" data-organ="kidney">🫘 Thận</button>
+          </div>
+        </div>
+
+        <!-- RIGHT: Organ Info -->
+        <div class="organ-info-panel animate-slideRight">
+
+          <!-- Welcome State -->
+          <div class="card anatomy-welcome" id="anatomy-welcome">
+            <div class="pulse-ring">🧬</div>
+            <h3>Chọn Một Cơ Quan</h3>
+            <p>Click vào tim, phổi, não... trên hình cơ thể bên trái để xem thông tin chi tiết và giải thích từ AI.</p>
+            <div style="margin-top:1.5rem; font-size:0.85rem; color:rgba(255,255,255,0.4)">
+              Có 6 cơ quan để khám phá →
             </div>
-            <div id="info-content" class="panel-body">
-                <p class="info-intro">Nhấn vào các bộ phận trên mô hình để xem thông tin chi tiết.</p>
-                <div class="info-stats">
-                    <div class="stat-item"><span class="stat-value">206</span><span class="stat-label">Xương</span></div>
-                    <div class="stat-item"><span class="stat-value">78</span><span class="stat-label">Cơ quan</span></div>
-                    <div class="stat-item"><span class="stat-value">11</span><span class="stat-label">Hệ cơ quan</span></div>
-                </div>
+          </div>
+
+          <!-- Organ Detail Cards -->
+
+          <!-- 🧠 NÃO -->
+          <div class="card organ-detail-card" id="detail-brain">
+            <div class="organ-header">
+              <span class="organ-icon-large">🧠</span>
+              <div>
+                <h2 style="font-size:1.5rem; margin-bottom:0.25rem">Não Bộ</h2>
+                <p style="font-size:0.85rem; color:rgba(255,255,255,0.5)">Hệ thần kinh trung ương</p>
+              </div>
             </div>
-        </aside>
-
-        <!-- Center - Body Model -->
-        <section id="body-container">
-            <div class="model-wrapper" id="model-wrapper">
-                <svg id="human-body-svg" viewBox="0 0 500 900" xmlns="http://www.w3.org/2000/svg">
-                    <defs>
-                        <!-- Gradients -->
-                        <linearGradient id="bodyOutlineGrad" x1="0" y1="0" x2="1" y2="1">
-                            <stop offset="0%" stop-color="#1a3a5c" stop-opacity="0.6"/>
-                            <stop offset="100%" stop-color="#0d1f33" stop-opacity="0.4"/>
-                        </linearGradient>
-                        <linearGradient id="brainGrad" x1="0" y1="0" x2="1" y2="1">
-                            <stop offset="0%" stop-color="#ffcc00"/><stop offset="100%" stop-color="#ff9900"/>
-                        </linearGradient>
-                        <linearGradient id="heartGrad" x1="0" y1="0" x2="1" y2="1">
-                            <stop offset="0%" stop-color="#ff3366"/><stop offset="100%" stop-color="#cc0033"/>
-                        </linearGradient>
-                        <linearGradient id="lungGrad" x1="0" y1="0" x2="1" y2="1">
-                            <stop offset="0%" stop-color="#ff6b6b"/><stop offset="100%" stop-color="#c44569"/>
-                        </linearGradient>
-                        <linearGradient id="liverGrad" x1="0" y1="0" x2="1" y2="1">
-                            <stop offset="0%" stop-color="#8b4513"/><stop offset="100%" stop-color="#a0522d"/>
-                        </linearGradient>
-                        <linearGradient id="stomachGrad" x1="0" y1="0" x2="1" y2="1">
-                            <stop offset="0%" stop-color="#ff8c42"/><stop offset="100%" stop-color="#e67e22"/>
-                        </linearGradient>
-                        <linearGradient id="intestineGrad" x1="0" y1="0" x2="1" y2="1">
-                            <stop offset="0%" stop-color="#f4a460"/><stop offset="100%" stop-color="#daa520"/>
-                        </linearGradient>
-                        <linearGradient id="kidneyGrad" x1="0" y1="0" x2="1" y2="1">
-                            <stop offset="0%" stop-color="#cd5c5c"/><stop offset="100%" stop-color="#8b0000"/>
-                        </linearGradient>
-                        <linearGradient id="arteryGrad" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stop-color="#ff0000"/><stop offset="100%" stop-color="#cc0000"/>
-                        </linearGradient>
-                        <linearGradient id="veinGrad" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stop-color="#4444ff"/><stop offset="100%" stop-color="#2222aa"/>
-                        </linearGradient>
-                        <linearGradient id="nerveGrad" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stop-color="#ffff00"/><stop offset="100%" stop-color="#cccc00"/>
-                        </linearGradient>
-                        <linearGradient id="boneGrad" x1="0" y1="0" x2="1" y2="1">
-                            <stop offset="0%" stop-color="#e8e0d0"/><stop offset="100%" stop-color="#c8bfaf"/>
-                        </linearGradient>
-                        <!-- Filters -->
-                        <filter id="organGlow" x="-50%" y="-50%" width="200%" height="200%">
-                            <feGaussianBlur stdDeviation="4" result="blur"/>
-                            <feComposite in="SourceGraphic" in2="blur" operator="over"/>
-                        </filter>
-                        <filter id="softGlow" x="-30%" y="-30%" width="160%" height="160%">
-                            <feGaussianBlur stdDeviation="2" result="blur"/>
-                            <feComposite in="SourceGraphic" in2="blur" operator="over"/>
-                        </filter>
-                    </defs>
-
-                    <!-- BODY OUTLINE -->
-                    <g id="body-outline" class="body-layer">
-                        <ellipse cx="250" cy="75" rx="48" ry="58" fill="url(#bodyOutlineGrad)" stroke="#2a6090" stroke-width="1.5" opacity="0.7"/>
-                        <rect x="232" y="130" width="36" height="30" rx="8" fill="url(#bodyOutlineGrad)" stroke="#2a6090" stroke-width="1" opacity="0.6"/>
-                        <path d="M185 160 Q180 160 170 180 L155 300 Q150 360 160 420 L175 500 Q180 510 200 515 L300 515 Q320 510 325 500 L340 420 Q350 360 345 300 L330 180 Q320 160 315 160 Z" fill="url(#bodyOutlineGrad)" stroke="#2a6090" stroke-width="1.5" opacity="0.6"/>
-                        <path d="M170 175 Q140 180 120 200 L90 290 Q80 320 75 350 L65 420 Q60 440 65 450 L75 460 Q85 465 90 455 L100 400 Q105 380 110 350 L130 280 Q140 260 155 245" fill="url(#bodyOutlineGrad)" stroke="#2a6090" stroke-width="1.5" opacity="0.5"/>
-                        <path d="M330 175 Q360 180 380 200 L410 290 Q420 320 425 350 L435 420 Q440 440 435 450 L425 460 Q415 465 410 455 L400 400 Q395 380 390 350 L370 280 Q360 260 345 245" fill="url(#bodyOutlineGrad)" stroke="#2a6090" stroke-width="1.5" opacity="0.5"/>
-                        <path d="M195 510 Q185 520 180 540 L170 620 Q165 680 168 720 L172 780 Q175 810 178 840 Q180 860 185 870 L195 875 Q200 870 200 860 L198 840 Q195 810 193 780 L190 720 Q188 680 190 640 L195 560" fill="url(#bodyOutlineGrad)" stroke="#2a6090" stroke-width="1.5" opacity="0.5"/>
-                        <path d="M305 510 Q315 520 320 540 L330 620 Q335 680 332 720 L328 780 Q325 810 322 840 Q320 860 315 870 L305 875 Q300 870 300 860 L302 840 Q305 810 307 780 L310 720 Q312 680 310 640 L305 560" fill="url(#bodyOutlineGrad)" stroke="#2a6090" stroke-width="1.5" opacity="0.5"/>
-                    </g>
-
-                    <!-- SKELETAL SYSTEM -->
-                    <g id="skeletal-system" class="body-layer system-layer" data-system="skeletal">
-                        <g id="bone-skull" class="interactive-part" data-part="skull">
-                            <ellipse cx="250" cy="65" rx="40" ry="50" fill="none" stroke="#d8d0c0" stroke-width="2" opacity="0.6"/>
-                        </g>
-                        <g id="bone-spine" class="interactive-part" data-part="spine">
-                            <rect x="234" y="305" width="32" height="9" rx="4" fill="rgba(200,191,175,0.25)" stroke="#c8bfaf" stroke-width="1" opacity="0.4"/>
-                        </g>
-                        <g id="bone-humerus" class="interactive-part" data-part="humerus">
-                            <line x1="178" y1="178" x2="135" y2="300" stroke="#d0c8b8" stroke-width="4" opacity="0.4" stroke-linecap="round"/>
-                            <line x1="322" y1="178" x2="365" y2="300" stroke="#d0c8b8" stroke-width="4" opacity="0.4" stroke-linecap="round"/>
-                        </g>
-                        <g id="bone-femur" class="interactive-part" data-part="femur">
-                            <line x1="210" y1="480" x2="195" y2="660" stroke="#d0c8b8" stroke-width="5" opacity="0.4" stroke-linecap="round"/>
-                            <line x1="290" y1="480" x2="305" y2="660" stroke="#d0c8b8" stroke-width="5" opacity="0.4" stroke-linecap="round"/>
-                        </g>
-                    </g>
-
-                    <!-- CIRCULATORY SYSTEM -->
-                    <g id="circulatory-system" class="body-layer system-layer" data-system="circulatory">
-                        <g id="circ-aorta" class="interactive-part" data-part="aorta">
-                            <path d="M255 290 Q260 270 260 260 Q260 245 250 240" fill="none" stroke="url(#arteryGrad)" stroke-width="3.5" opacity="0.75"/>
-                        </g>
-                    </g>
-
-                    <!-- NERVOUS SYSTEM -->
-                    <g id="nervous-system" class="body-layer system-layer" data-system="nervous">
-                        <g id="nerve-spinal" class="interactive-part" data-part="spinal-cord">
-                            <line x1="250" y1="115" x2="250" y2="500" stroke="url(#nerveGrad)" stroke-width="3" opacity="0.55"/>
-                        </g>
-                    </g>
-
-                    <!-- ORGANS -->
-                    <g id="organs-system" class="body-layer system-layer" data-system="organs">
-                        <g id="organ-brain" class="organ interactive-part" data-part="brain">
-                            <ellipse cx="250" cy="62" rx="30" ry="24" fill="url(#brainGrad)" opacity="0.85" filter="url(#softGlow)"/>
-                        </g>
-                        <g id="organ-lungs" class="organ interactive-part" data-part="lungs">
-                            <path d="M200 200 Q185 210 180 240 Q178 270 182 300 Q188 320 200 330 Z" fill="url(#lungGrad)" opacity="0.75" filter="url(#softGlow)"/>
-                            <path d="M300 200 Q315 210 320 240 Q322 270 318 300 Q312 320 300 330 Z" fill="url(#lungGrad)" opacity="0.75" filter="url(#softGlow)"/>
-                        </g>
-                        <g id="organ-heart" class="organ interactive-part" data-part="heart">
-                            <path d="M237 275 Q230 260 235 248 Q240 240 250 240 Q260 240 265 248 Q270 260 263 275 Q258 288 250 298 Q242 288 237 275 Z" fill="url(#heartGrad)" opacity="0.9" filter="url(#organGlow)"/>
-                        </g>
-                        <g id="organ-liver" class="organ interactive-part" data-part="liver">
-                            <path d="M270 330 Q310 325 330 340 Q340 355 335 370 Q325 385 300 388 Q275 390 260 380 Q250 370 255 355 Q260 340 270 330 Z" fill="url(#liverGrad)" opacity="0.8" filter="url(#softGlow)"/>
-                        </g>
-                        <g id="organ-stomach" class="organ interactive-part" data-part="stomach">
-                            <path d="M218 340 Q200 345 195 365 Q192 385 200 400 Q210 415 230 418 Q248 418 255 405 Q260 390 255 370 Q250 350 240 340 Q230 335 218 340 Z" fill="url(#stomachGrad)" opacity="0.8" filter="url(#softGlow)"/>
-                        </g>
-                        <g id="organ-kidneys" class="organ interactive-part" data-part="kidneys">
-                            <ellipse cx="200" cy="390" rx="16" ry="22" fill="url(#kidneyGrad)" opacity="0.8" transform="rotate(-10 200 390)"/>
-                            <ellipse cx="300" cy="385" rx="16" ry="22" fill="url(#kidneyGrad)" opacity="0.8" transform="rotate(10 300 385)"/>
-                        </g>
-                    </g>
-                </svg>
-
-                <div id="organ-tooltip" class="organ-tooltip"><span id="tooltip-text"></span></div>
+            <div class="ai-result" style="margin-bottom:1.25rem">
+              <h4 style="color:var(--color-primary-light); margin-bottom:0.5rem; font-size:0.9rem">🤖 AI Giải Thích</h4>
+              <p style="font-size:0.875rem; color:rgba(255,255,255,0.85)">
+                Não là trung tâm điều hành toàn bộ cơ thể với ~86 tỷ tế bào thần kinh. Mỗi giây, não xử lý hàng triệu tín hiệu và điều phối mọi chức năng từ nhịp tim đến cảm xúc.
+              </p>
             </div>
-
-            <!-- Zoom controls -->
-            <div id="zoom-controls" class="zoom-controls">
-                <button id="zoom-in" class="zoom-btn">+</button>
-                <button id="zoom-reset" class="zoom-btn">⟲</button>
-                <button id="zoom-out" class="zoom-btn">−</button>
+            <h4 style="font-size:0.85rem; font-weight:700; color:rgba(255,255,255,0.5); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:0.5rem">Chức Năng Chính</h4>
+            <ul class="function-list">
+              <li><span>🎯</span> Điều phối vận động và phản xạ</li>
+              <li><span>💭</span> Tư duy, học tập và ghi nhớ</li>
+              <li><span>😤</span> Điều tiết hô hấp và nhịp tim</li>
+              <li><span>🌡️</span> Kiểm soát nhiệt độ cơ thể</li>
+              <li><span>💤</span> Quản lý giấc ngủ và nhịp sinh học</li>
+            </ul>
+            <h4 style="font-size:0.85rem; font-weight:700; color:rgba(255,255,255,0.5); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:0.5rem">Bệnh Liên Quan</h4>
+            <div class="disease-tags">
+              <span class="disease-tag">Đột quỵ</span>
+              <span class="disease-tag">Alzheimer</span>
+              <span class="disease-tag">Parkinson</span>
+              <span class="disease-tag">Động kinh</span>
+              <span class="disease-tag">Trầm cảm</span>
+              <span class="disease-tag">Migraine</span>
             </div>
-        </section>
-
-        <!-- Right Panel - Legend -->
-        <aside id="legend-panel" class="glass-panel">
-            <div class="panel-header"><h2>Chú Thích</h2></div>
-            <div class="panel-body">
-                <div class="legend-section">
-                    <h3>Nội Tạng</h3>
-                    <div class="legend-item" data-target="brain"><span class="legend-color" style="background: #ffcc00;"></span><span>Não</span></div>
-                    <div class="legend-item" data-target="lungs"><span class="legend-color" style="background: #ff6b6b;"></span><span>Phổi</span></div>
-                    <div class="legend-item" data-target="heart"><span class="legend-color" style="background: #ff3366;"></span><span>Tim</span></div>
-                    <div class="legend-item" data-target="liver"><span class="legend-color" style="background: #8b4513;"></span><span>Gan</span></div>
-                    <div class="legend-item" data-target="stomach"><span class="legend-color" style="background: #ff8c42;"></span><span>Dạ dày</span></div>
-                    <div class="legend-item" data-target="kidneys"><span class="legend-color" style="background: #cd5c5c;"></span><span>Thận</span></div>
-                </div>
+            <div style="padding:0.75rem; background:rgba(124,58,237,0.1); border-radius:0.75rem; font-size:0.85rem; color:rgba(255,255,255,0.7)">
+              💡 <strong>Bảo vệ não:</strong> Ngủ 7–9 tiếng, tập thể dục đều đặn, đọc sách và học điều mới.
             </div>
-        </aside>
-      </div>
-    </div>
-    </div>
+            <a href="departments.html" class="btn btn-outline btn-sm" style="width:100%; margin-top:1rem">🏥 Đến Khoa Thần Kinh</a>
+          </div>
 
-    <div class="container" style="margin-top: 2rem; margin-bottom: 4rem;">
-      <div class="card" style="background: rgba(124,58,237,0.05); border: 1px dashed rgba(167,139,250,0.3); padding: 1.5rem; text-align: center;">
-        <h4 style="margin-bottom: 0.75rem; color: var(--color-primary-light);">🌐 Tài Liệu Tham Khảo 3D Chuyên Sâu</h4>
-        <p style="font-size: 0.9rem; margin-bottom: 1.25rem; opacity: 0.8;">Khám phá mô hình 3D chi tiết về hệ cơ quan và giải phẫu cơ thể người (Nam giới) trực tuyến:</p>
-        <a href="https://mozaweb.vn/Extra-Canh_3D-Co_the_nam_gioi-4022?mode=directlink" target="_blank" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 0.5rem;">
-          🚀 Xem Mô Hình 3D Mozaweb →
-        </a>
+          <!-- ❤️ TIM -->
+          <div class="card organ-detail-card" id="detail-heart">
+            <div class="organ-header">
+              <span class="organ-icon-large" style="animation: heartbeat 1.5s infinite; display:inline-block">❤️</span>
+              <div>
+                <h2 style="font-size:1.5rem; margin-bottom:0.25rem">Tim</h2>
+                <p style="font-size:0.85rem; color:rgba(255,255,255,0.5)">Hệ tuần hoàn máu</p>
+              </div>
+            </div>
+            <div class="ai-result" style="margin-bottom:1.25rem">
+              <h4 style="color:var(--color-primary-light); margin-bottom:0.5rem; font-size:0.9rem">🤖 AI Giải Thích</h4>
+              <p style="font-size:0.875rem; color:rgba(255,255,255,0.85)">
+                Tim đập khoảng 100.000 lần/ngày, bơm 5–6 lít máu mỗi phút. Là "động cơ" cung cấp oxy và dinh dưỡng cho toàn bộ tế bào trong cơ thể.
+              </p>
+            </div>
+            <h4 style="font-size:0.85rem; font-weight:700; color:rgba(255,255,255,0.5); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:0.5rem">Chức Năng Chính</h4>
+            <ul class="function-list">
+              <li><span>🩸</span> Bơm máu đến toàn thân</li>
+              <li><span>🌬️</span> Đưa máu lên phổi lấy oxy</li>
+              <li><span>⚡</span> Tạo nhịp điện sinh học ổn định</li>
+              <li><span>🔄</span> Điều tiết huyết áp</li>
+            </ul>
+            <h4 style="font-size:0.85rem; font-weight:700; color:rgba(255,255,255,0.5); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:0.5rem">Bệnh Liên Quan</h4>
+            <div class="disease-tags">
+              <span class="disease-tag">Nhồi máu cơ tim</span>
+              <span class="disease-tag">Suy tim</span>
+              <span class="disease-tag">Rối loạn nhịp</span>
+              <span class="disease-tag">Cao huyết áp</span>
+              <span class="disease-tag">Xơ vữa</span>
+            </div>
+            <div style="padding:0.75rem; background:rgba(239,68,68,0.08); border-radius:0.75rem; font-size:0.85rem; color:rgba(255,255,255,0.7)">
+              ❤️ <strong>Bảo vệ tim:</strong> Tập cardio 30 phút/ngày, giảm muối, không hút thuốc.
+            </div>
+            <a href="departments.html" class="btn btn-outline btn-sm" style="width:100%; margin-top:1rem">🏥 Đến Khoa Tim Mạch</a>
+          </div>
+
+          <!-- 🫁 PHỔI -->
+          <div class="card organ-detail-card" id="detail-lung">
+            <div class="organ-header">
+              <span class="organ-icon-large">🫁</span>
+              <div>
+                <h2 style="font-size:1.5rem; margin-bottom:0.25rem">Phổi</h2>
+                <p style="font-size:0.85rem; color:rgba(255,255,255,0.5)">Hệ hô hấp</p>
+              </div>
+            </div>
+            <div class="ai-result" style="margin-bottom:1.25rem">
+              <h4 style="color:var(--color-primary-light); margin-bottom:0.5rem; font-size:0.9rem">🤖 AI Giải Thích</h4>
+              <p style="font-size:0.875rem; color:rgba(255,255,255,0.85)">
+                Hai lá phổi có tổng diện tích ~70m² — lớn bằng một sân tennis! Thực hiện 20.000 lần thở mỗi ngày, cung cấp O₂ và thải CO₂.
+              </p>
+            </div>
+            <h4 style="font-size:0.85rem; font-weight:700; color:rgba(255,255,255,0.5); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:0.5rem">Chức Năng Chính</h4>
+            <ul class="function-list">
+              <li><span>🌬️</span> Trao đổi khí (O₂ vào, CO₂ ra)</li>
+              <li><span>🛡️</span> Lọc vi khuẩn, bụi khỏi không khí</li>
+              <li><span>🩸</span> Oxy hóa máu trước khi về tim</li>
+              <li><span>💬</span> Tham gia tạo âm thanh khi nói</li>
+            </ul>
+            <h4 style="font-size:0.85rem; font-weight:700; color:rgba(255,255,255,0.5); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:0.5rem">Bệnh Liên Quan</h4>
+            <div class="disease-tags">
+              <span class="disease-tag">Hen suyễn</span>
+              <span class="disease-tag">COPD</span>
+              <span class="disease-tag">Viêm phổi</span>
+              <span class="disease-tag">Ung thư phổi</span>
+              <span class="disease-tag">Lao phổi</span>
+            </div>
+            <a href="departments.html" class="btn btn-outline btn-sm" style="width:100%; margin-top:1rem">🏥 Đến Khoa Hô Hấp</a>
+          </div>
+
+          <!-- 🟤 GAN -->
+          <div class="card organ-detail-card" id="detail-liver">
+            <div class="organ-header">
+              <span class="organ-icon-large">🟤</span>
+              <div>
+                <h2 style="font-size:1.5rem; margin-bottom:0.25rem">Gan</h2>
+                <p style="font-size:0.85rem; color:rgba(255,255,255,0.5)">Giải độc và chuyển hóa</p>
+              </div>
+            </div>
+            <div class="ai-result" style="margin-bottom:1.25rem">
+              <h4 style="color:var(--color-primary-light); margin-bottom:0.5rem; font-size:0.9rem">🤖 AI Giải Thích</h4>
+              <p style="font-size:0.875rem; color:rgba(255,255,255,0.85)">
+                Gan là "nhà máy hóa học" lớn nhất cơ thể với hơn 500 chức năng khác nhau. Mỗi phút lọc 1.5 lít máu và sản xuất 800ml mật.
+              </p>
+            </div>
+            <h4 style="font-size:0.85rem; font-weight:700; color:rgba(255,255,255,0.5); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:0.5rem">Chức Năng Chính</h4>
+            <ul class="function-list">
+              <li><span>🧪</span> Giải độc rượu, thuốc, hóa chất</li>
+              <li><span>🍬</span> Điều tiết đường huyết (glycogen)</li>
+              <li><span>🛡️</span> Sản xuất protein miễn dịch</li>
+              <li><span>🔥</span> Phân giải mỡ, tiêu hoá vitamin</li>
+            </ul>
+            <h4 style="font-size:0.85rem; font-weight:700; color:rgba(255,255,255,0.5); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:0.5rem">Bệnh Liên Quan</h4>
+            <div class="disease-tags">
+              <span class="disease-tag">Viêm gan B/C</span>
+              <span class="disease-tag">Xơ gan</span>
+              <span class="disease-tag">Gan nhiễm mỡ</span>
+              <span class="disease-tag">Ung thư gan</span>
+            </div>
+            <a href="departments.html" class="btn btn-outline btn-sm" style="width:100%; margin-top:1rem">🏥 Đến Khoa Tiêu Hóa</a>
+          </div>
+
+          <!-- 🟡 DẠ DÀY -->
+          <div class="card organ-detail-card" id="detail-stomach">
+            <div class="organ-header">
+              <span class="organ-icon-large">🟡</span>
+              <div>
+                <h2 style="font-size:1.5rem; margin-bottom:0.25rem">Dạ Dày</h2>
+                <p style="font-size:0.85rem; color:rgba(255,255,255,0.5)">Hệ tiêu hóa</p>
+              </div>
+            </div>
+            <div class="ai-result" style="margin-bottom:1.25rem">
+              <h4 style="color:var(--color-primary-light); margin-bottom:0.5rem; font-size:0.9rem">🤖 AI Giải Thích</h4>
+              <p style="font-size:0.875rem; color:rgba(255,255,255,0.85)">
+                Dạ dày tiết ra acid HCl mạnh đến mức có thể hòa tan kim loại. Lớp niêm mạc tự tái tạo mỗi 2–3 ngày để bảo vệ thành dạ dày.
+              </p>
+            </div>
+            <h4 style="font-size:0.85rem; font-weight:700; color:rgba(255,255,255,0.5); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:0.5rem">Chức Năng Chính</h4>
+            <ul class="function-list">
+              <li><span>⚗️</span> Tiết acid tiêu hóa thức ăn</li>
+              <li><span>🌀</span> Co bóp nghiền nhỏ thức ăn</li>
+              <li><span>🛡️</span> Diệt khuẩn từ thức ăn</li>
+              <li><span>📤</span> Chuyển dưỡng chất xuống ruột</li>
+            </ul>
+            <h4 style="font-size:0.85rem; font-weight:700; color:rgba(255,255,255,0.5); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:0.5rem">Bệnh Liên Quan</h4>
+            <div class="disease-tags">
+              <span class="disease-tag">Loét dạ dày</span>
+              <span class="disease-tag">Trào ngược axit</span>
+              <span class="disease-tag">Viêm dạ dày</span>
+              <span class="disease-tag">Ung thư dạ dày</span>
+            </div>
+            <a href="departments.html" class="btn btn-outline btn-sm" style="width:100%; margin-top:1rem">🏥 Đến Khoa Tiêu Hóa</a>
+          </div>
+
+          <!-- 🫘 THẬN -->
+          <div class="card organ-detail-card" id="detail-kidney">
+            <div class="organ-header">
+              <span class="organ-icon-large">🫘</span>
+              <div>
+                <h2 style="font-size:1.5rem; margin-bottom:0.25rem">Thận</h2>
+                <p style="font-size:0.85rem; color:rgba(255,255,255,0.5)">Lọc máu và cân bằng nước</p>
+              </div>
+            </div>
+            <div class="ai-result" style="margin-bottom:1.25rem">
+              <h4 style="color:var(--color-primary-light); margin-bottom:0.5rem; font-size:0.9rem">🤖 AI Giải Thích</h4>
+              <p style="font-size:0.875rem; color:rgba(255,255,255,0.85)">
+                Hai quả thận lọc toàn bộ máu cơ thể 40 lần/ngày — tương đương 180 lít. Chứa hơn 2 triệu đơn vị lọc nhỏ gọi là nephron.
+              </p>
+            </div>
+            <h4 style="font-size:0.85rem; font-weight:700; color:rgba(255,255,255,0.5); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:0.5rem">Chức Năng Chính</h4>
+            <ul class="function-list">
+              <li><span>🔍</span> Lọc chất thải ra khỏi máu</li>
+              <li><span>💧</span> Điều tiết lượng nước và muối</li>
+              <li><span>📊</span> Kiểm soát huyết áp</li>
+              <li><span>🩸</span> Kích thích sản xuất hồng cầu</li>
+            </ul>
+            <h4 style="font-size:0.85rem; font-weight:700; color:rgba(255,255,255,0.5); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:0.5rem">Bệnh Liên Quan</h4>
+            <div class="disease-tags">
+              <span class="disease-tag">Sỏi thận</span>
+              <span class="disease-tag">Suy thận</span>
+              <span class="disease-tag">Viêm thận</span>
+              <span class="disease-tag">Nhiễm trùng</span>
+            </div>
+            <a href="departments.html" class="btn btn-outline btn-sm" style="width:100%; margin-top:1rem">🏥 Đến Khoa Tim Mạch</a>
+          </div>
+
+        </div>
       </div>
     </div>
   </main>
-
-    <!-- POPUP MODAL -->
-    <div id="popup-overlay" class="popup-overlay">
-        <div id="popup-modal" class="popup-modal">
-            <button id="popup-close" class="popup-close" title="Đóng">✕</button>
-            <div class="popup-scroll">
-                <div class="popup-header">
-                    <div class="popup-icon" id="popup-icon">🫀</div>
-                    <h2 class="popup-title" id="popup-title">Tim</h2>
-                    <span class="popup-system-tag" id="popup-system-tag">Hệ tuần hoàn</span>
-                </div>
-                <div class="popup-ai-section">
-                    <div class="popup-ai-header">
-                        <span class="ai-badge">🤖 AI Giải Thích</span>
-                        <span class="ai-tag">AI</span>
-                    </div>
-                    <p class="popup-ai-text" id="popup-ai-text">Nội dung AI...</p>
-                </div>
-                <div class="popup-functions">
-                    <h3 class="popup-section-title">CHỨC NĂNG CHÍNH</h3>
-                    <ul id="popup-functions-list" class="popup-func-list"></ul>
-                </div>
-                <div class="popup-diseases">
-                    <h3 class="popup-section-title">BỆNH LIÊN QUAN</h3>
-                    <div id="popup-diseases-tags" class="popup-tags"></div>
-                </div>
-                <button class="popup-action-btn" id="popup-action-btn">
-                    <span>🔬</span> Tìm hiểu thêm
-                </button>
-            </div>
-        </div>
-    </div>
 
   <footer>
     <div class="container">
@@ -277,6 +510,48 @@
 
   <script src="js/api.js"></script>
   <script src="js/patient.js"></script>
-  <script src="js/anatomy-model.js"></script>
+  <script>
+    const organDetailMap = {
+      brain:   'detail-brain',
+      heart:   'detail-heart',
+      lung:    'detail-lung',
+      liver:   'detail-liver',
+      stomach: 'detail-stomach',
+      kidney:  'detail-kidney'
+    };
+
+    function showOrgan(organKey) {
+      // Hide all
+      document.getElementById('anatomy-welcome').style.display = 'none';
+      document.querySelectorAll('.organ-detail-card').forEach(c => c.classList.remove('active'));
+
+      // Show selected
+      const card = document.getElementById(organDetailMap[organKey]);
+      if (card) card.classList.add('active');
+
+      // Update active states
+      document.querySelectorAll('.organ-btn').forEach(b => {
+        b.classList.toggle('active', b.dataset.organ === organKey);
+      });
+      document.querySelectorAll('.legend-item').forEach(b => {
+        b.classList.toggle('active', b.dataset.organ === organKey);
+      });
+
+      // Scroll info into view on mobile
+      if (window.innerWidth < 900) {
+        document.querySelector('.organ-info-panel').scrollIntoView({ behavior:'smooth' });
+      }
+    }
+
+    // Organ buttons
+    document.querySelectorAll('.organ-btn').forEach(btn => {
+      btn.addEventListener('click', () => showOrgan(btn.dataset.organ));
+    });
+
+    // Legend buttons
+    document.querySelectorAll('.legend-item').forEach(btn => {
+      btn.addEventListener('click', () => showOrgan(btn.dataset.organ));
+    });
+  </script>
 </body>
 </html>

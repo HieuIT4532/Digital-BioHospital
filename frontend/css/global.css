@@ -117,7 +117,7 @@ body {
   color: var(--color-white);
   background:
     linear-gradient(135deg, rgba(10,5,30,0.90) 0%, rgba(20,8,55,0.86) 40%, rgba(30,15,80,0.88) 100%),
-    url('../assets/images/hospital_bg.png') center center / cover no-repeat fixed;
+    url('assets/images/hospital_bg.png') center center / cover no-repeat fixed;
   min-height: 100vh;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
