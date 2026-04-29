@@ -283,11 +283,15 @@
         <li><a href="personalize.html"              id="nav-personal">🌱 Kế hoạch</a></li>
         <li><a href="library.html"                  id="nav-lib">📚 Thư viện</a></li>
         <li><a href="chatbot.html"                  id="nav-chatbot">🤖 Tư vấn AI</a></li>
+        <li><a href="leaderboard.html"              id="nav-leaderboard">🏆 Xếp hạng</a></li>
       </ul>
 
-      <a href="reception.html" class="navbar-patient-btn btn btn-sm" id="btn-start-exam">
-        🧑‍⚕️ Bắt đầu khám
-      </a>
+      <div style="display:flex;align-items:center;gap:0.75rem;">
+        <span id="nav-exp-badge" style="display:none;padding:0.25rem 0.75rem;background:rgba(251,191,36,0.15);border:1px solid rgba(251,191,36,0.3);border-radius:999px;font-size:0.75rem;font-weight:700;color:#FBBF24;cursor:default;"></span>
+        <a href="#" class="btn btn-sm btn-outline" id="nav-login-btn">Đăng nhập</a>
+        <a href="profile.html" class="btn btn-sm btn-glass" id="nav-profile-btn" style="display:none;color:var(--color-text);">👤 Profile</a>
+        <a href="reception.html" class="navbar-patient-btn btn btn-sm" id="btn-start-exam">🧑‍⚕️ Bắt đầu khám</a>
+      </div>
     </div>
   </nav>
 
@@ -516,6 +520,31 @@
 
   </main>
 
+  <!-- ══ FLOATING CHECK-IN WIDGET ══ -->
+  <div id="checkin-widget" style="
+    display: none;
+    position: fixed; bottom: 2rem; right: 2rem; z-index: 9000;
+    background: rgba(14,14,20,0.95); backdrop-filter: blur(16px);
+    border: 1px solid rgba(16,185,129,0.3);
+    border-radius: 1.25rem; padding: 1.25rem 1.5rem;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+    min-width: 220px;
+    animation: fadeInUp 0.5s ease;
+  ">
+    <div style="display:flex;align-items:center;gap:0.6rem;margin-bottom:0.75rem;">
+      <span id="checkin-streak" style="font-size:1rem;font-weight:900;color:#FB923C;">🔥 0 ngày</span>
+      <span style="font-size:0.7rem;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.06em;">Streak</span>
+    </div>
+    <button id="checkin-btn" style="
+      width: 100%; padding: 0.6rem 1rem;
+      background: linear-gradient(135deg, #10B981, #059669);
+      border: none; border-radius: 0.75rem;
+      color: white; font-weight: 700; font-size: 0.85rem;
+      cursor: pointer; font-family: inherit;
+      transition: all 0.2s;
+    ">📋 Check-in hôm nay (+5 EXP)</button>
+  </div>
+
   <!-- FOOTER -->
   <footer role="contentinfo">
     <div class="container">
@@ -526,12 +555,14 @@
       <p style="margin-top:0.5rem">
         <a href="disclaimer.html" id="footer-disclaimer">Nội quy & Điều khoản</a>
         · <a href="library.html" id="footer-library">Thư viện sức khỏe</a>
+        · <a href="leaderboard.html" id="footer-leaderboard">🏆 Bảng xếp hạng</a>
       </p>
     </div>
   </footer>
 
   <script src="js/api.js"></script>
   <script src="js/patient.js"></script>
+  <script type="module" src="js/auth.js"></script>
   <script>
     // ── Counter animation on scroll ──────────────────────────────────────────
     function animateCounter(el, target, duration = 1500) {

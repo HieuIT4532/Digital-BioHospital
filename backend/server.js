@@ -65,6 +65,8 @@ app.use('/api/predict',    require('./routes/predict'));
 app.use('/api/personalize',require('./routes/personalize'));
 app.use('/api/chat',       require('./routes/chat'));
 app.use('/api/library',    require('./routes/library')); // Thư viện drill-down
+app.use('/api/quiz',       require('./routes/quiz'));     // Quiz chẩn đoán AI
+app.use('/api/leaderboard',require('./routes/leaderboard')); // Bảng xếp hạng
 
 // ── Health Check ──────────────────────────────────────────────────────────────
 app.get('/health', (req, res) => {

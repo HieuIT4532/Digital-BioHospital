@@ -557,9 +557,12 @@
              // Ghi nhận mở khóa Bio-Map (sẽ hoàn thiện ở bước Firebase)
              // Ghi nhận mở khóa Bio-Map vào Firebase
              if(window.saveUnlockedKnowledge) {
-                // Ta có thể trích xuất các cơ quan bị ảnh hưởng từ AI (a.level1_macro.affectedOrgans)
                 const affectedOrgans = a.level1_macro?.affectedOrgans || [];
                 window.saveUnlockedKnowledge(affectedOrgans, "level12");
+             }
+             // Cộng EXP khi hoàn thành chẩn đoán 3 tầng
+             if(window.BioAuth?.earnEXP) {
+                window.BioAuth.earnEXP(15, 'diagnosis-3-levels');
              }
            }, 800);
         };
@@ -573,5 +576,6 @@
       }
     });
   </script>
+  <script type="module" src="js/auth.js"></script>
 </body>
 </html>

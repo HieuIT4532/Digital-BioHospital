@@ -909,6 +909,11 @@
            window.saveUnlockedKnowledge(affectedOrgans, "lifestyle");
         }
 
+        // Cộng EXP phân tích lối sống
+        if(window.BioAuth?.earnEXP) {
+           window.BioAuth.earnEXP(8, 'lifestyle-analysis');
+        }
+
       } catch (err) {
         hideLoading();
         showToast('Lỗi: ' + err.message, 'error');
@@ -925,5 +930,6 @@
     `;
     document.head.appendChild(style);
   </script>
+  <script type="module" src="js/auth.js"></script>
 </body>
 </html>

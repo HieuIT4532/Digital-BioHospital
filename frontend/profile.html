@@ -151,8 +151,23 @@
            </div>
         </div>
 
-        <!-- RIGHT: Unlocked Knowledge -->
-        <div>
+         <div>
+           <!-- Gamification Stats -->
+           <div id="gamification-stats" style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem;">
+             <div class="card" style="text-align:center;padding:1.25rem;">
+               <div id="profile-exp" style="font-size:2rem;font-weight:900;color:#FBBF24;">0</div>
+               <div style="font-size:0.72rem;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.06em;">Tổng EXP</div>
+               <div style="background:rgba(255,255,255,0.06);border-radius:999px;height:8px;overflow:hidden;margin-top:0.5rem;">
+                 <div id="profile-exp-bar" style="height:100%;background:linear-gradient(90deg,#7C3AED,#FBBF24);border-radius:999px;width:0%;transition:width 1.5s;"></div>
+               </div>
+               <div id="profile-next-rank" style="font-size:0.68rem;color:rgba(255,255,255,0.3);margin-top:0.3rem;"></div>
+             </div>
+             <div class="card" style="text-align:center;padding:1.25rem;">
+               <div id="profile-streak" style="font-size:2rem;font-weight:900;color:#FB923C;" class="streak-fire">0</div>
+               <div style="font-size:0.72rem;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.06em;">🔥 Streak</div>
+             </div>
+           </div>
+
            <div class="card" style="margin-bottom: 2rem; position: relative; overflow: hidden;">
              <div style="position: absolute; top: 0; right: 0; padding: 1rem; background: rgba(124,58,237,0.1); border-bottom-left-radius: 1rem; border-left: 1px solid rgba(167,139,250,0.2); border-bottom: 1px solid rgba(167,139,250,0.2);">
                 <div style="font-size: 0.65rem; color: rgba(255,255,255,0.4); text-transform: uppercase; margin-bottom: 0.2rem;">Cấp bậc</div>
@@ -160,6 +175,7 @@
              </div>
              <h3>Chào, <span id="profile-name">Bạn</span>!</h3>
              <p style="font-size: 0.9rem; color: rgba(255,255,255,0.6); max-width: 80%;">Hành trình thu thập kiến thức của bạn. Khám các chuyên khoa để thắp sáng thêm trí tuệ.</p>
+             <a href="leaderboard.html" class="btn btn-outline btn-sm" style="margin-top:0.75rem;font-size:0.8rem;">🏆 Xem Bảng Xếp Hạng</a>
            </div>
            
            <div class="knowledge-grid">
@@ -213,21 +229,22 @@
             if (orgLower.includes('dạ dày') || orgLower.includes('ruột')) document.getElementById('map-stomach')?.classList.add('unlocked');
          });
 
-         // Tính toán Cấp bậc Bác sĩ
+         // Tính toán Cấp bậc Bác sĩ từ EXP
+         const rank = BioDB.getRankFromEXP(doc.exp || 0);
+         const next = BioDB.getNextRank(doc.exp || 0);
          const rankEl = document.getElementById('doctor-rank');
-         const organCount = unlockedOrgans.length;
-         if (organCount >= 6) {
-           rankEl.textContent = 'Trưởng khoa (Head of Dept)';
-           rankEl.style.color = '#F59E0B';
-         } else if (organCount >= 4) {
-           rankEl.textContent = 'Bác sĩ chuyên khoa';
-           rankEl.style.color = '#EC4899';
-         } else if (organCount >= 2) {
-           rankEl.textContent = 'Bác sĩ nội trú';
-           rankEl.style.color = '#A78BFA';
+         rankEl.innerHTML = `${rank.icon} ${rank.name}`;
+
+         // Gamification stats
+         document.getElementById('profile-exp').textContent = doc.exp || 0;
+         document.getElementById('profile-streak').textContent = doc.streak || 0;
+         if (next) {
+           const progress = ((doc.exp || 0) - rank.minEXP) / (next.minEXP - rank.minEXP) * 100;
+           document.getElementById('profile-exp-bar').style.width = `${Math.min(progress, 100)}%`;
+           document.getElementById('profile-next-rank').textContent = `${next.minEXP - (doc.exp || 0)} EXP để lên ${next.name}`;
          } else {
-           rankEl.textContent = 'Bác sĩ thực tập';
-           rankEl.style.color = '#6EE7B7';
+           document.getElementById('profile-exp-bar').style.width = '100%';
+           document.getElementById('profile-next-rank').textContent = 'Cấp bậc tối đa!';
          }
 
          const renderList = (id, items, className) => {

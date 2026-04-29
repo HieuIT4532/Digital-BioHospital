@@ -692,17 +692,25 @@
       const tabsEl = document.getElementById('detail-tabs');
       const contentEl = document.getElementById('detail-content');
 
+      // Thêm tab Quiz vào cuối
+      const quizTabIdx = tabs.length;
+
       tabsEl.innerHTML = tabs.map((tab, i) => `
         <button class="art-tab${i===0?' active':''}" onclick="switchDetailTab(${i})" id="dtab-${i}">${tab.label}</button>
-      `).join('');
+      `).join('') + `<button class="art-tab" onclick="switchDetailTab(${quizTabIdx}); loadQuiz()" id="dtab-${quizTabIdx}" style="color:#FBBF24;border-color:rgba(251,191,36,0.3)">🧪 Thử thách</button>`;
 
       contentEl.innerHTML = tabs.map((tab, i) => `
         <div class="art-section${i===0?' active':''}" id="dsec-${i}">${tab.html}</div>
-      `).join('');
+      `).join('') + `<div class="art-section" id="dsec-${quizTabIdx}"><div id="quiz-container" style="text-align:center;padding:2rem;"><div style="font-size:2.5rem;margin-bottom:1rem">🧪</div><p style="color:rgba(255,255,255,0.6)">Nhấn nút bên dưới để AI tạo ca bệnh chẩn đoán!</p><button onclick="generateQuiz()" class="btn btn-primary" style="margin-top:1rem" id="quiz-generate-btn">🤖 Tạo ca bệnh AI</button></div></div>`;
 
       document.getElementById('detail-skeleton').style.display = 'none';
       contentEl.style.display = 'block';
       document.getElementById('detail-body').scrollTop = 0;
+
+      // Cộng EXP đọc bài (+3)
+      if(window.BioAuth?.earnEXP) {
+        window.BioAuth.earnEXP(3, `read-${currentSystem}-${currentOrganId}`);
+      }
     }
 
     function switchDetailTab(idx) {
@@ -817,6 +825,110 @@
         });
       });
     });
+
+    /* ═══════════════════════════════════════════════════
+       QUIZ SYSTEM
+    ═══════════════════════════════════════════════════ */
+    let currentQuizData = null;
+    let currentQuizId = null;
+
+    function loadQuiz() {
+      // Trigger: tab clicked
+    }
+
+    async function generateQuiz() {
+      const container = document.getElementById('quiz-container');
+      container.innerHTML = `<div style="text-align:center;padding:2rem;"><div class="thinking-dots" style="justify-content:center;margin-bottom:1rem"><span></span><span></span><span></span></div><p style="color:rgba(167,139,250,0.7);font-size:0.9rem">🤖 AI đang tạo ca bệnh chẩn đoán...</p></div>`;
+
+      try {
+        const res = await fetch(BASE_URL + '/api/quiz/generate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ system: currentSystem || 'circulation', organ: currentOrganName || '' })
+        });
+        const data = await res.json();
+        if (!data.success) throw new Error(data.error || 'Đã xảy ra lỗi');
+
+        currentQuizData = data.quiz;
+        currentQuizId = data.quizId;
+        renderQuiz(data.quiz);
+      } catch (err) {
+        container.innerHTML = `<div style="text-align:center;padding:2rem;color:#FCA5A5">⚠️ Lỗi tạo quiz: ${err.message}<br/><button onclick="generateQuiz()" class="btn btn-outline btn-sm" style="margin-top:1rem">Thử lại</button></div>`;
+      }
+    }
+
+    function renderQuiz(quiz) {
+      const container = document.getElementById('quiz-container');
+      container.innerHTML = `
+        <div style="text-align:left;">
+          <div style="background:linear-gradient(135deg,rgba(124,58,237,0.15),rgba(236,72,153,0.08));border:1px solid rgba(167,139,250,0.3);border-radius:1rem;padding:1.25rem;margin-bottom:1.25rem;">
+            <div style="font-size:0.75rem;font-weight:700;color:#FBBF24;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.5rem;">🏥 Ca Bệnh</div>
+            <h4 style="color:white;margin-bottom:0.5rem;">${quiz.caseTitle}</h4>
+            <p style="font-size:0.88rem;color:rgba(255,255,255,0.8);line-height:1.6;">${quiz.patientInfo}</p>
+          </div>
+          <h4 style="color:var(--color-primary-light);margin-bottom:1rem;font-size:0.95rem;">❓ ${quiz.question}</h4>
+          <div id="quiz-options" style="display:flex;flex-direction:column;gap:0.6rem;">
+            ${quiz.options.map(opt => `
+              <button class="quiz-option" onclick="selectQuizAnswer('${opt.id}')" id="quiz-opt-${opt.id}" style="
+                padding:0.75rem 1rem;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);
+                border-radius:0.75rem;text-align:left;color:rgba(255,255,255,0.85);font-size:0.88rem;
+                cursor:pointer;transition:all 0.2s;font-family:inherit;
+              "><strong style="color:var(--color-primary-light)">${opt.id}.</strong> ${opt.text}</button>
+            `).join('')}
+          </div>
+          <div id="quiz-result" style="display:none;margin-top:1.25rem;"></div>
+        </div>
+      `;
+    }
+
+    async function selectQuizAnswer(answerId) {
+      if (!currentQuizData) return;
+      // Disable all options
+      document.querySelectorAll('.quiz-option').forEach(btn => {
+        btn.style.pointerEvents = 'none';
+      });
+
+      const correct = currentQuizData.correctAnswer;
+      const isCorrect = answerId === correct;
+
+      // Highlight correct/wrong
+      document.getElementById('quiz-opt-' + correct).style.borderColor = '#10B981';
+      document.getElementById('quiz-opt-' + correct).style.background = 'rgba(16,185,129,0.15)';
+
+      if (!isCorrect) {
+        document.getElementById('quiz-opt-' + answerId).style.borderColor = '#EF4444';
+        document.getElementById('quiz-opt-' + answerId).style.background = 'rgba(239,68,68,0.15)';
+      }
+
+      // Show result
+      const resultEl = document.getElementById('quiz-result');
+      const score = isCorrect ? 100 : 0;
+      resultEl.style.display = 'block';
+      resultEl.innerHTML = `
+        <div style="background:${isCorrect ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.1)'};border:1px solid ${isCorrect ? 'rgba(16,185,129,0.3)' : 'rgba(239,68,68,0.3)'};border-radius:1rem;padding:1.25rem;">
+          <div style="font-size:1.2rem;font-weight:900;margin-bottom:0.5rem;color:${isCorrect ? '#10B981' : '#EF4444'}">
+            ${isCorrect ? '✅ Chính xác! +20 EXP' : '❌ Sai rồi! +10 EXP (EXP tham gia)'}
+          </div>
+          <p style="font-size:0.88rem;color:rgba(255,255,255,0.8);line-height:1.6;">${currentQuizData.explanation}</p>
+          <div style="margin-top:1rem;display:flex;gap:0.5rem;flex-wrap:wrap;">
+            ${currentQuizData.relatedKnowledge ? `
+              <span style="padding:0.25rem 0.6rem;background:rgba(239,68,68,0.15);border-radius:999px;font-size:0.72rem;font-weight:700;color:#FCA5A5;">Sinh 10: ${currentQuizData.relatedKnowledge.biology10}</span>
+              <span style="padding:0.25rem 0.6rem;background:rgba(124,58,237,0.15);border-radius:999px;font-size:0.72rem;font-weight:700;color:#A78BFA;">Sinh 11: ${currentQuizData.relatedKnowledge.biology11}</span>
+              <span style="padding:0.25rem 0.6rem;background:rgba(16,185,129,0.15);border-radius:999px;font-size:0.72rem;font-weight:700;color:#6EE7B7;">Sinh 12: ${currentQuizData.relatedKnowledge.biology12}</span>
+            ` : ''}
+          </div>
+          <button onclick="generateQuiz()" class="btn btn-outline btn-sm" style="margin-top:1rem;">🔁 Ca bệnh mới</button>
+        </div>
+      `;
+
+      // Ghi nhận quiz + EXP
+      if (window.BioAuth?.completeQuiz && currentQuizId) {
+        await window.BioAuth.completeQuiz(currentQuizId, score);
+      } else if (window.BioAuth?.earnEXP) {
+        window.BioAuth.earnEXP(isCorrect ? 20 : 10, 'quiz-' + currentSystem);
+      }
+    }
   </script>
+  <script type="module" src="js/auth.js"></script>
 </body>
 </html>

@@ -354,11 +354,17 @@
         showToast('Bản Sao Số đã được cập nhật!', 'success');
         document.getElementById('twin-result').scrollIntoView({ behavior:'smooth' });
 
+        // Cộng EXP cập nhật Digital Twin
+        if(window.BioAuth?.earnEXP) {
+           window.BioAuth.earnEXP(5, 'digital-twin-update');
+        }
+
       } catch (err) {
         hideLoading();
         showToast('Lỗi: ' + err.message, 'error');
       }
     });
   </script>
+  <script type="module" src="js/auth.js"></script>
 </body>
 </html>

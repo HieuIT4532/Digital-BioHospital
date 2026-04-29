@@ -647,6 +647,11 @@
         conversationHistory.push({ role: 'model', text: response.reply });
         saveSession();
 
+        // Cộng EXP cho mỗi câu hỏi AI (tối đa 5/ngày)
+        if(window.BioAuth?.earnChatEXP) {
+           window.BioAuth.earnChatEXP();
+        }
+
       } catch (err) {
         removeTypingIndicator();
         addMessage(`Lỗi: ${err.message}. Đảm bảo máy chủ đang hoạt động.`, 'ai');
@@ -689,5 +694,6 @@
       }
     }, 600);
   </script>
+  <script type="module" src="js/auth.js"></script>
 </body>
 </html>
