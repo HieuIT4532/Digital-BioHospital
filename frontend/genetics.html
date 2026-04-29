@@ -344,10 +344,233 @@
   </footer>
 
   <script src="js/patient.js"></script>
+<<<<<<< HEAD
   <script type="module">
     import { BioDB } from './js/firebase-config.js';
 
     // ── DATA CONNECTION ──
+=======
+  <script type="module" src="js/auth.js"></script>
+  <script>
+    // --- 1. DNA Simulation ---
+    function initDNA() {
+      const helix = document.getElementById('dna-helix');
+      const strandsCount = 15;
+      for (let i = 0; i < strandsCount; i++) {
+        const y = (i / strandsCount) * 100;
+        const angle = (i / strandsCount) * Math.PI * 4;
+        
+        // Strand A
+        const sA = document.createElement('div');
+        sA.className = 'dna-strand';
+        sA.style.top = `${y}%`;
+        sA.style.left = '50%';
+        sA.style.transform = `translateX(${Math.sin(angle) * 40}px) translateZ(${Math.cos(angle) * 40}px)`;
+        sA.style.background = '#7C3AED';
+        
+        // Strand B
+        const sB = document.createElement('div');
+        sB.className = 'dna-strand';
+        sB.style.top = `${y}%`;
+        sB.style.left = '50%';
+        sB.style.transform = `translateX(${Math.sin(angle + Math.PI) * 40}px) translateZ(${Math.cos(angle + Math.PI) * 40}px)`;
+        sB.style.background = '#FBBF24';
+        
+        // Connecting Pair
+        const pair = document.createElement('div');
+        pair.className = 'dna-pair';
+        pair.style.top = `${y + 1}%`;
+        pair.style.left = '50%';
+        pair.style.transform = `translateX(-50%) rotateY(${angle * (180/Math.PI)}deg)`;
+        
+        helix.appendChild(sA);
+        helix.appendChild(sB);
+        helix.appendChild(pair);
+      }
+    }
+
+    // --- 2. Genetic Scanning Logic ---
+    document.getElementById('btn-scan-gene').addEventListener('click', function() {
+      const btn = this;
+      const res = document.getElementById('gene-scan-result');
+      const codeView = document.getElementById('gene-code-view');
+      const patient = PatientManager.get();
+      
+      btn.disabled = true;
+      btn.textContent = "⌛ Đang giải mã nucleotide...";
+      
+      setTimeout(() => {
+        res.style.display = 'block';
+        let baseCode = "A T G C T A G C G C T A T G C G C T A A T G C T A G C";
+        let highlight = "";
+        
+        // Linkage to patient symptoms
+        const symptoms = (patient?.currentSymptoms || "").toLowerCase();
+        if (symptoms.includes('tiểu đường') || symptoms.includes('máu') || symptoms.includes('cận')) {
+          highlight = " <span class='highlight-gene'>[MUTATION DETECTED: PAIR 12 BROKEN]</span>";
+          baseCode = baseCode.replace("G C T A", "<span class='highlight-gene'>G T T A</span>");
+        }
+        
+        codeView.innerHTML = `> SEQ_001: ${baseCode}${highlight}<br>> STATUS: ${highlight ? "Đột biến điểm phát hiện" : "Ổn định"}`;
+        btn.textContent = "✅ Hoàn tất Quét Gene";
+        
+        if (window.BioAuth?.earnEXP) window.BioAuth.earnEXP(25, 'gen-scan');
+      }, 2000);
+    });
+
+    // --- 3. Breeding Simulator ---
+    document.getElementById('btn-breed').addEventListener('click', function() {
+      const dice = document.getElementById('dice-container');
+      const res = document.getElementById('breeding-result');
+      const p1 = document.getElementById('parent-1-gen').value;
+      const p2 = document.getElementById('parent-2-gen').value;
+      
+      dice.textContent = "🎲";
+      dice.style.animation = "shake 0.5s infinite";
+      res.style.display = 'none';
+      
+      setTimeout(() => {
+        dice.style.animation = "none";
+        dice.textContent = "🧬";
+        res.style.display = 'block';
+        
+        // Calculate Mendel probabilities
+        const alleles1 = p1.split('');
+        const alleles2 = p2.split('');
+        const outcomes = {};
+        alleles1.forEach(a1 => {
+          alleles2.forEach(a2 => {
+            const genotype = [a1, a2].sort().join('');
+            outcomes[genotype] = (outcomes[genotype] || 0) + 1;
+          });
+        });
+        
+        const total = 4;
+        const healthy = ((outcomes['AA'] || 0) + (outcomes['Aa'] || 0)) / total * 100;
+        const sick = (outcomes['aa'] || 0) / total * 100;
+        
+        res.querySelector('#res-trait-1 div').textContent = healthy + "%";
+        res.querySelector('#res-trait-2 div').textContent = sick + "%";
+        
+        if (window.BioAuth?.earnEXP) window.BioAuth.earnEXP(20, 'gen-breed');
+      }, 1500);
+    });
+
+    // --- 4. Karyotype Map ---
+    const chromosomes = [
+      // NHÓM 1: LỚN (1-5) - NỀN TẢNG CẤU TRÚC
+      { id: 1, title: "Cặp số 1", desc: "Lớn nhất, chứa hơn 3000 gene. Đột biến liên quan đến Glaucoma (Tăng nhãn áp) và Ung thư tuyến tiền liệt.", tags: ["Lớn nhất", "Cấu trúc"] },
+      { id: 2, title: "Cặp số 2", desc: "Lớn thứ hai, chứa gene liên quan đến Hệ thống miễn dịch và sự phát triển não bộ phức tạp.", tags: ["Não bộ", "Miễn dịch"] },
+      { id: 3, title: "Cặp số 3", desc: "Chứa cụm gene nhận diện mùi vị. Đột biến tại đây có mối liên hệ mật thiết với Ung thư phổi.", tags: ["Vị giác", "Ung thư"] },
+      { id: 4, title: "Cặp số 4", desc: "Địa chỉ của gene gây bệnh Huntington (Thoái hóa thần kinh trung ương).", tags: ["Huntington", "Thần kinh"] },
+      { id: 5, title: "Cặp số 5", desc: "Liên quan đến Hội chứng Cri-du-chat (Tiếng mèo kêu) do mất đoạn NST (Kiến thức trọng tâm Sinh 12).", tags: ["Cri-du-chat", "Mất đoạn"] },
+      
+      // NHÓM 2: TRUNG BÌNH (6-12) - CHUYỂN HÓA & MIỄN DỊCH
+      { id: 6, title: "Cặp số 6", desc: "Chứa phức hợp phù hợp tổ chức chính (MHC) - thành phần tối quan trọng cho hệ miễn dịch.", tags: ["MHC", "Miễn dịch"] },
+      { id: 7, title: "Cặp số 7", desc: "Chứa gene gây bệnh Xơ nang (Cystic Fibrosis) - gây ra triệu chứng khó thở và tích tụ dịch nhầy.", tags: ["Xơ nang", "Hô hấp"] },
+      { id: 8, title: "Cặp số 8", desc: "Liên quan đến quá trình tổng hợp enzyme và một số dạng ung thư máu.", tags: ["Enzyme"] },
+      { id: 9, title: "Cặp số 9", desc: "Nơi quyết định Nhóm máu hệ ABO (Liên kết mật thiết với hoạt động chuyển hóa tại Lab 10).", tags: ["Nhóm máu ABO"] },
+      { id: 10, title: "Cặp số 10", desc: "Chứa các gene ức chế khối u và điều khiển chức năng tuyến giáp.", tags: ["Nội tiết"] },
+      { id: 11, title: "Cặp số 11", desc: "Chứa gene sản sinh Insulin và Hemoglobin. Đột biến gây bệnh hồng cầu hình liềm và Tiểu đường.", tags: ["Hồng cầu liềm", "Tiểu đường"] },
+      { id: 12, title: "Cặp số 12", desc: "Liên quan đến bệnh Phenylketonuria (PKU) do rối loạn chuyển hóa acid amin (Kiến thức Đột biến gene Sinh 12).", tags: ["Bệnh PKU", "Đột biến gene"] },
+
+      // NHÓM 3: NHỎ & GIỚI TÍNH (13-23)
+      { id: 13, title: "Cặp số 13", desc: "Hội chứng Patau (Thể ba nhiễm sắc thể 13) gây ra các dị tật bẩm sinh đa cơ quan.", tags: ["Hội chứng Patau", "Thể ba"] },
+      { id: 14, title: "Cặp số 14", desc: "Liên quan đến sự phát triển của các tế bào lympho B và sản sinh kháng thể.", tags: ["Lympho B"] },
+      { id: 15, title: "Cặp số 15", desc: "Liên quan đến Hội chứng Prader-Willi và di truyền theo dấu ấn giới tính.", tags: ["Dấu ấn di truyền"] },
+      { id: 16, title: "Cặp số 16", desc: "Liên quan đến bệnh Thalassemia (Tan máu bẩm sinh) và các bệnh lý về thận.", tags: ["Thalassemia"] },
+      { id: 17, title: "Cặp số 17", desc: "Chứa gene P53 - 'Cảnh sát' bảo vệ hệ gene, đóng vai trò ức chế khối u.", tags: ["Gene P53"] },
+      { id: 18, title: "Cặp số 18", desc: "Hội chứng Edwards (Thể ba nhiễm sắc thể 18). Gây ra chậm phát triển nghiêm trọng.", tags: ["Hội chứng Edwards", "Thể ba"] },
+      { id: 19, title: "Cặp số 19", desc: "Chứa nhiều gene liên quan đến quá trình chuyển hóa Cholesterol và Lipid.", tags: ["Cholesterol"] },
+      { id: 20, title: "Cặp số 20", desc: "Liên quan đến các rối loạn thần kinh và quá trình điều khiển giấc ngủ.", tags: ["Giấc ngủ"] },
+      { id: 21, title: "Cặp số 21", desc: "Nhỏ nhất, chứa Hội chứng Down (Thể ba NST 21) - Ví dụ kinh điển nhất về Đột biến số lượng NST lớp 12.", tags: ["Hội chứng Down", "Thể ba"] },
+      { id: 22, title: "Cặp số 22", desc: "Liên quan đến bệnh bạch cầu dòng tủy mạn tính do đột biến cấu trúc NST (Philadelphia).", tags: ["Philadelphia"] },
+      { id: 23, title: "Cặp số 23 (Giới tính)", desc: "NST X mang gene bệnh Máu khó đông, Mù màu (Di truyền liên kết giới tính). NST Y chứa gene SRY quyết định giới tính Nam.", tags: ["Máu khó đông", "Liên kết giới tính"] }
+    ];
+
+    function initKaryotype() {
+      const grid = document.getElementById('karyotype');
+      for (let i = 1; i <= 23; i++) {
+        const c = document.createElement('div');
+        c.className = 'chromosome';
+        c.innerHTML = `<div style="font-size:1.5rem;">${i === 23 ? 'XY' : '||'}</div><div style="font-size:0.6rem; opacity:0.5;">#${i}</div>`;
+        c.onclick = () => showChromo(i);
+        grid.appendChild(c);
+      }
+    }
+
+    function showChromo(id) {
+      const detail = document.getElementById('chromo-detail');
+      const title = document.getElementById('chromo-title');
+      const desc = document.getElementById('chromo-desc');
+      const tags = document.getElementById('chromo-tags');
+      const data = chromosomes.find(c => c.id === id) || { title: `Cặp số ${id}`, desc: "Dữ liệu gene đang được cập nhật cho cặp NST này. Chứa các gene điều khiển chức năng sinh học cơ bản.", tags: ["Đang cập nhật"] };
+      
+      detail.style.display = 'block';
+      detail.classList.add('animate-fadeInUp');
+      title.textContent = data.title;
+      desc.textContent = data.desc;
+      tags.innerHTML = data.tags.map(t => `<span class="badge badge-purple">${t}</span>`).join('');
+      
+      document.querySelectorAll('.chromosome').forEach((el, idx) => {
+        el.classList.toggle('active', (idx + 1) === id);
+      });
+
+      detail.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    // --- 5. Patient Integration ---
+    function updatePatientHeader() {
+      const patient = PatientManager.get();
+      if (patient) {
+        document.getElementById('gen-patient-name').textContent = `Chào Bác sĩ, đang phân tích hệ gene của ${patient.name}`;
+        const history = patient.medicalHistory || [];
+        const symptoms = (patient.currentSymptoms || "").toLowerCase();
+        
+        let suggestions = [];
+        let msg = "Hệ thống AI đang liên kết dữ liệu triệu chứng với bản đồ di truyền.";
+
+        // Logic Đối soát chéo (Cross-matching)
+        if (symptoms.includes('mệt mỏi') || symptoms.includes('khó thở')) {
+          suggestions.push(11, 16, 7);
+        }
+        if (symptoms.includes('tiểu đường')) {
+          suggestions.push(11);
+        }
+        if (symptoms.includes('máu')) {
+          suggestions.push(23, 16, 11);
+        }
+        if (symptoms.includes('cơ') || symptoms.includes('mỏi')) {
+          suggestions.push(19, 4);
+        }
+        if (symptoms.includes('dị ứng')) {
+          suggestions.push(6);
+        }
+        if (history.length > 0) {
+          msg = `Phát hiện các yếu tố nghi vấn di truyền: <span style="color:#FBBF24">${history.join(', ')}</span>.`;
+        }
+
+        if (suggestions.length > 0) {
+          msg += `<br/><span style="color:#10B981; font-weight:700;">[AI RECOMMENDATION]</span> Dựa trên triệu chứng, hãy kiểm tra cặp NST số: <strong>${[...new Set(suggestions)].join(', ')}</strong>.`;
+          
+          // Highlight trong grid
+          setTimeout(() => {
+            const gridItems = document.querySelectorAll('.chromosome');
+            suggestions.forEach(id => {
+              if (gridItems[id-1]) {
+                gridItems[id-1].style.borderColor = '#10B981';
+                gridItems[id-1].style.boxShadow = '0 0 15px rgba(16,185,129,0.4)';
+                gridItems[id-1].style.animation = 'pulse-green 2s infinite';
+              }
+            });
+          }, 500);
+        }
+
+        document.getElementById('gen-patient-msg').innerHTML = msg;
+      }
+    }
+
+>>>>>>> parent of d86b60d (up)
     window.addEventListener('load', () => {
       const p = PatientManager.get();
       if (p) {
