@@ -311,11 +311,29 @@
 
     // --- 4. Karyotype Map ---
     const chromosomes = [
-      { id: 1, title: "Cặp số 1", desc: "Cặp NST lớn nhất, chứa hơn 2100 gene. Liên quan đến nhiều chức năng chuyển hóa và cấu trúc.", tags: ["Lớn nhất", "Chuyển hóa"] },
-      { id: 13, title: "Cặp số 13", desc: "Hội chứng Patau (Thể ba NST 13) gây ra các dị tật bẩm sinh nặng nề về não và tim.", tags: ["Patau", "Đột biến số lượng"] },
-      { id: 18, title: "Cặp số 18", desc: "Hội chứng Edwards. Thường gây ra chậm phát triển nghiêm trọng và dị tật cơ quan.", tags: ["Edwards", "Trisomy 18"] },
-      { id: 21, title: "Cặp số 21", desc: "Hội chứng Down. Là đột biến số lượng NST phổ biến nhất, do có 3 NST số 21 thay vì 2.", tags: ["Down", "Phổ biến"] },
-      { id: 23, title: "Cặp số 23 (Giới tính)", desc: "Quyết định giới tính và các đặc điểm liên kết giới tính. Các hội chứng: Turner (XO), Klinefelter (XXY).", tags: ["Giới tính", "Máu khó đông"] }
+      { id: 1, title: "Cặp số 1", desc: "Cặp NST lớn nhất, chứa hơn 2100 gene. Liên quan đến bệnh Alzheimer và Glaucoma.", tags: ["Lớn nhất", "Alzheimer"] },
+      { id: 2, title: "Cặp số 2", desc: "Lớn thứ hai, chứa bằng chứng tiến hóa quan trọng về sự dung hợp NST ở tổ tiên loài người.", tags: ["Tiến hóa", "Cấu trúc"] },
+      { id: 3, title: "Cặp số 3", desc: "Liên quan đến các gene kiểm soát tín hiệu tế bào và bệnh Alkapon niệu.", tags: ["Tín hiệu tế bào"] },
+      { id: 4, title: "Cặp số 4", desc: "Chứa gene gây bệnh Huntington (múa giật) và một số dạng của bệnh Parkinson.", tags: ["Huntington", "Thần kinh"] },
+      { id: 5, title: "Cặp số 5", desc: "Mất đoạn cánh ngắn NST số 5 gây ra Hội chứng Tiếng mèo kêu (Cri du chat).", tags: ["Cri du chat", "Mất đoạn"] },
+      { id: 6, title: "Cặp số 6", desc: "Chứa phức hợp MHC điều khiển hệ thống miễn dịch và khả năng đáp ứng kháng nguyên.", tags: ["Miễn dịch", "MHC"] },
+      { id: 7, title: "Cặp số 7", desc: "Chứa gene CFTR - đột biến gây bệnh Xơ nang (Cystic Fibrosis) phổ biến.", tags: ["Xơ nang", "Hô hấp"] },
+      { id: 8, title: "Cặp số 8", desc: "Liên quan đến quá trình tổng hợp enzyme và một số dạng ung thư máu.", tags: ["Trao đổi chất"] },
+      { id: 9, title: "Cặp số 9", desc: "Quyết định nhóm máu hệ ABO của con người dựa trên sự có mặt của các allele IA, IB, IO.", tags: ["Nhóm máu ABO", "Men-đen"] },
+      { id: 10, title: "Cặp số 10", desc: "Liên quan đến gene ức chế khối u và các bệnh lý về tuyến giáp bẩm sinh.", tags: ["Nội tiết"] },
+      { id: 11, title: "Cặp số 11", desc: "Chứa gene sản xuất Insulin và Hemoglobin. Đột biến gây bệnh hồng cầu hình liềm.", tags: ["Insulin", "Hồng cầu liềm"] },
+      { id: 12, title: "Cặp số 12", desc: "Đột biến gene trên NST này gây ra bệnh Phenylketo niệu (PKU) - rối loạn chuyển hóa acid amin.", tags: ["Bệnh PKU", "Chuyển hóa"] },
+      { id: 13, title: "Cặp số 13", desc: "Hội chứng Patau (Trisomy 13) và ung thư võng mạc do mất đoạn gene RB1.", tags: ["Patau", "Ung thư võng mạc"] },
+      { id: 14, title: "Cặp số 14", desc: "Đóng vai trò quan trọng trong việc hình thành kháng thể và các bệnh lý tim mạch.", tags: ["Kháng thể"] },
+      { id: 15, title: "Cặp số 15", desc: "Hội chứng Prader-Willi và Angelman liên quan đến hiện tượng di truyền dấu ấn (Imprinting).", tags: ["Dấu ấn di truyền"] },
+      { id: 16, title: "Cặp số 16", desc: "Liên quan đến bệnh Thalassemia (tan máu bẩm sinh) và các bệnh lý về thận.", tags: ["Thalassemia"] },
+      { id: 17, title: "Cặp số 17", desc: "Chứa gene P53 - 'Hiệp sĩ bảo vệ hệ gene', đóng vai trò ức chế khối u cực kỳ quan trọng.", tags: ["Gene P53", "Ức chế ung thư"] },
+      { id: 18, title: "Cặp số 18", desc: "Hội chứng Edwards (Trisomy 18) gây ra các dị tật nghiêm trọng ở tim và hệ xương.", tags: ["Edwards", "Trisomy 18"] },
+      { id: 19, title: "Cặp số 19", desc: "Chứa các gene điều khiển nồng độ Cholesterol. Đột biến gây tăng mỡ máu bẩm sinh.", tags: ["Cholesterol"] },
+      { id: 20, title: "Cặp số 20", desc: "Chứa các gene liên quan đến bệnh Prion (bệnh bò điên) và các rối loạn thần kinh.", tags: ["Prion"] },
+      { id: 21, title: "Cặp số 21", desc: "Nhỏ nhất về kích thước nhưng mang Hội chứng Down (Trisomy 21) phổ biến nhất.", tags: ["Hội chứng Down", "Nhỏ nhất"] },
+      { id: 22, title: "Cặp số 22", desc: "Nhiễm sắc thể Philadelphia (dung hợp 9 và 22) gây bệnh Bạch cầu dòng tủy mạn tính.", tags: ["Bạch cầu dòng tủy"] },
+      { id: 23, title: "Cặp số 23 (Giới tính)", desc: "Quyết định giới tính (XX/XY). Liên quan đến bệnh Máu khó đông và Mù màu đỏ-xanh lục.", tags: ["Giới tính", "Máu khó đông"] }
     ];
 
     function initKaryotype() {
