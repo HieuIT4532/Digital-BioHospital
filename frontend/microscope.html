@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Kính Hiển Vi Thông Minh AI – Digital BioHospital</title>
+  <title>Kính Hiển Vi Đa Kịch Bản – Digital BioHospital</title>
   <link rel="stylesheet" href="css/global.css" />
   <link rel="stylesheet" href="css/components.css" />
   <link rel="stylesheet" href="css/animations.css" />
@@ -15,84 +15,78 @@
       margin-top: 2rem;
     }
 
-    /* ── SCOPE INTERFACE ── */
     .scope-frame {
       background: #0a0a0f;
       border: 2px solid #1e1e2e;
       border-radius: 3rem;
       padding: 3rem;
       position: relative;
+      text-align: center;
     }
 
     .lens-view {
-      width: 500px;
-      height: 500px;
+      width: 500px; height: 500px;
       margin: 0 auto;
       border-radius: 50%;
-      border: 20px solid #1a1a2e;
+      border: 15px solid #1a1a2e;
       background: #000;
       position: relative;
       overflow: hidden;
-      box-shadow: inset 0 0 100px rgba(99, 102, 241, 0.3);
+      box-shadow: inset 0 0 100px rgba(99, 102, 241, 0.4);
     }
 
-    .specimen-image {
-      width: 100%;
-      height: 100%;
+    .specimen-img {
+      width: 100%; height: 100%;
       object-fit: cover;
-      filter: blur(15px); /* Initial blur */
-      transition: filter 0.5s, transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-      display: none;
+      transition: all 0.5s ease;
+      filter: blur(20px);
+      transform: scale(1);
     }
 
-    /* ── OVERLAYS ── */
+    /* Overlays */
     .annotation-layer {
       position: absolute;
       top: 0; left: 0; width: 100%; height: 100%;
       pointer-events: none;
       display: none;
+      z-index: 10;
     }
 
-    .label-line {
+    .label-box {
       position: absolute;
-      background: var(--color-primary);
-      height: 1px;
-      transition: width 0.5s;
-    }
-
-    .label-text {
-      position: absolute;
-      color: var(--color-primary-light);
-      font-size: 0.75rem;
-      background: rgba(0,0,0,0.7);
-      padding: 4px 8px;
+      color: #00f2ff;
+      font-size: 0.7rem;
+      background: rgba(0,0,0,0.8);
+      padding: 5px 10px;
+      border: 1px solid #00f2ff;
       border-radius: 4px;
       white-space: nowrap;
     }
 
-    /* ── CONTROLS ── */
-    .scope-controls {
+    /* Controls */
+    .knob-container {
       display: flex;
       justify-content: center;
-      gap: 3rem;
-      margin-top: 2rem;
+      gap: 4rem;
+      margin-top: 2.5rem;
     }
 
-    .knob-wrap { text-align: center; }
-    
-    .knob-disk {
-      width: 80px;
-      height: 80px;
+    .control-knob {
+      text-align: center;
+    }
+
+    .knob-ui {
+      width: 80px; height: 80px;
       background: #1a1a2e;
       border: 3px solid var(--color-primary);
       border-radius: 50%;
       margin: 10px auto;
       position: relative;
-      cursor: grab;
-      box-shadow: 0 0 20px rgba(99, 102, 241, 0.2);
+      cursor: pointer;
+      transition: transform 0.2s;
     }
 
-    .knob-disk::after {
+    .knob-ui::before {
       content: '';
       position: absolute;
       top: 10px; left: 50%; width: 4px; height: 20px;
@@ -100,17 +94,17 @@
       transform: translateX(-50%);
     }
 
-    /* ── LIVE SPECS ── */
     .live-specs {
       position: absolute;
-      bottom: 40px; left: 40px;
+      bottom: 50px; left: 50px;
       font-family: monospace;
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       color: #10B981;
-      line-height: 1.8;
-      background: rgba(0,0,0,0.5);
-      padding: 1rem;
-      border-radius: 1rem;
+      text-align: left;
+      line-height: 1.5;
+      background: rgba(0,0,0,0.6);
+      padding: 10px;
+      border-radius: 8px;
     }
 
   </style>
@@ -141,63 +135,55 @@
         <!-- LEFT: THE SCOPE -->
         <div class="scope-frame">
           <div class="lens-view">
-            <!-- SPECIMEN: SORE THROAT / BACTERIA -->
-            <img src="https://images.unsplash.com/photo-1576086213369-97a306d36557?auto=format&fit=crop&q=80&w=800" id="specimen-img" class="specimen-image" alt="Microview">
+            <img src="C:\Users\pc\.gemini\antigravity\brain\4f1a7350-1564-4549-93a1-cbc24fb76712\onion_cells_microview_1777451899980.png" id="main-img" class="specimen-img">
             
-            <div class="annotation-layer" id="annotation-layer">
-              <!-- Labels here -->
-              <div style="top: 30%; left: 40%;">
-                <div class="label-line" style="width: 50px; transform: rotate(-30deg);"></div>
-                <div class="label-text" style="top: -30px; left: 50px;">Màng sinh chất (Cell Membrane)</div>
-              </div>
-              <div style="top: 60%; left: 55%;">
-                <div class="label-line" style="width: 40px; transform: rotate(45deg);"></div>
-                <div class="label-text" style="top: 30px; left: 40px;">Tế bào chất (Cytoplasm)</div>
-              </div>
+            <div class="annotation-layer" id="labels">
+              <div class="label-box" style="top: 20%; left: 30%;">Vách tế bào (Cell Wall)</div>
+              <div class="label-box" style="top: 50%; left: 50%;">Nhân tế bào (Nucleus)</div>
+              <div class="label-box" style="top: 70%; left: 20%;">Tế bào chất (Cytoplasm)</div>
             </div>
 
-            <div class="live-specs" id="live-specs">
-              MAGNIFICATION: <span id="spec-mag">10x</span><br>
-              FOCUS_LEVEL: <span id="spec-focus">0%</span><br>
-              LIGHT_INTENSITY: 88%<br>
-              COORD: X:142 Y:882
+            <div class="live-specs">
+              MODE: <span id="mode-text">GENERAL_SCAN</span><br>
+              MAGNIFICATION: <span id="mag-text">10x</span><br>
+              FOCUS_LOCK: <span id="focus-text">0%</span>
             </div>
           </div>
 
-          <div class="scope-controls">
-            <div class="knob-wrap">
-              <label class="form-label">Phóng đại (Objective)</label>
-              <div class="knob-disk" id="knob-zoom"></div>
-              <div style="margin-top: 5px; font-weight: 700;" id="zoom-label">10x</div>
+          <div class="knob-container">
+            <div class="control-knob">
+              <label class="form-label">Phóng đại (Zoom)</label>
+              <div class="knob-ui" id="knob-zoom"></div>
+              <div style="font-weight:700" id="val-zoom">10x</div>
             </div>
-            <div class="knob-wrap">
-              <label class="form-label">Lấy nét (Coarse/Fine)</label>
-              <div class="knob-disk" id="knob-focus"></div>
-              <div style="margin-top: 5px; font-weight: 700;" id="focus-label">Mờ</div>
+            <div class="control-knob">
+              <label class="form-label">Lấy nét (Focus)</label>
+              <div class="knob-ui" id="knob-focus"></div>
+              <div style="font-weight:700" id="val-focus">Mờ</div>
             </div>
           </div>
         </div>
 
-        <!-- RIGHT: ANALYSIS PANEL -->
+        <!-- RIGHT: SCENARIO INFO -->
         <div class="animate-slideRight">
           <div class="card" style="position: sticky; top: 100px;">
-            <div id="p-context" style="margin-bottom: 2rem;">
-              <h4 style="font-size: 0.75rem; color: var(--color-primary-light); text-transform: uppercase;">📡 Kết nối phòng khám:</h4>
-              <div id="p-name" style="font-weight: 800; font-size: 1.2rem; margin: 5px 0;">Khách vãng lai</div>
-              <div id="p-diag" class="badge badge-red">Đang chờ triệu chứng...</div>
+            <div id="patient-mini" style="margin-bottom: 2rem;">
+              <h4 style="font-size: 0.7rem; color: var(--color-primary-light);">📡 ĐANG KẾT NỐI:</h4>
+              <div id="p-name" style="font-size: 1.2rem; font-weight: 800; margin: 5px 0;">--</div>
+              <div id="p-symptoms" style="font-size: 0.8rem; color: #FBBF24;">--</div>
             </div>
 
-            <div id="ai-instructions" class="card" style="background: rgba(16,185,129,0.05); border-color: rgba(16,185,129,0.2); padding: 1rem;">
-              <h4 style="color: #10B981; font-size: 0.9rem;">🤖 Hướng dẫn AI:</h4>
-              <p id="instruction-text" style="font-size: 0.8rem; line-height: 1.5; margin-top: 5px;">
-                Vui lòng vận hành núm lấy nét để quan sát rõ mẫu vật.
+            <div class="card" style="background: rgba(124,58,237,0.05); padding: 1rem; border-color: rgba(124,58,237,0.2);">
+              <h4 style="color: var(--color-primary-light); font-size: 0.8rem;">🤖 AI CHẨN ĐOÁN:</h4>
+              <p id="ai-status" style="font-size: 0.75rem; line-height: 1.5; margin-top: 5px;">
+                Đang chờ đồng bộ triệu chứng từ phòng khám...
               </p>
             </div>
 
-            <div id="lab-report-mini" style="display:none; margin-top: 2rem; padding: 1rem; border: 1px solid #10B981; border-radius: 1rem;">
-              <h4 style="color: #10B981;">📝 Kết quả soi:</h4>
-              <p style="font-size: 0.85rem; margin-top: 5px;">Phát hiện cụm vi khuẩn hình cầu, nghi ngờ Streptococcus. Cần chuyển sang trạm Vi sinh nhuộm Gram.</p>
-              <a href="microbiology.html" class="btn btn-primary" style="width:100%; margin-top:1rem;">Tiến tới Trạm Vi Sinh ➔</a>
+            <div id="result-box" style="display:none; margin-top: 2rem; padding: 1.5rem; border: 1px solid #10B981; border-radius: 1.5rem;">
+              <h4 style="color: #10B981;">📋 KẾT QUẢ SOI:</h4>
+              <p id="result-text" style="font-size: 0.8rem; margin-top: 10px;"></p>
+              <a href="microbiology.html" class="btn btn-primary" style="width:100%; margin-top: 1rem;">Tiến tới Trạm Vi Sinh ➔</a>
             </div>
           </div>
         </div>
@@ -208,86 +194,109 @@
 
   <script src="js/patient.js"></script>
   <script>
+    const img = document.getElementById('main-img');
+    const labels = document.getElementById('labels');
+    const knobZoom = document.getElementById('knob-zoom');
+    const knobFocus = document.getElementById('knob-focus');
+
     let currentZoom = 10;
-    let focusValue = 0;
-    const targetFocus = 75; // Correct focus point
-    const img = document.getElementById('specimen-img');
-    const labels = document.getElementById('annotation-layer');
-    
-    // --- 1. DATA FLOW CONNECTION ---
+    let currentFocus = 0;
+    const TARGET_FOCUS = 80;
+    let scenario = 'default';
+
+    const SCENARIOS = {
+      họng: {
+        img: 'C:\\Users\\pc\\.gemini\\antigravity\\brain\\4f1a7350-1564-4549-93a1-cbc24fb76712\\streptococcus_microview_1777451837184.png',
+        title: 'Mẫu dịch họng',
+        ai: 'Phát hiện các chuỗi cầu khuẩn. Hãy phóng đại 100x và lấy nét để xác nhận Streptococcus.',
+        result: 'Xác nhận sự hiện diện của Streptococcus (Vi khuẩn gây viêm họng). Cần chuyển sang nhuộm Gram.',
+        labels: ['Cầu khuẩn chuỗi', 'Biểu mô họng', 'Dịch nhầy']
+      },
+      nhiễm_trùng: {
+        img: 'https://images.unsplash.com/photo-1576086213369-97a306d36557?auto=format&fit=crop&q=80&w=800',
+        title: 'Mẫu biểu bì nhiễm trùng',
+        ai: 'Phát hiện cụm vi khuẩn hình nho. Nghi ngờ Staphylococcus.',
+        result: 'Xác nhận tụ cầu khuẩn Staphylococcus. Đề xuất kiểm tra kháng sinh đồ.',
+        labels: ['Tụ cầu khuẩn', 'Tế bào biểu bì', 'Bạch cầu']
+      },
+      default: {
+        img: 'C:\\Users\pc\.gemini\antigravity\brain\4f1a7350-1564-4549-93a1-cbc24fb76712\onion_cells_microview_1777451899980.png',
+        title: 'Tế bào biểu bì hành ta',
+        ai: 'Mẫu vật chuẩn để thực hành soi cấu trúc tế bào nhân thực cơ bản.',
+        result: 'Cấu trúc tế bào hoàn toàn bình thường. Không phát hiện tác nhân ngoại lai.',
+        labels: ['Vách tế bào', 'Nhân', 'Tế bào chất']
+      }
+    };
+
     window.addEventListener('load', () => {
       const p = PatientManager.get();
-      if (p) {
+      if(p) {
         document.getElementById('p-name').textContent = p.name;
-        const symptoms = (p.currentSymptoms || "").toLowerCase();
+        document.getElementById('p-symptoms').textContent = `Triệu chứng: ${p.currentSymptoms || 'Không có'}`;
         
-        if (symptoms.includes('họng') || symptoms.includes('sốt')) {
-          document.getElementById('p-diag').textContent = "Scenario: Viêm họng (Streptococcus)";
-          document.getElementById('instruction-text').textContent = "Dữ liệu cho thấy bạn bị viêm họng. Hãy lấy nét để kiểm tra sự hiện diện của vi khuẩn Streptococcus trên biểu mô.";
-          img.style.display = 'block';
-        } else {
-          document.getElementById('p-diag').textContent = "Mẫu vật: Tế bào biểu bì hành ta";
-          document.getElementById('instruction-text').textContent = "Soi cấu trúc tế bào thực vật cơ bản (Sinh học 10).";
-          img.src = "https://images.unsplash.com/photo-1509391366360-feaffa648bd5?auto=format&fit=crop&q=80&w=800";
-          img.style.display = 'block';
-        }
+        const sym = (p.currentSymptoms || "").toLowerCase();
+        if(sym.includes('họng') || sym.includes('sốt')) scenario = 'họng';
+        else if(sym.includes('nhiễm trùng') || sym.includes('vết thương')) scenario = 'nhiễm_trùng';
+        else scenario = 'default';
+
+        const config = SCENARIOS[scenario];
+        img.src = config.img;
+        document.getElementById('ai-status').textContent = config.ai;
+        document.getElementById('mode-text').textContent = config.title.toUpperCase();
+        
+        // Update labels
+        const labelBoxes = labels.querySelectorAll('.label-box');
+        config.labels.forEach((txt, i) => {
+          if(labelBoxes[i]) labelBoxes[i].textContent = txt;
+        });
       }
     });
 
-    // --- 2. FOCUS LOGIC ---
-    const focusKnob = document.getElementById('knob-focus');
-    let isDraggingFocus = false;
+    // ZOOM LOGIC
+    knobZoom.onclick = () => {
+      if(currentZoom === 10) currentZoom = 40;
+      else if(currentZoom === 40) currentZoom = 100;
+      else currentZoom = 10;
+      
+      knobZoom.style.transform = `rotate(${(currentZoom/100) * 360}deg)`;
+      document.getElementById('val-zoom').textContent = currentZoom + 'x';
+      document.getElementById('mag-text').textContent = currentZoom + 'x';
+      
+      img.style.transform = `scale(${currentZoom / 10})`;
+      checkState();
+    };
 
-    focusKnob.onmousedown = () => isDraggingFocus = true;
-    window.onmouseup = () => isDraggingFocus = false;
-
+    // FOCUS LOGIC
+    let isDragging = false;
+    knobFocus.onmousedown = () => isDragging = true;
+    window.onmouseup = () => isDragging = false;
     window.onmousemove = (e) => {
-      if (!isDraggingFocus) return;
+      if(!isDragging) return;
+      currentFocus = (currentFocus + 1) % 100;
+      knobFocus.style.transform = `rotate(${currentFocus * 3.6}deg)`;
       
-      focusValue = (focusValue + 1) % 100;
-      focusKnob.style.transform = `rotate(${focusValue * 3.6}deg)`;
+      const diff = Math.abs(currentFocus - TARGET_FOCUS);
+      img.style.filter = `blur(${diff / 4}px)`;
+      document.getElementById('focus-text').textContent = currentFocus + '%';
       
-      // Update blur based on proximity to targetFocus
-      const diff = Math.abs(focusValue - targetFocus);
-      const blurVal = diff / 4;
-      img.style.filter = `blur(${blurVal}px)`;
-      
-      document.getElementById('spec-focus').textContent = focusValue + "%";
-      
-      if (diff < 5) {
-        document.getElementById('focus-label').textContent = "RÕ NÉT";
-        document.getElementById('focus-label').style.color = "#10B981";
+      if(diff < 5) {
+        document.getElementById('val-focus').textContent = 'RÕ NÉT';
+        document.getElementById('val-focus').style.color = '#10B981';
         labels.style.display = 'block';
-        document.getElementById('lab-report-mini').style.display = 'block';
-        if (!window.focusedSound) {
-          showToast("Đã lấy nét thành công!", "success");
-          window.focusedSound = true;
-        }
+        checkState();
       } else {
-        document.getElementById('focus-label').textContent = "Mờ";
-        document.getElementById('focus-label').style.color = "white";
+        document.getElementById('val-focus').textContent = 'Mờ';
+        document.getElementById('val-focus').style.color = 'white';
         labels.style.display = 'none';
       }
     };
 
-    // --- 3. ZOOM LOGIC ---
-    document.getElementById('knob-zoom').onclick = function() {
-      if (currentZoom === 10) currentZoom = 40;
-      else if (currentZoom === 40) currentZoom = 100;
-      else currentZoom = 10;
-      
-      this.style.transform = `rotate(${(currentZoom/100) * 360}deg)`;
-      document.getElementById('zoom-label').textContent = currentZoom + "x";
-      document.getElementById('spec-mag').textContent = currentZoom + "x";
-      
-      // Transform specimen based on zoom
-      const scale = currentZoom / 10;
-      img.style.transform = `scale(${scale})`;
-      
-      if (currentZoom === 100) {
-        showToast("Phóng đại cực đại: Đã thấy vi khuẩn hình chuỗi!", "warning");
+    function checkState() {
+      if(Math.abs(currentFocus - TARGET_FOCUS) < 5 && currentZoom === 100) {
+        document.getElementById('result-box').style.display = 'block';
+        document.getElementById('result-text').textContent = SCENARIOS[scenario].result;
       }
-    };
+    }
 
   </script>
 </body>

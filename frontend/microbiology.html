@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Vi Sinh & Miễn Dịch – Digital BioHospital</title>
+  <title>Vi Sinh & Kháng Sinh Đa Kịch Bản – Digital BioHospital</title>
   <link rel="stylesheet" href="css/global.css" />
   <link rel="stylesheet" href="css/components.css" />
   <link rel="stylesheet" href="css/animations.css" />
@@ -52,7 +52,7 @@
       opacity: 0.8;
     }
 
-    /* ── REAGENT BOTTLES ── */
+    /* ── REAGENTS ── */
     .reagent-rack {
       display: flex;
       justify-content: center;
@@ -72,16 +72,9 @@
 
     .bottle-cap { height: 10px; background: #333; border-radius: 5px 5px 0 0; }
     .bottle-body { 
-      height: 60px; 
-      border-radius: 0 0 10px 10px; 
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.6rem;
-      font-weight: 800;
-      color: white;
-      text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+      height: 60px; border-radius: 0 0 10px 10px; 
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.6rem; font-weight: 800; color: white;
     }
 
     /* ── BATTLE ARENA ── */
@@ -154,9 +147,9 @@
           <div class="flex-between" style="margin-bottom: 1.5rem">
             <div>
               <h2 style="font-size: 1.5rem">🧫 Microbiology Arena</h2>
-              <p id="step-desc" style="font-size: 0.85rem; color: rgba(255,255,255,0.5);">Bước 1: Nhuộm Gram 4 bước để định danh vi khuẩn.</p>
+              <p id="step-desc" style="font-size: 0.85rem; color: rgba(255,255,255,0.5);">Bước 1: Nhuộm Gram để định danh mầm bệnh.</p>
             </div>
-            <div id="step-badge" class="badge badge-purple">BƯỚC 1/3</div>
+            <div id="scenario-badge" class="badge badge-purple">MODE: AUTO</div>
           </div>
 
           <div class="petri-dish" id="petri">
@@ -173,22 +166,10 @@
           </div>
 
           <div class="reagent-rack" id="reagent-rack">
-            <div class="reagent-bottle" onclick="runStainStep(1)">
-              <div class="bottle-cap"></div>
-              <div class="bottle-body" style="background: #7c3aed;">VIOLET</div>
-            </div>
-            <div class="reagent-bottle" onclick="runStainStep(2)">
-              <div class="bottle-cap"></div>
-              <div class="bottle-body" style="background: #f59e0b;">IODINE</div>
-            </div>
-            <div class="reagent-bottle" onclick="runStainStep(3)">
-              <div class="bottle-cap"></div>
-              <div class="bottle-body" style="background: rgba(255,255,255,0.1); border:1px solid #666;">ALCOHOL</div>
-            </div>
-            <div class="reagent-bottle" onclick="runStainStep(4)">
-              <div class="bottle-cap"></div>
-              <div class="bottle-body" style="background: #ef4444;">RED</div>
-            </div>
+            <div class="reagent-bottle" onclick="runStainStep(1)"><div class="bottle-cap"></div><div class="bottle-body" style="background:#7c3aed">VIOLET</div></div>
+            <div class="reagent-bottle" onclick="runStainStep(2)"><div class="bottle-cap"></div><div class="bottle-body" style="background:#f59e0b">IODINE</div></div>
+            <div class="reagent-bottle" onclick="runStainStep(3)"><div class="bottle-cap"></div><div class="bottle-body" style="background:#666">ALCOHOL</div></div>
+            <div class="reagent-bottle" onclick="runStainStep(4)"><div class="bottle-cap"></div><div class="bottle-body" style="background:#ef4444">RED</div></div>
           </div>
 
           <div style="margin-top: 2rem; display: flex; justify-content: center;">
@@ -200,18 +181,14 @@
         <div class="analysis-panel animate-slideRight">
           <div class="card" style="background: rgba(16,185,129,0.05); border-color: rgba(16,185,129,0.2);">
             <h4 style="color: #10B981; font-size: 0.8rem;">🤖 AI LIVE ANALYSIS:</h4>
-            <div id="ai-log" style="font-family: monospace; font-size: 0.75rem; color: #10B981; margin-top: 10px; line-height: 1.5; height: 300px; overflow-y: auto;">
-              > Đang chờ mẫu bệnh phẩm...<br>
-              > Vui lòng thực hiện quy trình nhuộm Gram.
+            <div id="ai-log" style="font-family: monospace; font-size: 0.75rem; color: #10B981; margin-top: 10px; line-height: 1.5; height: 350px; overflow-y: auto;">
+              > Đang chờ mẫu bệnh phẩm...
             </div>
           </div>
 
           <div id="final-report" class="card" style="display:none; margin-top: 1.5rem; border: 2px solid #10B981;">
-             <h3 style="color: #10B981; font-size: 1rem;">📝 LAB REPORT FINAL</h3>
-             <p style="font-size: 0.8rem; margin-top: 10px;">
-               <strong>Chẩn đoán:</strong> Nhiễm khuẩn Streptococcus (Gram+).<br>
-               <strong>Đề xuất:</strong> Chuyển dữ liệu sang Lab 12 để tìm Gene kháng thể.
-             </p>
+             <h3 style="color: #10B981; font-size: 1rem;">📝 LAB REPORT</h3>
+             <p id="report-text" style="font-size: 0.8rem; margin-top: 10px;"></p>
              <a href="genetics.html" class="btn btn-primary" style="width:100%; margin-top:1rem;">Tiến tới Lab 12 ➔</a>
           </div>
         </div>
@@ -223,7 +200,8 @@
   <script src="js/patient.js"></script>
   <script>
     let currentStep = 0;
-    const isGramPositive = true; // Scenario: Streptococcus
+    let isGramPositive = true;
+    let scenarioName = "Mẫu chuẩn";
     const cloud = document.getElementById('bacteria-cloud');
     const log = document.getElementById('ai-log');
 
@@ -237,10 +215,21 @@
       if(p) {
         document.getElementById('p-nav-card').style.display = 'block';
         document.getElementById('p-nav-name').textContent = p.name;
-        addLog(`Đã nhận mẫu bệnh phẩm từ bệnh nhân ${p.name}.`);
+        
+        const sym = (p.currentSymptoms || "").toLowerCase();
+        if(sym.includes('họng') || sym.includes('sốt')) {
+          isGramPositive = true;
+          scenarioName = "Viêm họng (Streptococcus)";
+        } else if(sym.includes('vết thương') || sym.includes('nhiễm trùng')) {
+          isGramPositive = false;
+          scenarioName = "Nhiễm trùng (Gram-)";
+        }
+        
+        document.getElementById('scenario-badge').textContent = scenarioName.toUpperCase();
+        addLog(`Đã đồng bộ triệu chứng: ${p.currentSymptoms || 'Bình thường'}`);
+        addLog(`Bắt đầu quy trình nhuộm Gram cho ${scenarioName}...`);
       }
       
-      // Spawn bacteria
       for(let i=0; i<80; i++) {
         const b = document.createElement('div');
         b.className = 'bac-unit';
@@ -253,33 +242,29 @@
         showToast("Sai quy trình! Vui lòng thực hiện theo thứ tự 1-2-3-4.", "error");
         return;
       }
-      
       currentStep = step;
       const units = document.querySelectorAll('.bac-unit');
       
       switch(step) {
         case 1:
           units.forEach(u => u.style.background = '#7c3aed');
-          addLog("Đã nhỏ Crystal Violet. Tất cả vi khuẩn bắt màu tím.");
+          addLog("Đã nhuộm Crystal Violet. Tất cả bắt màu tím.");
           break;
         case 2:
-          addLog("Đã thêm dung dịch Iod. Phức hợp màu được cố định.");
+          addLog("Đã thêm Iod. Phức hợp màu tím-Iod đã hình thành.");
           break;
         case 3:
           if(isGramPositive) {
-            addLog("Tẩy cồn: Vi khuẩn giữ màu tím (Thành Peptidoglycan dày).");
+            addLog("Tẩy cồn: Vi khuẩn giữ màu tím (Thành dày).");
           } else {
             units.forEach(u => u.style.background = '#444');
             addLog("Tẩy cồn: Vi khuẩn mất màu (Màng ngoài bị hòa tan).");
           }
           break;
         case 4:
-          if(isGramPositive) {
-            addLog("Nhuộm Safranin: Vi khuẩn Gram (+) vẫn giữ màu Tím đậm.");
-          } else {
-            units.forEach(u => u.style.background = '#ef4444');
-            addLog("Nhuộm Safranin: Vi khuẩn Gram (-) bắt màu đỏ.");
-          }
+          const finalColor = isGramPositive ? '#7c3aed' : '#ef4444';
+          units.forEach(u => u.style.background = finalColor);
+          addLog(`Nhuộm Safranin: Kết luận Gram ${isGramPositive ? '(+)' : '(-)'}.`);
           document.getElementById('btn-next').disabled = false;
           break;
       }
@@ -287,22 +272,19 @@
 
     document.getElementById('btn-next').onclick = function() {
       document.getElementById('battle-overlay').style.display = 'flex';
-      document.getElementById('step-badge').textContent = "BƯỚC 2/3: THỰC BÀO";
-      document.getElementById('reagent-rack').style.display = 'none';
       startBattle();
     };
 
     function startBattle() {
       const macro = document.getElementById('macro');
       const battleOverlay = document.getElementById('battle-overlay');
+      const finalCol = isGramPositive ? '#7c3aed' : '#ef4444';
       
       for(let i=0; i<8; i++) {
         const b = document.createElement('div');
         b.className = 'bac-unit';
-        b.style.position = 'absolute';
-        b.style.background = '#7c3aed';
-        b.style.left = Math.random() * 80 + 10 + '%';
-        b.style.top = Math.random() * 80 + 10 + '%';
+        b.style.position = 'absolute'; b.style.background = finalCol;
+        b.style.left = Math.random() * 80 + 10 + '%'; b.style.top = Math.random() * 80 + 10 + '%';
         b.id = 'b-' + i;
         battleOverlay.appendChild(b);
       }
@@ -312,21 +294,15 @@
         if(count >= 8) {
           clearInterval(interval);
           document.getElementById('final-report').style.display = 'block';
-          showToast("Xong! Bạch cầu đã tiêu diệt mầm bệnh.", "success");
+          document.getElementById('report-text').innerHTML = `<strong>Chẩn đoán:</strong> ${scenarioName}.<br><strong>Phản ứng:</strong> Đã tiêu diệt mầm bệnh bằng thực bào.`;
           return;
         }
-        
-        const target = document.getElementById('b-' + count);
-        macro.style.left = (target.offsetLeft - 60) + 'px';
-        macro.style.top = (target.offsetTop - 60) + 'px';
-        
+        const t = document.getElementById('b-' + count);
+        macro.style.left = (t.offsetLeft - 60) + 'px'; macro.style.top = (t.offsetTop - 60) + 'px';
         setTimeout(() => {
           macro.classList.add('swallowing');
-          target.style.transform = 'scale(0)';
-          setTimeout(() => {
-            macro.classList.remove('swallowing');
-            count++;
-          }, 500);
+          t.style.transform = 'scale(0)';
+          setTimeout(() => { macro.classList.remove('swallowing'); count++; }, 500);
         }, 500);
       }, 1200);
     }

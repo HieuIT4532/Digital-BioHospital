@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Trạm Chuyển Hóa & Enzyme – Digital BioHospital</title>
+  <title>Trạm Chuyển Hóa Đa Kịch Bản – Digital BioHospital</title>
   <link rel="stylesheet" href="css/global.css" />
   <link rel="stylesheet" href="css/components.css" />
   <link rel="stylesheet" href="css/animations.css" />
@@ -15,92 +15,73 @@
       margin-top: 2rem;
     }
 
-    /* ── ENZYME WORKSTATION ── */
     .biochem-screen {
       background: #050507;
       border: 2px solid #1e1e2e;
       border-radius: 2.5rem;
       padding: 2.5rem;
       position: relative;
-      min-height: 550px;
+      min-height: 600px;
     }
 
-    .enzyme-area {
-      height: 300px;
-      position: relative;
+    .sim-area {
+      height: 350px;
       background: rgba(0,0,0,0.3);
       border-radius: 1.5rem;
+      position: relative;
+      overflow: hidden;
       display: flex;
       justify-content: center;
       align-items: center;
-      overflow: hidden;
     }
 
+    /* Enzyme View */
     .enzyme-model {
-      width: 150px;
-      height: 120px;
+      width: 160px; height: 120px;
       background: #6366f1;
       border-radius: 30px;
       position: relative;
       transition: all 0.5s;
     }
-
-    .active-site-slot {
-      position: absolute;
-      top: -10px; left: 40px;
+    .active-site {
+      position: absolute; top: -10px; left: 45px;
       width: 70px; height: 30px;
-      background: #050507;
-      border-radius: 0 0 35px 35px;
+      background: #050507; border-radius: 0 0 35px 35px;
+    }
+    .substrate {
+      width: 60px; height: 30px;
+      background: #10B981; border-radius: 10px;
+      position: absolute; cursor: grab; z-index: 10;
     }
 
-    .substrate-particle {
-      width: 60px;
-      height: 30px;
-      background: #10B981;
-      border-radius: 10px;
-      cursor: grab;
+    /* Lactic Acid View */
+    .lactic-crystal {
+      width: 40px; height: 40px;
+      background: rgba(239, 68, 68, 0.4);
+      clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
       position: absolute;
-      top: 50px; left: 50px;
-      z-index: 10;
-      box-shadow: 0 0 15px rgba(16,185,129,0.3);
+      animation: float 3s infinite ease-in-out;
     }
 
-    /* ── PLASMOLYSIS CELL ── */
-    .cell-model {
-      width: 150px; height: 150px;
-      border: 3px solid #6366f1;
-      border-radius: 10px;
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 1s;
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-20px) rotate(45deg); }
     }
 
-    .protoplast {
-      width: 90%; height: 90%;
-      background: rgba(16, 185, 129, 0.4);
-      border-radius: 5px;
-      transition: all 2s ease-in-out;
+    /* Controls */
+    .control-panel {
+      display: flex; gap: 1rem; margin-top: 2rem;
     }
 
-    /* ── LIVE SPECS ── */
-    .live-data-bar {
-      display: flex;
-      gap: 1rem;
-      margin-top: 1.5rem;
+    .live-data {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 1rem;
     }
-
-    .data-item {
-      flex: 1;
+    .data-box {
       background: rgba(255,255,255,0.03);
-      padding: 0.8rem;
-      border-radius: 0.75rem;
-      text-align: center;
+      padding: 1rem; border-radius: 1rem; text-align: center;
     }
-
     .data-label { font-size: 0.6rem; opacity: 0.5; text-transform: uppercase; }
-    .data-val { display: block; font-size: 1.2rem; font-weight: 800; color: var(--color-primary-light); }
+    .data-val { display: block; font-size: 1.1rem; font-weight: 800; color: var(--color-primary-light); }
 
   </style>
 </head>
@@ -110,7 +91,7 @@
     <div class="container navbar-inner">
       <a href="index.html" class="navbar-brand">🏥 <span>Digital BioHospital</span></a>
       <ul class="navbar-nav">
-        <li><a href="index.html">🏠 Trang chủ</a></li>
+        <li><a href="index.html">Trang chủ</a></li>
         <li class="nav-item">
           <a href="#" class="active">🔬 Lab Lớp 10 ▼</a>
           <div class="nav-dropdown flex-col">
@@ -127,71 +108,69 @@
     <div class="container">
       <div class="meta-layout">
         
-        <!-- LEFT: BIOCHEM STATION -->
+        <!-- LEFT: BIOCHEM ANALYZER -->
         <div class="biochem-screen">
           <div class="flex-between" style="margin-bottom: 2rem">
             <div>
-              <h2 style="font-size: 1.5rem">⚡ Biochemical Analyzer</h2>
-              <p style="font-size: 0.8rem; opacity: 0.5;">Thí nghiệm Enzyme & Tính thấm của màng.</p>
+              <h2 style="font-size: 1.5rem">⚡ Metabolic Analyzer</h2>
+              <p style="font-size: 0.8rem; opacity: 0.5;">Đang phân tích: <span id="target-mode">AUTO_SCAN</span></p>
             </div>
-            <div id="ph-badge" class="badge badge-green">pH 7.0 (Optimal)</div>
+            <div id="status-badge" class="badge badge-purple">READY</div>
           </div>
 
-          <!-- Section 1: Enzyme -->
-          <div class="enzyme-area" id="enzyme-workplace">
-            <div class="substrate-particle" id="substrate" draggable="true"></div>
-            <div class="enzyme-model" id="enzyme">
-              <div class="active-site-slot"></div>
+          <div class="sim-area" id="sim-view">
+            <!-- Enzyme Case -->
+            <div id="enzyme-scene" style="display:none; width:100%; height:100%; position:relative; display:flex; justify-content:center; align-items:center;">
+              <div class="substrate" id="sub" draggable="true" style="top:50px; left:50px;"></div>
+              <div class="enzyme-model" id="enz">
+                <div class="active-site"></div>
+              </div>
+            </div>
+
+            <!-- Lactic Case -->
+            <div id="lactic-scene" style="display:none; width:100%; height:100%; position:relative;">
+              <!-- Generated by JS -->
             </div>
           </div>
 
-          <!-- Section 2: Plasmolysis (Hidden by default) -->
-          <div id="plasmolysis-area" style="display:none; justify-content: center; padding: 2rem; background: rgba(0,0,0,0.2); border-radius: 1.5rem; margin-top: 1rem;">
-             <div class="cell-model" id="cell">
-               <div class="protoplast" id="protoplast"></div>
-             </div>
-             <div style="margin-left: 2rem;">
-               <h4 style="font-size: 0.8rem; color: #10B981;">Thử tính thấm (Plasmolysis)</h4>
-               <p style="font-size: 0.7rem; opacity: 0.5; max-width: 200px;">Kéo dung dịch ưu trương vào tế bào họng để xem phản ứng.</p>
-               <button class="btn btn-sm btn-outline" style="margin-top: 10px;" onclick="addSalt()">Nhỏ nước muối 10%</button>
-             </div>
+          <div class="live-data">
+            <div class="data-box">
+              <span class="data-label">pH Dịch vị</span>
+              <input type="range" id="ph-range" min="1" max="14" value="7" style="width:100%">
+              <span class="data-val" id="ph-text">7.0</span>
+            </div>
+            <div class="data-box">
+              <span class="data-label">ATP SYNTHESIS</span>
+              <span class="data-val" id="atp-text">--</span>
+            </div>
           </div>
 
-          <div class="live-data-bar">
-            <div class="data-item">
-              <span class="data-label">pH Level</span>
-              <input type="range" id="ph-slider" min="1" max="14" value="7" style="width: 100%;">
-              <span class="data-val" id="ph-val">7.0</span>
-            </div>
-            <div class="data-item">
-              <span class="data-label">ATP Synthesis</span>
-              <span class="data-val" id="atp-val">--</span>
-            </div>
+          <div class="control-panel">
+            <button class="btn btn-primary" id="btn-analyze">Bắt đầu phân tích</button>
+            <button class="btn btn-outline" onclick="location.reload()">Reset</button>
           </div>
         </div>
 
-        <!-- RIGHT: PROGRESS & REPORT -->
+        <!-- RIGHT: SCENARIO -->
         <div class="animate-slideRight">
           <div class="card" style="position: sticky; top: 100px;">
-            <div id="p-context" style="margin-bottom: 2rem;">
-              <h4 style="font-size: 0.75rem; color: var(--color-primary-light);">📡 Đồng bộ dữ liệu:</h4>
-              <div id="p-name" style="font-weight: 800; font-size: 1.1rem; margin: 5px 0;">--</div>
-              <div id="p-symptoms" style="font-size: 0.8rem; color: #FBBF24;">--</div>
+            <div id="p-card" style="margin-bottom: 2rem;">
+              <h4 style="font-size: 0.7rem; color: var(--color-primary-light);">📡 ĐỒNG BỘ BỆNH NHÂN:</h4>
+              <div id="p-name" style="font-size: 1.1rem; font-weight: 800; margin: 5px 0;">--</div>
+              <div id="p-sym" style="font-size: 0.8rem; color: #FBBF24;">--</div>
             </div>
 
-            <div class="card" style="background: rgba(124,58,237,0.05); padding: 1rem;">
-              <h4 style="color: var(--color-primary-light); font-size: 0.85rem;">🤖 Hướng dẫn:</h4>
-              <p id="instruction" style="font-size: 0.75rem; margin-top: 5px; line-height: 1.5;">
-                Hãy kéo Cơ chất (màu xanh) vào Trung tâm hoạt động của Enzyme để bắt đầu chuyển hóa.
+            <div class="card" style="background: rgba(16,185,129,0.05); padding: 1rem; border-color: rgba(16,185,129,0.2);">
+              <h4 style="color: #10B981; font-size: 0.8rem;">🤖 AI LAB ADVICE:</h4>
+              <p id="ai-advice" style="font-size: 0.75rem; line-height: 1.5; margin-top: 5px;">
+                Đang chờ dữ liệu triệu chứng...
               </p>
             </div>
 
-            <div id="lab-report-card" style="display:none; margin-top: 2rem; padding: 1rem; border: 1px solid #10B981; border-radius: 1rem;">
-              <h4 style="color: #10B981;">📋 Lab Report 10:</h4>
-              <p style="font-size: 0.8rem; line-height: 1.4; margin-top: 5px;">
-                Phát hiện sự mất cân bằng ATP do Enzyme bị ức chế. Tế bào họng có dấu hiệu mất nước.
-              </p>
-              <a href="microscope.html" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">➔ Trạm Kính Hiển Vi</a>
+            <div id="report-box" style="display:none; margin-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1.5rem;">
+               <h4 style="color: #10B981;">📋 KẾT QUẢ LAB:</h4>
+               <p id="report-text" style="font-size: 0.8rem; margin-top: 10px;"></p>
+               <a href="microscope.html" class="btn btn-primary" style="width:100%; margin-top:1.5rem;">Tiến tới Trạm Kính Hiển Vi ➔</a>
             </div>
           </div>
         </div>
@@ -202,88 +181,90 @@
 
   <script src="js/patient.js"></script>
   <script>
-    const substrate = document.getElementById('substrate');
-    const enzyme = document.getElementById('enzyme');
-    const phSlider = document.getElementById('ph-slider');
+    let scenario = 'energy';
+    const sub = document.getElementById('sub');
+    const enz = document.getElementById('enz');
+    const phRange = document.getElementById('ph-range');
 
-    // --- 1. DATA FLOW ---
     window.addEventListener('load', () => {
       const p = PatientManager.get();
-      if (p) {
+      if(p) {
         document.getElementById('p-name').textContent = p.name;
-        document.getElementById('p-symptoms').textContent = `Triệu chứng: ${p.currentSymptoms || 'Mệt mỏi'}`;
+        document.getElementById('p-sym').textContent = `Triệu chứng: ${p.currentSymptoms || 'Mệt mỏi'}`;
         
-        const symptoms = (p.currentSymptoms || "").toLowerCase();
-        if (symptoms.includes('họng')) {
-          document.getElementById('plasmolysis-area').style.display = 'flex';
-          document.getElementById('instruction').textContent = "Bệnh nhân bị đau họng. Hãy kiểm tra tính thấm của tế bào biểu mô và khả năng hoạt động của Enzyme kháng khuẩn.";
+        const sym = (p.currentSymptoms || "").toLowerCase();
+        if(sym.includes('đau cơ') || sym.includes('chuột rút')) {
+          scenario = 'lactic';
+          document.getElementById('target-mode').textContent = 'PHÂN TÍCH AXIT LACTIC';
+          document.getElementById('ai-advice').textContent = "Phát hiện triệu chứng đau cơ. AI nghi ngờ tích tụ Axit Lactic do hô hấp kỵ khí. Hãy kiểm tra nồng độ ATP.";
+          showLactic();
+        } else {
+          scenario = 'energy';
+          document.getElementById('target-mode').textContent = 'PHÂN TÍCH ENZYME & ATP';
+          document.getElementById('ai-advice').textContent = "Bệnh nhân bị kiệt sức. Hãy kiểm tra khả năng chuyển hóa của Enzyme và hiệu suất tổng hợp ATP.";
+          document.getElementById('enzyme-scene').style.display = 'flex';
         }
       }
     });
 
-    // --- 2. ENZYME DRAG & DROP ---
-    substrate.onmousedown = function(e) {
-      let shiftX = e.clientX - substrate.getBoundingClientRect().left;
-      let shiftY = e.clientY - substrate.getBoundingClientRect().top;
-
-      function moveAt(pageX, pageY) {
-        substrate.style.left = pageX - shiftX - document.getElementById('enzyme-workplace').getBoundingClientRect().left + 'px';
-        substrate.style.top = pageY - shiftY - document.getElementById('enzyme-workplace').getBoundingClientRect().top + 'px';
+    function showLactic() {
+      const scene = document.getElementById('lactic-scene');
+      scene.style.display = 'block';
+      for(let i=0; i<15; i++) {
+        const c = document.createElement('div');
+        c.className = 'lactic-crystal';
+        c.style.left = Math.random() * 80 + 10 + '%';
+        c.style.top = Math.random() * 80 + 10 + '%';
+        c.style.animationDelay = (Math.random() * 2) + 's';
+        scene.appendChild(c);
       }
+    }
 
-      function onMouseMove(event) {
-        moveAt(event.pageX, event.pageY);
+    // ENZYME DRAG
+    sub.onmousedown = function(e) {
+      let rect = document.getElementById('enzyme-scene').getBoundingClientRect();
+      function move(ev) {
+        sub.style.left = ev.clientX - rect.left - 30 + 'px';
+        sub.style.top = ev.clientY - rect.top - 15 + 'px';
         
-        // Check collision
-        const subRect = substrate.getBoundingClientRect();
-        const enzRect = enzyme.getBoundingClientRect();
-        
-        if (Math.abs(subRect.left - enzRect.left - 40) < 20 && Math.abs(subRect.top - enzRect.top + 10) < 20) {
-          if (phSlider.value > 5 && phSlider.value < 9) {
-            substrate.style.left = '45px';
-            substrate.style.top = '-10px';
-            enzyme.appendChild(substrate);
-            onSuccess();
+        let subR = sub.getBoundingClientRect();
+        let enzR = enz.getBoundingClientRect();
+        if(Math.abs(subR.left - enzR.left - 45) < 20 && Math.abs(subR.top - enzR.top + 10) < 20) {
+          if(phRange.value > 5 && phRange.value < 9) {
+            sub.style.left = '50px'; sub.style.top = '-10px';
+            enz.appendChild(sub);
+            finish('energy');
           } else {
-            showToast("Enzyme bị biến tính do pH! Cơ chất không thể khớp.", "error");
+            showToast("pH không phù hợp! Enzyme bị biến tính.", "error");
           }
         }
       }
-
-      document.addEventListener('mousemove', onMouseMove);
-      document.onmouseup = () => document.removeEventListener('mousemove', onMouseMove);
+      document.addEventListener('mousemove', move);
+      document.onmouseup = () => document.removeEventListener('mousemove', move);
     };
 
-    function onSuccess() {
-      document.getElementById('atp-val').textContent = "95%";
-      document.getElementById('atp-val').style.color = "#10B981";
-      document.getElementById('lab-report-card').style.display = 'block';
-      showToast("Chuyển hóa thành công! ATP đang được tổng hợp.", "success");
-    }
+    phRange.oninput = function() {
+      document.getElementById('ph-text').textContent = parseFloat(this.value).toFixed(1);
+      if(this.value < 5 || this.value > 9) enz.style.transform = 'skew(15deg) scaleY(0.8)';
+      else enz.style.transform = 'none';
+    };
 
-    // --- 3. pH INFLUENCE ---
-    phSlider.oninput = function() {
-      const val = this.value;
-      document.getElementById('ph-val').textContent = parseFloat(val).toFixed(1);
-      const badge = document.getElementById('ph-badge');
-      
-      if (val < 5 || val > 9) {
-        badge.textContent = `pH ${val} (Biến tính)`;
-        badge.className = "badge badge-red";
-        enzyme.style.transform = 'skewX(10deg) scaleY(0.8)'; // Visual denaturation
+    document.getElementById('btn-analyze').onclick = () => {
+      if(scenario === 'lactic') finish('lactic');
+      else showToast("Hãy kéo Cơ chất vào Enzyme để bắt đầu phân tích!", "info");
+    };
+
+    function finish(mode) {
+      document.getElementById('report-box').style.display = 'block';
+      const atp = document.getElementById('atp-text');
+      if(mode === 'energy') {
+        atp.textContent = "92% (High)"; atp.style.color = "#10B981";
+        document.getElementById('report-text').textContent = "Enzyme hoạt động tốt. ATP được tổng hợp ổn định. Nguyên nhân mệt mỏi có thể do thiếu hụt vi chất.";
       } else {
-        badge.textContent = `pH ${val} (Optimal)`;
-        badge.className = "badge badge-green";
-        enzyme.style.transform = 'skewX(0deg) scaleY(1)';
+        atp.textContent = "24% (Low)"; atp.style.color = "#EF4444";
+        document.getElementById('report-text').textContent = "Phát hiện nồng độ Axit Lactic cao. ATP suy giảm do cơ bắp thiếu oxy, dẫn đến đau mỏi.";
       }
-    };
-
-    // --- 4. PLASMOLYSIS ---
-    function addSalt() {
-      const protoplast = document.getElementById('protoplast');
-      protoplast.style.width = '40%';
-      protoplast.style.height = '40%';
-      showToast("Hiện tượng Co nguyên sinh xảy ra! Tế bào mất nước do môi trường ưu trương.", "warning");
+      document.getElementById('status-badge').textContent = "COMPLETED";
     }
 
   </script>
