@@ -4,70 +4,43 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Bản Đồ Gene – Digital BioHospital</title>
-  <meta name="description" content="Bảng xếp hạng Top Bác sĩ Sinh học. Biểu đồ đóng góp học tập kiểu GitHub." />
   <link rel="stylesheet" href="css/global.css" />
   <link rel="stylesheet" href="css/components.css" />
   <link rel="stylesheet" href="css/animations.css" />
   <style>
-    .lb-layout { display: grid; grid-template-columns: 1fr 340px; gap: 2rem; padding: 2rem 0 4rem; align-items: start; }
+    /* Genetics Lab Specific Styles */
+    .gen-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 2rem; }
+    .gen-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07); border-radius: 1.5rem; padding: 2rem; position: relative; overflow: hidden; }
+    
+    /* 1. DNA 3D Simulation */
+    .dna-container { height: 300px; perspective: 1000px; display: flex; align-items: center; justify-content: center; position: relative; }
+    .dna-helix { position: relative; width: 100px; height: 100%; transform-style: preserve-3d; animation: dnaRotate 10s linear infinite; }
+    .dna-strand { position: absolute; width: 10px; height: 10px; border-radius: 50%; background: #7C3AED; }
+    .dna-pair { position: absolute; width: 80px; height: 2px; background: rgba(255,255,255,0.2); transform-origin: center; }
+    
+    @keyframes dnaRotate { from { transform: rotateY(0deg); } to { transform: rotateY(360deg); } }
 
-    /* Contribution Graph */
-    .contrib-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07); border-radius: 1.25rem; padding: 1.5rem; }
-    .contrib-grid { display: grid; grid-template-columns: repeat(13, 1fr); gap: 3px; }
-    .contrib-cell {
-      width: 100%; aspect-ratio: 1;
-      border-radius: 3px;
-      background: rgba(255,255,255,0.06);
-      transition: all 0.2s;
-      cursor: default;
+    /* 2. Simulator Controls */
+    .sim-controls { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1.5rem; }
+    .allele-select { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 0.75rem; padding: 1rem; cursor: pointer; transition: all 0.2s; }
+    .allele-select.active { border-color: #7C3AED; background: rgba(124,58,237,0.1); }
+    .dice-roll { font-size: 3rem; margin: 1.5rem 0; text-align: center; height: 80px; display: flex; align-items: center; justify-content: center; }
+
+    /* 3. Karyotype Map */
+    .karyotype-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 0.75rem; margin-top: 1.5rem; }
+    .chromosome { 
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); 
+      border-radius: 0.5rem; padding: 0.5rem; text-align: center; cursor: pointer; transition: all 0.2s;
     }
-    .contrib-cell.level-1 { background: rgba(16,185,129,0.25); }
-    .contrib-cell.level-2 { background: rgba(16,185,129,0.5); }
-    .contrib-cell.level-3 { background: rgba(16,185,129,0.75); }
-    .contrib-cell.level-4 { background: #10B981; box-shadow: 0 0 6px rgba(16,185,129,0.4); }
-    .contrib-cell:hover { transform: scale(1.3); z-index: 2; }
+    .chromosome:hover { transform: scale(1.1); border-color: #FBBF24; background: rgba(251,191,36,0.05); }
+    .chromosome.active { border-color: #FBBF24; background: rgba(251,191,36,0.1); }
 
-    .contrib-legend { display: flex; align-items: center; gap: 0.5rem; margin-top: 1rem; font-size: 0.72rem; color: rgba(255,255,255,0.4); }
-    .contrib-legend-cell { width: 12px; height: 12px; border-radius: 2px; }
+    /* Highlights */
+    .highlight-gene { color: #F87171; font-weight: 900; animation: glow-red 1s infinite alternate; }
+    @keyframes glow-red { from { text-shadow: 0 0 5px #F87171; } to { text-shadow: 0 0 15px #F87171; } }
 
-    /* Top Doctors */
-    .top-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07); border-radius: 1.25rem; padding: 1.5rem; }
-    .top-item {
-      display: flex; align-items: center; gap: 0.75rem;
-      padding: 0.75rem 0; border-bottom: 1px solid rgba(255,255,255,0.05);
-    }
-    .top-item:last-child { border-bottom: none; }
-    .top-rank { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 0.8rem; flex-shrink: 0; }
-    .top-rank.gold { background: linear-gradient(135deg, #FBBF24, #F59E0B); color: #000; }
-    .top-rank.silver { background: linear-gradient(135deg, #94A3B8, #64748B); color: #fff; }
-    .top-rank.bronze { background: linear-gradient(135deg, #D97706, #92400E); color: #fff; }
-    .top-rank.normal { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.5); }
-    .top-avatar { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; background: rgba(124,58,237,0.2); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; }
-    .top-name { font-weight: 700; font-size: 0.9rem; }
-    .top-exp { font-size: 0.8rem; color: #FBBF24; font-weight: 700; margin-left: auto; }
-
-    /* Stats Bar */
-    .my-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2rem; }
-    .my-stat {
-      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 1rem; padding: 1.25rem; text-align: center;
-    }
-    .my-stat-value { font-size: 1.8rem; font-weight: 900; line-height: 1; margin-bottom: 0.3rem; }
-    .my-stat-label { font-size: 0.72rem; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 0.08em; }
-
-    /* EXP Progress Bar */
-    .exp-progress-wrap {
-      background: rgba(255,255,255,0.06); border-radius: 999px; height: 10px;
-      overflow: hidden; margin-top: 0.5rem;
-    }
-    .exp-progress-fill {
-      height: 100%;
-      background: linear-gradient(90deg, #7C3AED, #FBBF24);
-      border-radius: 999px;
-      transition: width 1.5s cubic-bezier(0.4,0,0.2,1);
-    }
-
-    @media (max-width: 900px) { .lb-layout { grid-template-columns: 1fr; } .my-stats { grid-template-columns: repeat(2, 1fr); } }
+    /* Responsive */
+    @media (max-width: 900px) { .gen-grid { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body class="page-enter">
@@ -76,7 +49,7 @@
     <div class="container navbar-inner">
       <a href="index.html" class="navbar-brand"><div class="brand-icon">🏥</div><span>Digital BioHospital</span></a>
       <ul class="navbar-nav" role="list">
-        <li><a href="index.html" id="nav-home">🏠 Trang chủ</a></li>
+        <li><a href="index.html">🏠 Trang chủ</a></li>
         <li class="nav-item">
           <a href="#" style="cursor:default;">🏥 Lâm Sàng (Lớp 11) ▼</a>
           <div class="nav-dropdown flex-col">
@@ -94,9 +67,9 @@
           </div>
         </li>
         <li class="nav-item">
-          <a href="#" style="cursor:default;">🧬 Di Truyền Học (Lớp 12) ▼</a>
+          <a href="#" style="cursor:default;" class="active">🧬 Di Truyền Học (Lớp 12) ▼</a>
           <div class="nav-dropdown flex-col">
-            <a href="genetics.html">🧬 Bản Đồ Gene</a>
+            <a href="genetics.html" style="color:var(--color-primary-light)">🧬 Bản Đồ Gene</a>
             <a href="prediction.html">🔮 Dự Báo Tương Lai</a>
           </div>
         </li>
@@ -110,145 +83,290 @@
           </div>
         </li>
       </ul>
-      <div style="display:flex;align-items:center;gap:0.75rem;">
-        <span id="nav-exp-badge" style="display:none;padding:0.25rem 0.75rem;background:rgba(251,191,36,0.15);border:1px solid rgba(251,191,36,0.3);border-radius:999px;font-size:0.75rem;font-weight:700;color:#FBBF24;"></span>
-        <a href="#" class="btn btn-sm btn-outline" id="nav-login-btn">Đăng nhập</a>
-        <a href="profile.html" class="btn btn-sm btn-glass" id="nav-profile-btn" style="display:none;color:var(--color-text);">👤 Profile</a>
-      </div>
+      <a href="reception.html" class="navbar-patient-btn btn btn-sm">🧑‍⚕️ Bắt đầu khám</a>
     </div>
   </nav>
 
-  
   <main id="main">
     <div class="page-header" style="background:linear-gradient(180deg,rgba(124,58,237,0.08) 0%,transparent 100%);border-bottom:1px solid rgba(255,255,255,0.05);">
       <div class="container">
         <div class="section-tag animate-fadeInUp">Phòng Lab & Viện Di Truyền</div>
-        <h1 class="animate-fadeInUp delay-100">🧬 Bản Đồ Gene</h1>
-        <p class="animate-fadeInUp delay-200">Khám phá bí ẩn di truyền, phân tích tiền sử bệnh và đột biến (Lớp 12).</p>
+        <h1 class="animate-fadeInUp delay-100">🧬 Bản Đồ Gene Tương Tác</h1>
+        <p class="animate-fadeInUp delay-200">Bản thiết kế gốc của con người — Giải mã quá khứ, dự báo tương lai.</p>
       </div>
     </div>
 
-    <div class="container" style="text-align: center; padding: 6rem 0;">
-      <div style="font-size: 5rem; margin-bottom: 1.5rem; animation: float 3s ease-in-out infinite;">🛠️</div>
-      <h2>Tính năng đang được phát triển</h2>
-      <p style="color: rgba(255,255,255,0.5); margin-top: 1rem; max-width: 600px; margin-left: auto; margin-right: auto;">
-        Phân hệ này đang trong quá trình xây dựng và sẽ sớm ra mắt trong các phiên bản cập nhật tiếp theo của Bệnh Viện Sinh Học Thông Minh.
-      </p>
-      <a href="index.html" class="btn btn-primary" style="margin-top: 2rem;">Về Trang Chủ</a>
+    <div class="container">
+      
+      <!-- Patient Linkage Section -->
+      <div class="card animate-fadeInUp" style="margin-top:2rem; background:linear-gradient(90deg, rgba(124,58,237,0.1), transparent); border:1px solid rgba(124,58,237,0.2);">
+        <div style="display:flex; align-items:center; gap:1.5rem;">
+          <div style="font-size:3rem; animation: float 3s infinite;">🔍</div>
+          <div>
+            <h3 id="gen-patient-name">Đang quét hồ sơ bệnh án...</h3>
+            <p id="gen-patient-msg" style="color:rgba(255,255,255,0.6); font-size:0.9rem;">Hệ thống AI đang liên kết dữ liệu triệu chứng với bản đồ di truyền.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="gen-grid">
+        
+        <!-- 1. GENETIC FINGERPRINTING -->
+        <div class="gen-card animate-slideLeft">
+          <div class="section-tag">Module 01</div>
+          <h2 style="margin: 0.5rem 0;">Dấu Vân Tay Di Truyền</h2>
+          <p style="font-size:0.85rem; color:rgba(255,255,255,0.5);">Quét và giải mã các đoạn gene liên quan đến bệnh lý của bạn.</p>
+          
+          <div class="dna-container" id="dna-sim">
+            <div class="dna-helix" id="dna-helix"></div>
+          </div>
+          
+          <div id="gene-scan-result" style="display:none; margin-top:1rem; padding:1rem; background:rgba(255,255,255,0.05); border-radius:1rem; font-family:monospace;">
+            <div style="color:#FBBF24; margin-bottom:0.5rem; font-weight:700;">[GENE SCANNING COMPLETE]</div>
+            <div id="gene-code-view" style="font-size:0.8rem; line-height:1.4;"></div>
+          </div>
+          
+          <button class="btn btn-primary" id="btn-scan-gene" style="width:100%; margin-top:1rem;">⚡ Bắt đầu Quét Gene</button>
+        </div>
+
+        <!-- 2. EVOLUTION & PROBABILITY SIMULATOR -->
+        <div class="gen-card animate-slideRight">
+          <div class="section-tag">Module 02</div>
+          <h2 style="margin: 0.5rem 0;">Xúc Xắc Di Truyền</h2>
+          <p style="font-size:0.85rem; color:rgba(255,255,255,0.5);">Giả lập xác suất đời con theo quy luật Men-đen.</p>
+          
+          <div class="sim-controls">
+            <div>
+              <label class="form-label" style="font-size:0.7rem;">KIỂU GENE BỐ</label>
+              <select class="form-select" id="parent-1-gen">
+                <option value="AA">AA (Đồng hợp trội)</option>
+                <option value="Aa">Aa (Dị hợp)</option>
+                <option value="aa">aa (Đồng hợp lặn)</option>
+              </select>
+            </div>
+            <div>
+              <label class="form-label" style="font-size:0.7rem;">KIỂU GENE MẸ</label>
+              <select class="form-select" id="parent-2-gen">
+                <option value="AA">AA (Đồng hợp trội)</option>
+                <option value="Aa">Aa (Dị hợp)</option>
+                <option value="aa">aa (Đồng hợp lặn)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="dice-roll" id="dice-container">🎲</div>
+
+          <div id="breeding-result" style="display:none; text-align:center;">
+            <h4 style="color:#10B981; margin-bottom:0.5rem;">Dự báo kết quả đời con (F1)</h4>
+            <div style="display:flex; justify-content:center; gap:1rem;">
+              <div id="res-trait-1" style="flex:1; background:rgba(124,58,237,0.1); padding:1rem; border-radius:0.75rem;">
+                <div style="font-size:1.5rem; font-weight:900;">--%</div>
+                <div style="font-size:0.7rem; opacity:0.6;">BÌNH THƯỜNG</div>
+              </div>
+              <div id="res-trait-2" style="flex:1; background:rgba(248,113,113,0.1); padding:1rem; border-radius:0.75rem;">
+                <div style="font-size:1.5rem; font-weight:900;">--%</div>
+                <div style="font-size:0.7rem; opacity:0.6;">MANG GENE BỆNH</div>
+              </div>
+            </div>
+          </div>
+          
+          <button class="btn btn-outline" id="btn-breed" style="width:100%; margin-top:1.5rem;">🎲 Tung Xúc Xắc Di Truyền</button>
+        </div>
+
+        <!-- 3. HUMAN GENOME NAVIGATOR -->
+        <div class="gen-card animate-fadeInUp" style="grid-column: 1 / -1;">
+          <div class="section-tag">Module 03</div>
+          <h2 style="margin: 0.5rem 0;">Bản Đồ Hệ Gene Người</h2>
+          <p style="font-size:0.85rem; color:rgba(255,255,255,0.5);">Khám phá 23 cặp nhiễm sắc thể và các hội chứng di truyền liên quan.</p>
+          
+          <div class="karyotype-grid" id="karyotype"></div>
+          
+          <div id="chromo-detail" style="display:none; margin-top:2rem; padding:2rem; background:rgba(255,255,255,0.05); border-radius:1.5rem; border-left:4px solid #FBBF24;">
+            <div style="display:flex; gap:2rem; align-items:center;">
+              <div id="chromo-img" style="font-size:4rem;">🧬</div>
+              <div>
+                <h3 id="chromo-title">Cặp Nhiễm Sắc Thể Số --</h3>
+                <p id="chromo-desc" style="color:rgba(255,255,255,0.7); margin-top:0.5rem; line-height:1.6;"></p>
+                <div id="chromo-tags" style="display:flex; gap:0.5rem; margin-top:1rem;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
     </div>
   </main>
 
   <footer>
-    <div class="container"><p>🏥 Bệnh Viện Sinh Học Thông Minh · <a href="disclaimer.html">Nội quy</a> · <a href="leaderboard.html">🏆 Xếp hạng</a></p></div>
+    <div class="container"><p>🏥 Bệnh Viện Sinh Học Thông Minh · Đề án STEM AI 2024</p></div>
   </footer>
 
   <script src="js/api.js"></script>
   <script src="js/patient.js"></script>
   <script type="module" src="js/auth.js"></script>
-  <script type="module">
-    import { BioDB } from './js/firebase-config.js';
-
-    // Load contribution graph (default: empty 91 cells)
-    function renderContribGrid(history = []) {
-      const grid = document.getElementById('contrib-grid');
-      grid.innerHTML = '';
-      const today = new Date();
-      const historySet = new Set(history);
-
-      for (let i = 90; i >= 0; i--) {
-        const d = new Date(today);
-        d.setDate(d.getDate() - i);
-        const dateStr = d.toISOString().split('T')[0];
-        const isActive = historySet.has(dateStr);
-
-        const cell = document.createElement('div');
-        cell.className = `contrib-cell ${isActive ? 'level-3' : ''}`;
-        cell.title = `${dateStr}${isActive ? ' ✅ Đã check-in' : ''}`;
-        cell.style.animationDelay = `${(90 - i) * 10}ms`;
-        grid.appendChild(cell);
+  <script>
+    // --- 1. DNA Simulation ---
+    function initDNA() {
+      const helix = document.getElementById('dna-helix');
+      const strandsCount = 15;
+      for (let i = 0; i < strandsCount; i++) {
+        const y = (i / strandsCount) * 100;
+        const angle = (i / strandsCount) * Math.PI * 4;
+        
+        // Strand A
+        const sA = document.createElement('div');
+        sA.className = 'dna-strand';
+        sA.style.top = `${y}%`;
+        sA.style.left = '50%';
+        sA.style.transform = `translateX(${Math.sin(angle) * 40}px) translateZ(${Math.cos(angle) * 40}px)`;
+        sA.style.background = '#7C3AED';
+        
+        // Strand B
+        const sB = document.createElement('div');
+        sB.className = 'dna-strand';
+        sB.style.top = `${y}%`;
+        sB.style.left = '50%';
+        sB.style.transform = `translateX(${Math.sin(angle + Math.PI) * 40}px) translateZ(${Math.cos(angle + Math.PI) * 40}px)`;
+        sB.style.background = '#FBBF24';
+        
+        // Connecting Pair
+        const pair = document.createElement('div');
+        pair.className = 'dna-pair';
+        pair.style.top = `${y + 1}%`;
+        pair.style.left = '50%';
+        pair.style.transform = `translateX(-50%) rotateY(${angle * (180/Math.PI)}deg)`;
+        
+        helix.appendChild(sA);
+        helix.appendChild(sB);
+        helix.appendChild(pair);
       }
     }
 
-    // Load leaderboard
-    async function loadLeaderboard() {
-      try {
-        const leaders = await BioDB.getLeaderboard(10);
-        const container = document.getElementById('top-doctors-list');
-
-        if (leaders.length === 0) {
-          container.innerHTML = '<div style="text-align:center;padding:2rem;color:rgba(255,255,255,0.4)">Chưa có dữ liệu. Hãy là người đầu tiên!</div>';
-          return;
+    // --- 2. Genetic Scanning Logic ---
+    document.getElementById('btn-scan-gene').addEventListener('click', function() {
+      const btn = this;
+      const res = document.getElementById('gene-scan-result');
+      const codeView = document.getElementById('gene-code-view');
+      const patient = PatientManager.get();
+      
+      btn.disabled = true;
+      btn.textContent = "⌛ Đang giải mã nucleotide...";
+      
+      setTimeout(() => {
+        res.style.display = 'block';
+        let baseCode = "A T G C T A G C G C T A T G C G C T A A T G C T A G C";
+        let highlight = "";
+        
+        // Linkage to patient symptoms
+        const symptoms = (patient?.currentSymptoms || "").toLowerCase();
+        if (symptoms.includes('tiểu đường') || symptoms.includes('máu') || symptoms.includes('cận')) {
+          highlight = " <span class='highlight-gene'>[MUTATION DETECTED: PAIR 12 BROKEN]</span>";
+          baseCode = baseCode.replace("G C T A", "<span class='highlight-gene'>G T T A</span>");
         }
+        
+        codeView.innerHTML = `> SEQ_001: ${baseCode}${highlight}<br>> STATUS: ${highlight ? "Đột biến điểm phát hiện" : "Ổn định"}`;
+        btn.textContent = "✅ Hoàn tất Quét Gene";
+        
+        if (window.BioAuth?.earnEXP) window.BioAuth.earnEXP(25, 'gen-scan');
+      }, 2000);
+    });
 
-        container.innerHTML = leaders.map((u, i) => {
-          const rankClass = i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : 'normal';
-          const rankInfo = BioDB.getRankFromEXP(u.exp);
-          return `
-            <div class="top-item">
-              <div class="top-rank ${rankClass}">${i + 1}</div>
-              <div class="top-avatar">${rankInfo.icon}</div>
-              <div>
-                <div class="top-name">${u.displayName}</div>
-                <div style="font-size:0.72rem;color:rgba(255,255,255,0.4)">${rankInfo.name} · 🔥${u.streak}</div>
-              </div>
-              <div class="top-exp">⚡ ${u.exp}</div>
-            </div>
-          `;
-        }).join('');
-      } catch (err) {
-        console.error('Leaderboard error:', err);
-      }
-    }
-
-    // Init
-    renderContribGrid([]);
-    loadLeaderboard();
-
-    // Wait for auth
-    window.addEventListener('load', () => {
-      setTimeout(async () => {
-        const user = window.BioAuth?.currentUser;
-        if (user) {
-          document.getElementById('not-logged-in').style.display = 'none';
-          document.getElementById('my-stats-section').style.display = 'grid';
-
-          const doc = window.BioAuth.currentDoc;
-          if (doc) {
-            document.getElementById('my-exp').textContent = doc.exp || 0;
-            document.getElementById('my-streak').textContent = doc.streak || 0;
-            document.getElementById('my-diagnoses').textContent = doc.totalDiagnoses || 0;
-            document.getElementById('my-active-days').textContent = doc.activeDays || 0;
-
-            const rank = BioDB.getRankFromEXP(doc.exp || 0);
-            const next = BioDB.getNextRank(doc.exp || 0);
-            document.getElementById('my-rank-name').innerHTML = `${rank.icon} ${rank.name}`;
-
-            if (next) {
-              const progress = ((doc.exp || 0) - rank.minEXP) / (next.minEXP - rank.minEXP) * 100;
-              document.getElementById('my-exp-bar').style.width = `${Math.min(progress, 100)}%`;
-              document.getElementById('my-next-rank').textContent = `${next.minEXP - (doc.exp || 0)} EXP để lên ${next.name}`;
-            } else {
-              document.getElementById('my-exp-bar').style.width = '100%';
-              document.getElementById('my-next-rank').textContent = 'Cấp bậc tối đa!';
-            }
-
-            renderContribGrid(doc.checkInHistory || []);
-          }
-        }
-
-        // Login button on leaderboard page
-        const lbLoginBtn = document.getElementById('lb-login-btn');
-        if (lbLoginBtn) {
-          lbLoginBtn.addEventListener('click', async (e) => {
-            e.preventDefault();
-            await BioDB.signInWithGoogle();
-            window.location.reload();
+    // --- 3. Breeding Simulator ---
+    document.getElementById('btn-breed').addEventListener('click', function() {
+      const dice = document.getElementById('dice-container');
+      const res = document.getElementById('breeding-result');
+      const p1 = document.getElementById('parent-1-gen').value;
+      const p2 = document.getElementById('parent-2-gen').value;
+      
+      dice.textContent = "🎲";
+      dice.style.animation = "shake 0.5s infinite";
+      res.style.display = 'none';
+      
+      setTimeout(() => {
+        dice.style.animation = "none";
+        dice.textContent = "🧬";
+        res.style.display = 'block';
+        
+        // Calculate Mendel probabilities
+        const alleles1 = p1.split('');
+        const alleles2 = p2.split('');
+        const outcomes = {};
+        alleles1.forEach(a1 => {
+          alleles2.forEach(a2 => {
+            const genotype = [a1, a2].sort().join('');
+            outcomes[genotype] = (outcomes[genotype] || 0) + 1;
           });
+        });
+        
+        const total = 4;
+        const healthy = ((outcomes['AA'] || 0) + (outcomes['Aa'] || 0)) / total * 100;
+        const sick = (outcomes['aa'] || 0) / total * 100;
+        
+        res.querySelector('#res-trait-1 div').textContent = healthy + "%";
+        res.querySelector('#res-trait-2 div').textContent = sick + "%";
+        
+        if (window.BioAuth?.earnEXP) window.BioAuth.earnEXP(20, 'gen-breed');
+      }, 1500);
+    });
+
+    // --- 4. Karyotype Map ---
+    const chromosomes = [
+      { id: 1, title: "Cặp số 1", desc: "Cặp NST lớn nhất, chứa hơn 2100 gene. Liên quan đến nhiều chức năng chuyển hóa và cấu trúc.", tags: ["Lớn nhất", "Chuyển hóa"] },
+      { id: 13, title: "Cặp số 13", desc: "Hội chứng Patau (Thể ba NST 13) gây ra các dị tật bẩm sinh nặng nề về não và tim.", tags: ["Patau", "Đột biến số lượng"] },
+      { id: 18, title: "Cặp số 18", desc: "Hội chứng Edwards. Thường gây ra chậm phát triển nghiêm trọng và dị tật cơ quan.", tags: ["Edwards", "Trisomy 18"] },
+      { id: 21, title: "Cặp số 21", desc: "Hội chứng Down. Là đột biến số lượng NST phổ biến nhất, do có 3 NST số 21 thay vì 2.", tags: ["Down", "Phổ biến"] },
+      { id: 23, title: "Cặp số 23 (Giới tính)", desc: "Quyết định giới tính và các đặc điểm liên kết giới tính. Các hội chứng: Turner (XO), Klinefelter (XXY).", tags: ["Giới tính", "Máu khó đông"] }
+    ];
+
+    function initKaryotype() {
+      const grid = document.getElementById('karyotype');
+      for (let i = 1; i <= 23; i++) {
+        const c = document.createElement('div');
+        c.className = 'chromosome';
+        c.innerHTML = `<div style="font-size:1.5rem;">${i === 23 ? 'XY' : '||'}</div><div style="font-size:0.6rem; opacity:0.5;">#${i}</div>`;
+        c.onclick = () => showChromo(i);
+        grid.appendChild(c);
+      }
+    }
+
+    function showChromo(id) {
+      const detail = document.getElementById('chromo-detail');
+      const title = document.getElementById('chromo-title');
+      const desc = document.getElementById('chromo-desc');
+      const tags = document.getElementById('chromo-tags');
+      const data = chromosomes.find(c => c.id === id) || { title: `Cặp số ${id}`, desc: "Dữ liệu gene đang được cập nhật cho cặp NST này. Chứa các gene điều khiển chức năng sinh học cơ bản.", tags: ["Đang cập nhật"] };
+      
+      detail.style.display = 'block';
+      detail.classList.add('animate-fadeInUp');
+      title.textContent = data.title;
+      desc.textContent = data.desc;
+      tags.innerHTML = data.tags.map(t => `<span class="badge badge-purple">${t}</span>`).join('');
+      
+      document.querySelectorAll('.chromosome').forEach((el, idx) => {
+        el.classList.toggle('active', (idx + 1) === id);
+      });
+
+      detail.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    // --- 5. Patient Integration ---
+    function updatePatientHeader() {
+      const patient = PatientManager.get();
+      if (patient) {
+        document.getElementById('gen-patient-name').textContent = `Chào Bác sĩ, đang phân tích hệ gene của ${patient.name}`;
+        const history = patient.medicalHistory || [];
+        const symptoms = patient.currentSymptoms || "";
+        if (history.length > 0 || symptoms) {
+          document.getElementById('gen-patient-msg').innerHTML = `Phát hiện các yếu tố nghi vấn di truyền: <span style="color:#FBBF24">${history.join(', ')}</span>. <br/>Mời bạn sử dụng <strong>Module 01</strong> để quét đột biến.`;
         }
-      }, 600);
+      }
+    }
+
+    window.addEventListener('load', () => {
+      initDNA();
+      initKaryotype();
+      updatePatientHeader();
     });
   </script>
-  <!-- Floating Chatbot Button -->
-  <a href="chatbot.html" class="floating-chat-btn" title="Tư vấn AI">🤖</a>
 </body>
 </html>
