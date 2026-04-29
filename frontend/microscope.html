@@ -8,123 +8,118 @@
   <link rel="stylesheet" href="css/components.css" />
   <link rel="stylesheet" href="css/animations.css" />
   <style>
-    .lab-grid {
+    .micro-layout {
       display: grid;
       grid-template-columns: 1fr 350px;
       gap: 2rem;
       margin-top: 2rem;
     }
 
-    /* ── VIRTUAL MICROSCOPE UI ── */
-    .microscope-container {
+    /* ── SCOPE INTERFACE ── */
+    .scope-frame {
       background: #0a0a0f;
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 2.5rem;
-      padding: 2.5rem;
+      border: 2px solid #1e1e2e;
+      border-radius: 3rem;
+      padding: 3rem;
       position: relative;
     }
 
     .lens-view {
-      width: 450px;
-      height: 450px;
+      width: 500px;
+      height: 500px;
       margin: 0 auto;
       border-radius: 50%;
-      border: 15px solid #1a1a2e;
+      border: 20px solid #1a1a2e;
       background: #000;
       position: relative;
       overflow: hidden;
-      box-shadow: 0 0 50px rgba(0,0,0,0.8), inset 0 0 100px rgba(99, 102, 241, 0.2);
+      box-shadow: inset 0 0 100px rgba(99, 102, 241, 0.3);
     }
 
-    .cell-membrane-sim {
-      width: 200%;
-      height: 200%;
-      position: absolute;
-      top: -50%; left: -50%;
-      background: radial-gradient(circle at 50% 50%, rgba(99, 102, 241, 0.1) 0%, transparent 70%);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      transition: transform 0.5s ease-out;
-    }
-
-    /* Fluid Mosaic Model Representation */
-    .bilayer {
+    .specimen-image {
       width: 100%;
-      height: 40px;
-      background: repeating-linear-gradient(90deg, #6366f1 0, #6366f1 5px, transparent 5px, transparent 15px);
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      opacity: 0.5;
+      height: 100%;
+      object-fit: cover;
+      filter: blur(15px); /* Initial blur */
+      transition: filter 0.5s, transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      display: none;
     }
 
-    .receptor-protein {
-      width: 40px;
-      height: 60px;
-      background: #a855f7;
-      border-radius: 10px;
+    /* ── OVERLAYS ── */
+    .annotation-layer {
       position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      box-shadow: 0 0 15px #a855f7;
+      top: 0; left: 0; width: 100%; height: 100%;
+      pointer-events: none;
+      display: none;
     }
 
-    .exocytosis-vesicle {
-      width: 30px;
-      height: 30px;
-      border: 2px solid #10B981;
-      border-radius: 50%;
+    .label-line {
       position: absolute;
-      bottom: 20%;
-      transition: all 2s ease-in;
+      background: var(--color-primary);
+      height: 1px;
+      transition: width 0.5s;
+    }
+
+    .label-text {
+      position: absolute;
+      color: var(--color-primary-light);
+      font-size: 0.75rem;
+      background: rgba(0,0,0,0.7);
+      padding: 4px 8px;
+      border-radius: 4px;
+      white-space: nowrap;
     }
 
     /* ── CONTROLS ── */
     .scope-controls {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.5rem;
+      display: flex;
+      justify-content: center;
+      gap: 3rem;
       margin-top: 2rem;
     }
 
-    .knob-container {
-      text-align: center;
-    }
-
-    .knob {
-      width: 60px;
-      height: 60px;
+    .knob-wrap { text-align: center; }
+    
+    .knob-disk {
+      width: 80px;
+      height: 80px;
       background: #1a1a2e;
-      border: 2px solid var(--color-primary);
+      border: 3px solid var(--color-primary);
       border-radius: 50%;
       margin: 10px auto;
       position: relative;
-      cursor: pointer;
+      cursor: grab;
+      box-shadow: 0 0 20px rgba(99, 102, 241, 0.2);
     }
 
-    .knob::after {
+    .knob-disk::after {
       content: '';
       position: absolute;
-      top: 5px;
-      left: 50%;
-      width: 4px;
-      height: 15px;
+      top: 10px; left: 50%; width: 4px; height: 20px;
       background: var(--color-primary);
       transform: translateX(-50%);
+    }
+
+    /* ── LIVE SPECS ── */
+    .live-specs {
+      position: absolute;
+      bottom: 40px; left: 40px;
+      font-family: monospace;
+      font-size: 0.8rem;
+      color: #10B981;
+      line-height: 1.8;
+      background: rgba(0,0,0,0.5);
+      padding: 1rem;
+      border-radius: 1rem;
     }
 
   </style>
 </head>
 <body class="page-enter">
 
-  <!-- NAVBAR -->
   <nav class="navbar">
     <div class="container navbar-inner">
-      <a href="index.html" class="navbar-brand">
-        <div class="brand-icon">🏥</div>
-        <span>Digital BioHospital</span>
-      </a>
+      <a href="index.html" class="navbar-brand">🏥 <span>Digital BioHospital</span></a>
       <ul class="navbar-nav">
         <li><a href="index.html">🏠 Trang chủ</a></li>
         <li class="nav-item">
@@ -141,125 +136,157 @@
 
   <main id="main">
     <div class="container">
-      <div class="card" style="margin-top:1rem; padding: 0.8rem 1.5rem; font-size: 0.7rem; color: rgba(255,255,255,0.4);">
-        Cơ thể ➔ Hệ cơ quan ➔ Cơ quan ➔ <span style="color:var(--color-primary-light); font-weight:800;">Mô ➔ Tế bào</span>
-      </div>
-
-      <div class="lab-grid">
-        <!-- LEFT: MICROSCOPE -->
-        <div>
-          <div class="microscope-container">
-            <div class="flex-between" style="margin-bottom: 1.5rem">
-              <div>
-                <h2 style="font-size: 1.5rem">🔬 AI Virtual Scope</h2>
-                <p style="font-size: 0.8rem; opacity: 0.5;">Đang soi: Mẫu biểu bì nhạy cảm (Dị ứng)</p>
+      <div class="micro-layout">
+        
+        <!-- LEFT: THE SCOPE -->
+        <div class="scope-frame">
+          <div class="lens-view">
+            <!-- SPECIMEN: SORE THROAT / BACTERIA -->
+            <img src="https://images.unsplash.com/photo-1576086213369-97a306d36557?auto=format&fit=crop&q=80&w=800" id="specimen-img" class="specimen-image" alt="Microview">
+            
+            <div class="annotation-layer" id="annotation-layer">
+              <!-- Labels here -->
+              <div style="top: 30%; left: 40%;">
+                <div class="label-line" style="width: 50px; transform: rotate(-30deg);"></div>
+                <div class="label-text" style="top: -30px; left: 50px;">Màng sinh chất (Cell Membrane)</div>
               </div>
-              <div id="zoom-indicator" class="badge badge-green">100x</div>
-            </div>
-
-            <div class="lens-view">
-              <div class="cell-membrane-sim" id="sim-view">
-                <div class="bilayer"></div>
-                <div class="receptor-protein" style="left: 40%"></div>
-                <div class="receptor-protein" style="left: 60%"></div>
-                <div id="vesicle" class="exocytosis-vesicle" style="left: 48%; display:none;"></div>
+              <div style="top: 60%; left: 55%;">
+                <div class="label-line" style="width: 40px; transform: rotate(45deg);"></div>
+                <div class="label-text" style="top: 30px; left: 40px;">Tế bào chất (Cytoplasm)</div>
               </div>
             </div>
 
-            <div class="scope-controls">
-              <div class="knob-container">
-                <label style="font-size:0.7rem; text-transform:uppercase;">Độ phóng đại (Zoom)</label>
-                <div class="knob" id="knob-zoom" style="transform: rotate(0deg);"></div>
-              </div>
-              <div class="knob-container">
-                <label style="font-size:0.7rem; text-transform:uppercase;">Lấy nét (Focus)</label>
-                <div class="knob" id="knob-focus" style="transform: rotate(45deg);"></div>
-              </div>
+            <div class="live-specs" id="live-specs">
+              MAGNIFICATION: <span id="spec-mag">10x</span><br>
+              FOCUS_LEVEL: <span id="spec-focus">0%</span><br>
+              LIGHT_INTENSITY: 88%<br>
+              COORD: X:142 Y:882
             </div>
+          </div>
 
-            <div id="ai-analysis-box" class="card" style="margin-top: 1.5rem; display:none; border-color: #EF4444; background: rgba(239,68,68,0.05);">
-              <h4 style="color: #EF4444; font-size: 0.9rem;">⚠️ Phát hiện phản ứng Xuất bào (Exocytosis)</h4>
-              <p id="analysis-text" style="font-size: 0.85rem; margin-top: 0.5rem; line-height: 1.5;"></p>
+          <div class="scope-controls">
+            <div class="knob-wrap">
+              <label class="form-label">Phóng đại (Objective)</label>
+              <div class="knob-disk" id="knob-zoom"></div>
+              <div style="margin-top: 5px; font-weight: 700;" id="zoom-label">10x</div>
+            </div>
+            <div class="knob-wrap">
+              <label class="form-label">Lấy nét (Coarse/Fine)</label>
+              <div class="knob-disk" id="knob-focus"></div>
+              <div style="margin-top: 5px; font-weight: 700;" id="focus-label">Mờ</div>
             </div>
           </div>
         </div>
 
-        <!-- RIGHT: SIDEBAR -->
+        <!-- RIGHT: ANALYSIS PANEL -->
         <div class="animate-slideRight">
           <div class="card" style="position: sticky; top: 100px;">
-            <div id="patient-info" style="margin-bottom: 2rem;">
-              <div style="font-size: 0.7rem; opacity: 0.5;">BỆNH NHÂN:</div>
-              <div id="p-name" style="font-weight: 800; font-size: 1.2rem;">--</div>
-              <div id="p-symptoms" style="font-size: 0.8rem; color: #EF4444; margin-top: 5px;">--</div>
+            <div id="p-context" style="margin-bottom: 2rem;">
+              <h4 style="font-size: 0.75rem; color: var(--color-primary-light); text-transform: uppercase;">📡 Kết nối phòng khám:</h4>
+              <div id="p-name" style="font-weight: 800; font-size: 1.2rem; margin: 5px 0;">Khách vãng lai</div>
+              <div id="p-diag" class="badge badge-red">Đang chờ triệu chứng...</div>
             </div>
 
-            <button class="btn btn-primary" style="width: 100%;" id="btn-trigger-exocytosis">Mô phỏng phản ứng dị ứng</button>
-            <p style="font-size: 0.7rem; color: rgba(255,255,255,0.4); margin-top: 10px; text-align: center;">
-              Giải thích: Protein thụ thể màng tế bào nhận diện kháng nguyên gây ra quá trình phóng thích Histamine.
-            </p>
-
-            <div style="margin-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1.5rem;">
-              <h4 style="font-size: 0.8rem; color: var(--color-primary-light); margin-bottom: 1rem;">Trạm 2/3 Lab 10:</h4>
-              <div class="progress-steps" style="display:flex; flex-direction:column; gap:10px;">
-                <div class="step done">⚡ Chuyển hóa & Năng lượng</div>
-                <div class="step active">🔬 Soi Kính Hiển Vi</div>
-                <div class="step">🦠 Vi Sinh & Miễn Dịch</div>
-              </div>
+            <div id="ai-instructions" class="card" style="background: rgba(16,185,129,0.05); border-color: rgba(16,185,129,0.2); padding: 1rem;">
+              <h4 style="color: #10B981; font-size: 0.9rem;">🤖 Hướng dẫn AI:</h4>
+              <p id="instruction-text" style="font-size: 0.8rem; line-height: 1.5; margin-top: 5px;">
+                Vui lòng vận hành núm lấy nét để quan sát rõ mẫu vật.
+              </p>
             </div>
 
-            <a href="microbiology.html" class="btn btn-outline" style="width: 100%; margin-top: 2rem;">➔ Trạm Vi Sinh</a>
+            <div id="lab-report-mini" style="display:none; margin-top: 2rem; padding: 1rem; border: 1px solid #10B981; border-radius: 1rem;">
+              <h4 style="color: #10B981;">📝 Kết quả soi:</h4>
+              <p style="font-size: 0.85rem; margin-top: 5px;">Phát hiện cụm vi khuẩn hình cầu, nghi ngờ Streptococcus. Cần chuyển sang trạm Vi sinh nhuộm Gram.</p>
+              <a href="microbiology.html" class="btn btn-primary" style="width:100%; margin-top:1rem;">Tiến tới Trạm Vi Sinh ➔</a>
+            </div>
           </div>
         </div>
+
       </div>
     </div>
   </main>
 
   <script src="js/patient.js"></script>
   <script>
-    let currentZoom = 1;
-    const view = document.getElementById('sim-view');
-    const badge = document.getElementById('zoom-indicator');
-
+    let currentZoom = 10;
+    let focusValue = 0;
+    const targetFocus = 75; // Correct focus point
+    const img = document.getElementById('specimen-img');
+    const labels = document.getElementById('annotation-layer');
+    
+    // --- 1. DATA FLOW CONNECTION ---
     window.addEventListener('load', () => {
       const p = PatientManager.get();
       if (p) {
         document.getElementById('p-name').textContent = p.name;
-        document.getElementById('p-symptoms').textContent = `Triệu chứng: ${p.currentSymptoms || 'Dị ứng nhẹ'}`;
-        
         const symptoms = (p.currentSymptoms || "").toLowerCase();
-        if(symptoms.includes('dị ứng') || symptoms.includes('ngứa') || symptoms.includes('sưng')) {
-          document.getElementById('ai-analysis-box').style.display = 'block';
-          document.getElementById('analysis-text').textContent = `Dựa trên triệu chứng "${p.currentSymptoms}", AI đã định vị mẫu mô đang có hiện tượng quá mẫn. Quan sát mô hình Khảm động của màng tế bào để thấy quá trình đào thải Histamine.`;
+        
+        if (symptoms.includes('họng') || symptoms.includes('sốt')) {
+          document.getElementById('p-diag').textContent = "Scenario: Viêm họng (Streptococcus)";
+          document.getElementById('instruction-text').textContent = "Dữ liệu cho thấy bạn bị viêm họng. Hãy lấy nét để kiểm tra sự hiện diện của vi khuẩn Streptococcus trên biểu mô.";
+          img.style.display = 'block';
+        } else {
+          document.getElementById('p-diag').textContent = "Mẫu vật: Tế bào biểu bì hành ta";
+          document.getElementById('instruction-text').textContent = "Soi cấu trúc tế bào thực vật cơ bản (Sinh học 10).";
+          img.src = "https://images.unsplash.com/photo-1509391366360-feaffa648bd5?auto=format&fit=crop&q=80&w=800";
+          img.style.display = 'block';
         }
       }
     });
 
-    // ── ZOOM LOGIC ──
-    document.getElementById('knob-zoom').onclick = function() {
-      currentZoom = currentZoom === 1 ? 2 : (currentZoom === 2 ? 4 : 1);
-      this.style.transform = `rotate(${currentZoom * 90}deg)`;
-      view.style.transform = `scale(${currentZoom})`;
-      badge.textContent = (currentZoom * 100) + "x";
-      badge.className = `badge ${currentZoom === 4 ? 'badge-red' : 'badge-green'}`;
+    // --- 2. FOCUS LOGIC ---
+    const focusKnob = document.getElementById('knob-focus');
+    let isDraggingFocus = false;
+
+    focusKnob.onmousedown = () => isDraggingFocus = true;
+    window.onmouseup = () => isDraggingFocus = false;
+
+    window.onmousemove = (e) => {
+      if (!isDraggingFocus) return;
+      
+      focusValue = (focusValue + 1) % 100;
+      focusKnob.style.transform = `rotate(${focusValue * 3.6}deg)`;
+      
+      // Update blur based on proximity to targetFocus
+      const diff = Math.abs(focusValue - targetFocus);
+      const blurVal = diff / 4;
+      img.style.filter = `blur(${blurVal}px)`;
+      
+      document.getElementById('spec-focus').textContent = focusValue + "%";
+      
+      if (diff < 5) {
+        document.getElementById('focus-label').textContent = "RÕ NÉT";
+        document.getElementById('focus-label').style.color = "#10B981";
+        labels.style.display = 'block';
+        document.getElementById('lab-report-mini').style.display = 'block';
+        if (!window.focusedSound) {
+          showToast("Đã lấy nét thành công!", "success");
+          window.focusedSound = true;
+        }
+      } else {
+        document.getElementById('focus-label').textContent = "Mờ";
+        document.getElementById('focus-label').style.color = "white";
+        labels.style.display = 'none';
+      }
     };
 
-    // ── EXOCYTOSIS SIMULATION ──
-    document.getElementById('btn-trigger-exocytosis').onclick = function() {
-      const vesicle = document.getElementById('vesicle');
-      vesicle.style.display = 'block';
-      vesicle.style.bottom = '20%';
-      vesicle.style.opacity = '1';
-
-      setTimeout(() => {
-        vesicle.style.bottom = '50%'; // Move to membrane
-        setTimeout(() => {
-          vesicle.style.width = '60px';
-          vesicle.style.height = '10px';
-          vesicle.style.borderRadius = '0';
-          vesicle.style.opacity = '0';
-          showToast("Quá trình Xuất bào (Exocytosis) hoàn tất. Histamine đã được giải phóng.", 'warning');
-        }, 2000);
-      }, 100);
+    // --- 3. ZOOM LOGIC ---
+    document.getElementById('knob-zoom').onclick = function() {
+      if (currentZoom === 10) currentZoom = 40;
+      else if (currentZoom === 40) currentZoom = 100;
+      else currentZoom = 10;
+      
+      this.style.transform = `rotate(${(currentZoom/100) * 360}deg)`;
+      document.getElementById('zoom-label').textContent = currentZoom + "x";
+      document.getElementById('spec-mag').textContent = currentZoom + "x";
+      
+      // Transform specimen based on zoom
+      const scale = currentZoom / 10;
+      img.style.transform = `scale(${scale})`;
+      
+      if (currentZoom === 100) {
+        showToast("Phóng đại cực đại: Đã thấy vi khuẩn hình chuỗi!", "warning");
+      }
     };
 
   </script>

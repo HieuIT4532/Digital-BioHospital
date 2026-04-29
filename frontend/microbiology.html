@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Trạm Vi Sinh & Kháng Sinh Đồ – Digital BioHospital</title>
+  <title>Vi Sinh & Miễn Dịch – Digital BioHospital</title>
   <link rel="stylesheet" href="css/global.css" />
   <link rel="stylesheet" href="css/components.css" />
   <link rel="stylesheet" href="css/animations.css" />
@@ -15,7 +15,7 @@
       margin-top: 2rem;
     }
 
-    /* ── LEFT: WORKSTATION ── */
+    /* ── WORKSTATION ── */
     .workstation {
       background: #050507;
       border: 1px solid rgba(255,255,255,0.1);
@@ -25,38 +25,34 @@
     }
 
     .petri-dish {
-      width: 400px;
-      height: 400px;
+      width: 420px; height: 420px;
       margin: 0 auto;
       background: rgba(255, 255, 255, 0.03);
-      border: 8px solid #222;
+      border: 10px solid #222;
       border-radius: 50%;
       position: relative;
       overflow: hidden;
-      box-shadow: inset 0 0 50px rgba(0,0,0,0.8), 0 10px 30px rgba(0,0,0,0.5);
+      box-shadow: inset 0 0 50px rgba(0,0,0,0.8);
     }
 
     .bacteria-cloud {
       position: absolute;
-      width: 100%;
-      height: 100%;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      align-items: center;
-      opacity: 0.3;
+      width: 100%; height: 100%;
+      display: flex; flex-wrap: wrap; justify-content: center; align-items: center;
       transition: all 1s;
+      padding: 40px;
     }
 
-    .bacteria-unit {
-      width: 15px; height: 6px;
-      background: #666;
+    .bac-unit {
+      width: 14px; height: 6px;
+      background: #444;
       border-radius: 10px;
       margin: 4px;
-      transition: all 0.8s;
+      transition: all 0.5s;
+      opacity: 0.8;
     }
 
-    /* Reagents */
+    /* ── REAGENT BOTTLES ── */
     .reagent-rack {
       display: flex;
       justify-content: center;
@@ -68,103 +64,61 @@
       width: 70px;
       text-align: center;
       cursor: pointer;
-      transition: transform 0.3s;
+      transition: all 0.3s;
     }
 
     .reagent-bottle:hover { transform: translateY(-10px); }
     .reagent-bottle.active { filter: drop-shadow(0 0 15px var(--color-primary)); }
 
     .bottle-cap { height: 10px; background: #333; border-radius: 5px 5px 0 0; }
-    .bottle-body { height: 50px; border-radius: 0 0 10px 10px; position: relative; }
-
-    /* ── RIGHT: AI ANALYSIS ── */
-    .analysis-panel {
-      display: flex;
-      flex-direction: column;
-      gap: 1.5rem;
-    }
-
-    .data-card {
-      background: rgba(255,255,255,0.02);
-      border: 1px solid rgba(255,255,255,0.05);
-      border-radius: 1.5rem;
-      padding: 1.5rem;
-    }
-
-    .antibiogram-result {
-      margin-top: 1rem;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 0.5rem;
-    }
-
-    /* ── INHIBITION ZONE ── */
-    .antibiotic-disc {
-      width: 30px;
-      height: 30px;
-      background: #fff;
-      color: #000;
-      border-radius: 50%;
-      font-size: 0.6rem;
-      font-weight: 800;
+    .bottle-body { 
+      height: 60px; 
+      border-radius: 0 0 10px 10px; 
+      position: relative;
       display: flex;
       align-items: center;
       justify-content: center;
-      position: absolute;
-      box-shadow: 0 0 10px rgba(0,0,0,0.5);
-      z-index: 10;
+      font-size: 0.6rem;
+      font-weight: 800;
+      color: white;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.5);
     }
 
-    .inhibition-zone {
-      position: absolute;
-      background: rgba(255, 255, 255, 0.1);
-      border: 1px dashed rgba(255, 255, 255, 0.2);
-      border-radius: 50%;
-      transform: translate(-50%, -50%);
-      pointer-events: none;
-      transition: all 2s ease-out;
-      width: 0; height: 0;
-    }
-
-    /* ── BATTLE ARENA (PHAGOCYTOSIS) ── */
+    /* ── BATTLE ARENA ── */
     .battle-overlay {
       position: absolute;
       top: 0; left: 0; width: 100%; height: 100%;
       background: #050507;
       z-index: 50;
       display: none;
-      align-items: center;
-      justify-content: center;
+      align-items: center; justify-content: center;
       border-radius: 2.5rem;
     }
 
-    .macrophage-cell {
-      width: 120px; height: 120px;
-      background: rgba(16, 185, 129, 0.3);
-      border: 4px dashed #10B981;
-      border-radius: 40%;
+    .white-cell {
+      width: 140px; height: 140px;
+      background: rgba(16, 185, 129, 0.2);
+      border: 4px solid #10B981;
+      border-radius: 50%;
       position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.5s;
+      transition: all 1s;
     }
 
-    .macrophage-mouth {
+    .cell-mouth {
       position: absolute;
-      width: 40px; height: 40px;
-      border-radius: 50%;
+      width: 60px; height: 60px;
       background: #050507;
-      top: -20px;
+      border-radius: 50%;
+      top: -30px; left: 40px;
       display: none;
     }
 
-    .swallowing .macrophage-mouth { display: block; animation: gulp 0.5s; }
+    .swallowing .cell-mouth { display: block; animation: gulp 0.8s; }
 
     @keyframes gulp {
-      0% { transform: scale(1); }
+      0% { transform: scale(0); }
       50% { transform: scale(1.5); }
-      100% { transform: scale(1); }
+      100% { transform: scale(0); }
     }
 
   </style>
@@ -185,7 +139,7 @@
           </div>
         </li>
       </ul>
-      <div id="p-nav-card" style="background:rgba(0,0,0,0.3); padding:5px 15px; border-radius:20px; border:1px solid rgba(255,255,255,0.1); font-size:0.8rem; display:none;">
+      <div id="p-nav-card" style="display:none; background:rgba(0,0,0,0.3); padding:5px 15px; border-radius:20px; border:1px solid rgba(255,255,255,0.1); font-size:0.8rem;">
         <span id="p-nav-name" style="font-weight:700">--</span>
       </div>
     </div>
@@ -193,95 +147,72 @@
 
   <main id="main">
     <div class="container">
-      <!-- Logic Chain Indicator -->
-      <div class="card" style="margin-top:1rem; padding: 0.8rem 1.5rem; font-size: 0.75rem;">
-        <span style="opacity:0.5">Triệu chứng (Phòng khám)</span> ➔ <span style="color:var(--color-primary-light); font-weight:800;">Định danh & Thử thuốc (Lab 10)</span> ➔ <span style="opacity:0.5">Kết quả điều trị</span>
-      </div>
-
       <div class="micro-lab-layout">
         
-        <!-- LEFT: INTERACTIVE WORKSTATION -->
+        <!-- LEFT: WORKSTATION -->
         <div class="workstation">
           <div class="flex-between" style="margin-bottom: 1.5rem">
             <div>
-              <h2 style="font-size: 1.5rem">🧫 Workstation: Antibiogram</h2>
-              <p id="lab-step-desc" style="font-size: 0.85rem; color: rgba(255,255,255,0.5);">Bước 1: Định danh vi khuẩn bằng kỹ thuật Nhuộm Gram.</p>
+              <h2 style="font-size: 1.5rem">🧫 Microbiology Arena</h2>
+              <p id="step-desc" style="font-size: 0.85rem; color: rgba(255,255,255,0.5);">Bước 1: Nhuộm Gram 4 bước để định danh vi khuẩn.</p>
             </div>
-            <div id="lab-step-badge" class="badge badge-purple">BƯỚC 1/3</div>
+            <div id="step-badge" class="badge badge-purple">BƯỚC 1/3</div>
           </div>
 
-          <div class="petri-dish" id="petri-dish">
-            <div class="bacteria-cloud" id="bacteria-cloud">
-              <!-- Units generated by JS -->
-            </div>
-            <div id="zones-container"></div>
-          </div>
-
-          <!-- BATTLE OVERLAY (IMMUNE BATTLE) -->
-          <div class="battle-overlay" id="battle-overlay">
-            <div style="text-align:center;">
-              <h3 style="color:#10B981; margin-bottom: 2rem;">🛡️ Trận chiến Thực bào (Phagocytosis)</h3>
-              <div class="macrophage-cell" id="macro">
-                <div class="macrophage-mouth"></div>
-                <span style="font-size:0.7rem; font-weight:800;">BẠCH CẦU</span>
+          <div class="petri-dish" id="petri">
+            <div class="bacteria-cloud" id="bacteria-cloud"></div>
+            
+            <div class="battle-overlay" id="battle-overlay">
+              <div style="text-align:center;">
+                <h3 style="color:#10B981; margin-bottom: 2rem;">🛡️ Trận chiến Thực bào</h3>
+                <div class="white-cell" id="macro">
+                  <div class="cell-mouth"></div>
+                </div>
               </div>
-              <p style="margin-top:2rem; font-size:0.8rem; opacity:0.5;">Cơ chế: Màng sinh chất biến dạng để nuốt vật thể lạ.</p>
             </div>
           </div>
 
-          <!-- Controls: Reagents -->
           <div class="reagent-rack" id="reagent-rack">
-            <div class="reagent-bottle" onclick="stain('purple')">
+            <div class="reagent-bottle" onclick="runStainStep(1)">
               <div class="bottle-cap"></div>
-              <div class="bottle-body" style="background: #7c3aed;"></div>
-              <span style="font-size:0.6rem;">Crystal Violet</span>
+              <div class="bottle-body" style="background: #7c3aed;">VIOLET</div>
             </div>
-            <div class="reagent-bottle" onclick="stain('red')">
+            <div class="reagent-bottle" onclick="runStainStep(2)">
               <div class="bottle-cap"></div>
-              <div class="bottle-body" style="background: #ef4444;"></div>
-              <span style="font-size:0.6rem;">Safranin</span>
+              <div class="bottle-body" style="background: #f59e0b;">IODINE</div>
             </div>
-            <div class="reagent-bottle" onclick="wash()">
+            <div class="reagent-bottle" onclick="runStainStep(3)">
               <div class="bottle-cap"></div>
-              <div class="bottle-body" style="background: rgba(255,255,255,0.1); border:1px solid #666;"></div>
-              <span style="font-size:0.6rem;">Cồn 90°</span>
+              <div class="bottle-body" style="background: rgba(255,255,255,0.1); border:1px solid #666;">ALCOHOL</div>
+            </div>
+            <div class="reagent-bottle" onclick="runStainStep(4)">
+              <div class="bottle-cap"></div>
+              <div class="bottle-body" style="background: #ef4444;">RED</div>
             </div>
           </div>
 
-          <!-- Controls: Antibiotics (Hidden until Step 2) -->
-          <div class="reagent-rack" id="antibiotic-rack" style="display:none;">
-            <button class="btn btn-sm btn-outline" onclick="applyDrug('P', 80)">P: Penicillin</button>
-            <button class="btn btn-sm btn-outline" onclick="applyDrug('S', 40)">S: Streptomycin</button>
-            <button class="btn btn-sm btn-outline" onclick="applyDrug('T', 120)">T: Tetracycline</button>
-          </div>
-
-          <!-- Step Navigation -->
-          <div style="margin-top: 2rem; display: flex; justify-content: center; gap: 1rem;">
-            <button class="btn btn-primary" id="btn-next-step" disabled>Tiến tới Bước 2 ➔</button>
+          <div style="margin-top: 2rem; display: flex; justify-content: center;">
+            <button class="btn btn-primary" id="btn-next" disabled>Tiến tới Bước 2 ➔</button>
           </div>
         </div>
 
-        <!-- RIGHT: AI LIVE ANALYSIS -->
-        <div class="analysis-panel">
-          <div class="data-card animate-slideRight">
-            <h4 style="color: var(--color-primary-light); font-size: 0.8rem; text-transform: uppercase; margin-bottom: 1rem;">📋 Dữ liệu bệnh nhân (Sync):</h4>
-            <div id="p-context" style="font-size: 0.85rem; line-height: 1.6;">
-              <div style="opacity:0.5">Đang chờ đồng bộ...</div>
+        <!-- RIGHT: ANALYSIS -->
+        <div class="analysis-panel animate-slideRight">
+          <div class="card" style="background: rgba(16,185,129,0.05); border-color: rgba(16,185,129,0.2);">
+            <h4 style="color: #10B981; font-size: 0.8rem;">🤖 AI LIVE ANALYSIS:</h4>
+            <div id="ai-log" style="font-family: monospace; font-size: 0.75rem; color: #10B981; margin-top: 10px; line-height: 1.5; height: 300px; overflow-y: auto;">
+              > Đang chờ mẫu bệnh phẩm...<br>
+              > Vui lòng thực hiện quy trình nhuộm Gram.
             </div>
           </div>
 
-          <div class="data-card animate-slideRight" style="animation-delay: 0.1s; border-color: #10B981;">
-            <h4 style="color: #10B981; font-size: 0.8rem; text-transform: uppercase; margin-bottom: 1rem;">🧬 AI Phân tích Vi mô:</h4>
-            <div id="ai-live-log" style="font-family: monospace; font-size: 0.75rem; color: #10B981; max-height: 200px; overflow-y: auto;">
-              > Khởi động hệ thống vi sinh...<br>
-              > Đang chờ định danh mẫu bệnh phẩm...
-            </div>
-          </div>
-
-          <div id="treatment-result" class="data-card animate-slideRight" style="display:none; animation-delay: 0.2s; background: rgba(16,185,129,0.1);">
-            <h4 style="color: #10B981;">✅ Kết quả điều trị tối ưu</h4>
-            <p id="final-advice" style="font-size: 0.85rem; margin-top: 0.5rem;"></p>
-            <a href="genetics.html" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Tiến tới Viện Di Truyền ➔</a>
+          <div id="final-report" class="card" style="display:none; margin-top: 1.5rem; border: 2px solid #10B981;">
+             <h3 style="color: #10B981; font-size: 1rem;">📝 LAB REPORT FINAL</h3>
+             <p style="font-size: 0.8rem; margin-top: 10px;">
+               <strong>Chẩn đoán:</strong> Nhiễm khuẩn Streptococcus (Gram+).<br>
+               <strong>Đề xuất:</strong> Chuyển dữ liệu sang Lab 12 để tìm Gene kháng thể.
+             </p>
+             <a href="genetics.html" class="btn btn-primary" style="width:100%; margin-top:1rem;">Tiến tới Lab 12 ➔</a>
           </div>
         </div>
 
@@ -291,175 +222,114 @@
 
   <script src="js/patient.js"></script>
   <script>
-    let currentStep = 1;
-    let isGramPositive = Math.random() > 0.5;
-    const log = document.getElementById('ai-live-log');
+    let currentStep = 0;
+    const isGramPositive = true; // Scenario: Streptococcus
     const cloud = document.getElementById('bacteria-cloud');
-
-    // ── INITIALIZATION ──
-    window.addEventListener('load', () => {
-      const p = PatientManager.get();
-      if (p) {
-        document.getElementById('p-nav-card').style.display = 'block';
-        document.getElementById('p-nav-name').textContent = p.name;
-        document.getElementById('p-context').innerHTML = `
-          <strong>Họ tên:</strong> ${p.name}<br>
-          <strong>Triệu chứng:</strong> <span style="color:#EF4444">${p.currentSymptoms || 'Không có'}</span><br>
-          <strong>Chẩn đoán vĩ mô:</strong> Nghi ngờ nhiễm khuẩn đường hô hấp.
-        `;
-        addLog(`Nhận mẫu bệnh phẩm từ bệnh nhân ${p.name}...`);
-        
-        // Cấu hình kịch bản dựa trên triệu chứng
-        if((p.currentSymptoms || "").toLowerCase().includes('họng')) {
-          isGramPositive = true; // Streptococcus (Gram+)
-          addLog(`> AI: Triệu chứng họng thường liên quan đến Gram (+).`);
-        }
-      }
-      generateBacteria();
-    });
-
-    function generateBacteria() {
-      cloud.innerHTML = '';
-      for(let i=0; i<100; i++) {
-        const b = document.createElement('div');
-        b.className = 'bacteria-unit';
-        cloud.appendChild(b);
-      }
-    }
+    const log = document.getElementById('ai-log');
 
     function addLog(msg) {
       log.innerHTML += `> ${msg}<br>`;
       log.scrollTop = log.scrollHeight;
     }
 
-    // ── STEP 1: GRAM STAINING ──
-    function stain(color) {
-      if(currentStep !== 1) return;
-      const units = document.querySelectorAll('.bacteria-unit');
-      units.forEach(u => u.style.background = color === 'purple' ? '#7c3aed' : '#ef4444');
-      addLog(`Thêm thuốc nhuộm ${color === 'purple' ? 'Crystal Violet' : 'Safranin'}...`);
+    window.addEventListener('load', () => {
+      const p = PatientManager.get();
+      if(p) {
+        document.getElementById('p-nav-card').style.display = 'block';
+        document.getElementById('p-nav-name').textContent = p.name;
+        addLog(`Đã nhận mẫu bệnh phẩm từ bệnh nhân ${p.name}.`);
+      }
+      
+      // Spawn bacteria
+      for(let i=0; i<80; i++) {
+        const b = document.createElement('div');
+        b.className = 'bac-unit';
+        cloud.appendChild(b);
+      }
+    });
+
+    function runStainStep(step) {
+      if(step !== currentStep + 1) {
+        showToast("Sai quy trình! Vui lòng thực hiện theo thứ tự 1-2-3-4.", "error");
+        return;
+      }
+      
+      currentStep = step;
+      const units = document.querySelectorAll('.bac-unit');
+      
+      switch(step) {
+        case 1:
+          units.forEach(u => u.style.background = '#7c3aed');
+          addLog("Đã nhỏ Crystal Violet. Tất cả vi khuẩn bắt màu tím.");
+          break;
+        case 2:
+          addLog("Đã thêm dung dịch Iod. Phức hợp màu được cố định.");
+          break;
+        case 3:
+          if(isGramPositive) {
+            addLog("Tẩy cồn: Vi khuẩn giữ màu tím (Thành Peptidoglycan dày).");
+          } else {
+            units.forEach(u => u.style.background = '#444');
+            addLog("Tẩy cồn: Vi khuẩn mất màu (Màng ngoài bị hòa tan).");
+          }
+          break;
+        case 4:
+          if(isGramPositive) {
+            addLog("Nhuộm Safranin: Vi khuẩn Gram (+) vẫn giữ màu Tím đậm.");
+          } else {
+            units.forEach(u => u.style.background = '#ef4444');
+            addLog("Nhuộm Safranin: Vi khuẩn Gram (-) bắt màu đỏ.");
+          }
+          document.getElementById('btn-next').disabled = false;
+          break;
+      }
     }
 
-    function wash() {
-      if(currentStep !== 1) return;
-      const units = document.querySelectorAll('.bacteria-unit');
-      if(isGramPositive) {
-        units.forEach(u => u.style.background = '#7c3aed');
-        addLog(`Rửa cồn: Vi khuẩn giữ màu tím ➔ Gram (+).`);
-        addLog(`Cấu trúc: Thành Peptidoglycan dày, không có màng ngoài.`);
-      } else {
-        units.forEach(u => u.style.background = '#666');
-        addLog(`Rửa cồn: Vi khuẩn mất màu ➔ Gram (-).`);
-        addLog(`Cấu trúc: Thành Peptidoglycan mỏng, có lớp màng ngoài (Outer membrane).`);
-      }
-      document.getElementById('btn-next-step').disabled = false;
-    }
-
-    document.getElementById('btn-next-step').onclick = function() {
-      if(currentStep === 1) {
-        currentStep = 2;
-        this.textContent = "Tiến tới Bước 3 ➔";
-        this.disabled = true;
-        document.getElementById('lab-step-badge').textContent = "BƯỚC 2/3";
-        document.getElementById('lab-step-desc').textContent = "Bước 2: Thử nghiệm Kháng sinh đồ (Antibiogram).";
-        document.getElementById('reagent-rack').style.display = 'none';
-        document.getElementById('antibiotic-rack').style.display = 'flex';
-        addLog(`Chuyển sang thử nghiệm kháng sinh đồ...`);
-      } else if(currentStep === 2) {
-        currentStep = 3;
-        this.style.display = 'none';
-        document.getElementById('lab-step-badge').textContent = "BƯỚC 3/3";
-        document.getElementById('lab-step-desc').textContent = "Bước 3: Mô phỏng trận chiến thực bào của Bạch cầu.";
-        document.getElementById('battle-overlay').style.display = 'flex';
-        startPhagocytosis();
-      }
+    document.getElementById('btn-next').onclick = function() {
+      document.getElementById('battle-overlay').style.display = 'flex';
+      document.getElementById('step-badge').textContent = "BƯỚC 2/3: THỰC BÀO";
+      document.getElementById('reagent-rack').style.display = 'none';
+      startBattle();
     };
 
-    // ── STEP 2: ANTIBIOGRAM ──
-    function applyDrug(label, potency) {
-      if(currentStep !== 2) return;
-      
-      const x = Math.random() * 200 + 100;
-      const y = Math.random() * 200 + 100;
-      
-      // Add Disc
-      const disc = document.createElement('div');
-      disc.className = 'antibiotic-disc';
-      disc.style.left = x + 'px';
-      disc.style.top = y + 'px';
-      disc.textContent = label;
-      document.getElementById('petri-dish').appendChild(disc);
-      
-      // Add Zone
-      const zone = document.createElement('div');
-      zone.className = 'inhibition-zone';
-      zone.style.left = (x + 15) + 'px';
-      zone.style.top = (y + 15) + 'px';
-      document.getElementById('zones-container').appendChild(zone);
-      
-      setTimeout(() => {
-        zone.style.width = potency + 'px';
-        zone.style.height = potency + 'px';
-        addLog(`Đang ủ bệnh phẩm với kháng sinh ${label}...`);
-        
-        if(potency >= 100) {
-          addLog(`Kháng sinh ${label} cực kỳ hiệu quả (Vòng vô khuẩn lớn).`);
-          document.getElementById('btn-next-step').disabled = false;
-          showTreatmentResult(label);
-        }
-      }, 100);
-    }
-
-    function showTreatmentResult(drug) {
-      const res = document.getElementById('treatment-result');
-      const advice = document.getElementById('final-advice');
-      res.style.display = 'block';
-      advice.innerHTML = `Kháng sinh <strong>${drug}</strong> đã chứng minh hiệu quả tiêu diệt vi khuẩn Gram ${isGramPositive ? '(+)' : '(-)'} trong đĩa Petri. AI đề xuất phác đồ điều trị 7 ngày với loại thuốc này.`;
-    }
-
-    // ── STEP 3: PHAGOCYTOSIS ──
-    function startPhagocytosis() {
+    function startBattle() {
       const macro = document.getElementById('macro');
       const battleOverlay = document.getElementById('battle-overlay');
       
-      // Generate some bacteria in battle view
-      for(let i=0; i<10; i++) {
+      for(let i=0; i<8; i++) {
         const b = document.createElement('div');
-        b.className = 'bacteria-unit';
+        b.className = 'bac-unit';
         b.style.position = 'absolute';
-        b.style.background = isGramPositive ? '#7c3aed' : '#ef4444';
+        b.style.background = '#7c3aed';
         b.style.left = Math.random() * 80 + 10 + '%';
         b.style.top = Math.random() * 80 + 10 + '%';
-        b.id = 'target-' + i;
+        b.id = 'b-' + i;
         battleOverlay.appendChild(b);
       }
 
-      let eaten = 0;
-      const targets = document.querySelectorAll('.battle-overlay .bacteria-unit');
-      
+      let count = 0;
       const interval = setInterval(() => {
-        if(eaten >= targets.length) {
+        if(count >= 8) {
           clearInterval(interval);
-          addLog(`Bạch cầu đã dọn sạch mầm bệnh bằng cơ chế thực bào.`);
-          showToast("Nhiệm vụ hoàn tất: Cơ thể đã được bảo vệ!", "success");
+          document.getElementById('final-report').style.display = 'block';
+          showToast("Xong! Bạch cầu đã tiêu diệt mầm bệnh.", "success");
           return;
         }
-
-        const target = targets[eaten];
-        macro.style.left = (target.offsetLeft - 40) + 'px';
-        macro.style.top = (target.offsetTop - 40) + 'px';
+        
+        const target = document.getElementById('b-' + count);
+        macro.style.left = (target.offsetLeft - 60) + 'px';
+        macro.style.top = (target.offsetTop - 60) + 'px';
         
         setTimeout(() => {
           macro.classList.add('swallowing');
           target.style.transform = 'scale(0)';
           setTimeout(() => {
             macro.classList.remove('swallowing');
-            eaten++;
+            count++;
           }, 500);
         }, 500);
       }, 1200);
     }
-
   </script>
 </body>
 </html>
