@@ -3,291 +3,960 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Thư Viện Sinh Học Thông Minh – Digital BioHospital</title>
+  <title>Thư Viện Sinh Học 11 – Bệnh Viện Sinh Học Thông Minh</title>
+  <meta name="description" content="Thư viện sinh học chuẩn Sinh học 11: Hệ tuần hoàn, hô hấp, thần kinh, miễn dịch, cân bằng nội môi, tiêu hóa. Từng bộ phận chi tiết – AI phân tích từ SGK." />
   <link rel="stylesheet" href="css/global.css" />
   <link rel="stylesheet" href="css/components.css" />
   <link rel="stylesheet" href="css/animations.css" />
   <style>
-    /* ── Search & Filter ── */
+    /* ── Search ── */
     .search-bar {
       display: flex; align-items: center; gap: 1rem;
-      padding: 0 1.5rem;
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(0, 242, 255, 0.2);
-      border-radius: 999px; margin-bottom: 2rem; transition: all 0.3s;
+      padding: 0 1.25rem;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 999px; margin-bottom: 2rem; transition: all 0.25s;
     }
-    .search-bar:focus-within { border-color: #00f2ff; box-shadow: 0 0 15px rgba(0, 242, 255, 0.2); }
-    .search-bar input { flex:1; background:none; border:none; outline:none; padding: 1rem 0; color: white; font-size: 1rem; }
+    .search-bar:focus-within {
+      border-color: var(--color-primary-light);
+      background: rgba(124,58,237,0.1);
+      box-shadow: 0 0 0 3px rgba(124,58,237,0.15);
+    }
+    .search-bar input {
+      flex:1; background:none; border:none; outline:none;
+      padding: 0.875rem 0; color: white;
+      font-family: var(--font-family); font-size: 1rem;
+    }
+    .search-bar input::placeholder { color: rgba(255,255,255,0.35); }
 
-    .filter-tabs { display:flex; gap:0.5rem; flex-wrap:wrap; margin-bottom:2rem; justify-content: center; }
+    /* ── Filter Tabs ── */
+    .filter-tabs { display:flex; gap:0.5rem; flex-wrap:wrap; margin-bottom:2rem; }
     .filter-btn {
-      padding: 0.5rem 1.2rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 999px; cursor:pointer; font-size:0.85rem; color: rgba(255,255,255,0.6); transition: 0.3s;
+      padding: 0.4rem 1rem;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 999px; cursor:pointer; font-size:0.85rem; font-weight:600;
+      color: rgba(255,255,255,0.6); transition: all 0.2s; font-family: var(--font-family);
     }
-    .filter-btn.active { background: #00f2ff; color: #000; font-weight: bold; box-shadow: 0 0 15px rgba(0, 242, 255, 0.4); }
+    .filter-btn:hover { color: white; }
+    .filter-btn.active { background: rgba(124,58,237,0.25); border-color: var(--color-primary-light); color: var(--color-primary-light); }
 
-    /* ── Grid ── */
-    .library-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(320px,1fr)); gap:2rem; }
+    /* ── Library Grid ── */
+    .library-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(310px,1fr)); gap:1.5rem; }
+
+    /* ── System Card ── */
     .lib-card {
-      background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05);
-      border-radius: 1.5rem; padding: 2rem; cursor: pointer; transition: 0.4s; position: relative; overflow: hidden;
-      backdrop-filter: blur(5px);
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 1.25rem; padding: 1.5rem;
+      cursor: pointer; transition: all 0.3s ease;
+      position: relative; overflow: hidden;
     }
-    .lib-card:hover { transform: translateY(-10px); border-color: #00f2ff; background: rgba(0, 242, 255, 0.05); }
-    .lib-card .icon { font-size: 3rem; margin-bottom: 1rem; display: block; }
-    .lib-card h3 { font-size: 1.25rem; margin-bottom: 0.5rem; color: #00f2ff; }
-    .lib-card p { font-size: 0.9rem; color: rgba(255,255,255,0.5); line-height: 1.6; }
+    .lib-card::before {
+      content:''; position:absolute; top:0; left:0; right:0; height:3px;
+      transition: opacity 0.3s; opacity:0;
+    }
+    .lib-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); }
+    .lib-card:hover::before { opacity:1; }
+    .lib-card:hover .lib-bg-icon { opacity:0.15; transform: scale(1.15) rotate(-5deg); }
 
-    /* ── Modal & Detail ── */
+    /* Color themes per system */
+    .lib-cat-circulation { --sys-color-rgb: 239,68,68; }
+    .lib-cat-circulation::before { background: linear-gradient(90deg,#EF4444,#F97316); }
+    .lib-cat-circulation:hover { border-color: rgba(239,68,68,0.4); box-shadow: 0 20px 60px rgba(239,68,68,0.15); }
+
+    .lib-cat-respiratory { --sys-color-rgb: 59,130,246; }
+    .lib-cat-respiratory::before { background: linear-gradient(90deg,#3B82F6,#06B6D4); }
+    .lib-cat-respiratory:hover { border-color: rgba(59,130,246,0.4); box-shadow: 0 20px 60px rgba(59,130,246,0.15); }
+
+    .lib-cat-neuro { --sys-color-rgb: 124,58,237; }
+    .lib-cat-neuro::before { background: linear-gradient(90deg,#7C3AED,#A78BFA); }
+    .lib-cat-neuro:hover { border-color: rgba(124,58,237,0.4); box-shadow: 0 20px 60px rgba(124,58,237,0.15); }
+
+    .lib-cat-immune { --sys-color-rgb: 245,158,11; }
+    .lib-cat-immune::before { background: linear-gradient(90deg,#F59E0B,#FCD34D); }
+    .lib-cat-immune:hover { border-color: rgba(245,158,11,0.4); box-shadow: 0 20px 60px rgba(245,158,11,0.15); }
+
+    .lib-cat-homeostasis { --sys-color-rgb: 16,185,129; }
+    .lib-cat-homeostasis::before { background: linear-gradient(90deg,#10B981,#6EE7B7); }
+    .lib-cat-homeostasis:hover { border-color: rgba(16,185,129,0.4); box-shadow: 0 20px 60px rgba(16,185,129,0.15); }
+
+    .lib-cat-digestive { --sys-color-rgb: 251,146,60; }
+    .lib-cat-digestive::before { background: linear-gradient(90deg,#FB923C,#FBBF24); }
+    .lib-cat-digestive:hover { border-color: rgba(251,146,60,0.4); box-shadow: 0 20px 60px rgba(251,146,60,0.15); }
+
+    /* Background icon */
+    .lib-bg-icon {
+      position: absolute; right: 1rem; bottom: 1rem;
+      font-size: 5rem; opacity: 0.07;
+      transition: all 0.4s ease; pointer-events: none;
+      line-height: 1; user-select: none;
+    }
+
+    .lib-icon { font-size: 2.2rem; margin-bottom: 0.75rem; display:block; }
+    .lib-title { font-size: 1.05rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .lib-excerpt { font-size: 0.85rem; color: rgba(255,255,255,0.6); line-height:1.6; margin-bottom:1rem; }
+
+    .lib-card-footer { display:flex; align-items:center; justify-content:space-between; }
+    .lib-organ-count {
+      font-size: 0.75rem; font-weight: 700;
+      color: rgba(255,255,255,0.4);
+      display: flex; align-items: center; gap: 0.35rem;
+    }
+    .lib-tags { display:flex; gap:0.4rem; flex-wrap:wrap; }
+    .lib-tag {
+      padding: 0.2rem 0.6rem; background: rgba(124,58,237,0.15);
+      border-radius: 999px; font-size: 0.7rem; font-weight:700;
+      color: var(--color-primary-light); text-transform:uppercase; letter-spacing: 0.06em;
+    }
+    .lib-tag.tag-sgk { background: rgba(239,68,68,0.15); color: #FCA5A5; }
+    .lib-tag.tag-thucte { background: rgba(16,185,129,0.15); color: #6EE7B7; }
+
+    /* ══════════════════════════════════════════════════════
+       MODAL SHARED
+    ══════════════════════════════════════════════════════ */
     .modal-overlay {
-      position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(15px);
-      z-index: 1000; display: none; align-items: center; justify-content: center; opacity: 0; transition: 0.3s;
+      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+      transition: all 0.4s cubic-bezier(0.4,0,0.2,1);
+      opacity:0; visibility:hidden;
     }
-    .modal-overlay.open { display: flex; opacity: 1; }
-    .modal-content {
-      width: 90vw; max-width: 900px; max-height: 85vh; background: #0a0f18; border: 1px solid rgba(0, 242, 255, 0.2);
-      border-radius: 2rem; position: relative; display: flex; flex-direction: column; overflow: hidden;
+    .modal-overlay.open { opacity:1; visibility:visible; }
+    .modal {
+      transition: all 0.4s cubic-bezier(0.34,1.56,0.64,1);
+      transform: scale(0.92) translateY(24px); opacity:0;
+      box-shadow: 0 32px 64px -16px rgba(0,0,0,0.6);
+      border: 1px solid rgba(255,255,255,0.1);
     }
-    .modal-header { padding: 2rem; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; }
-    .modal-body { padding: 2rem; overflow-y: auto; flex-grow: 1; }
+    .modal-overlay.open .modal { transform: scale(1) translateY(0); opacity:1; }
 
+    /* ══════════════════════════════════════════════════════
+       MODAL CẤP 1: ORGAN LIST
+    ══════════════════════════════════════════════════════ */
+    #organs-modal .modal {
+      max-width: 780px; width: 95vw;
+      background: rgba(14,14,20,0.98);
+      border-radius: 1.5rem;
+      padding: 2rem;
+    }
+    .organs-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 1.75rem;
+    }
+    .organs-title { display: flex; align-items: center; gap: 0.75rem; }
+    .organs-title h2 { font-size: 1.3rem; margin: 0; }
+    .organs-title .sys-icon { font-size: 2rem; }
+
+    .organs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+
+    .organ-card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 1rem; padding: 1.25rem;
+      cursor: pointer; transition: all 0.25s ease;
+      text-align: center; position: relative; overflow: hidden;
+    }
+    .organ-card:hover {
+      background: rgba(124,58,237,0.15);
+      border-color: rgba(167,139,250,0.35);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(124,58,237,0.2);
+    }
+    .organ-card:hover .organ-arrow { opacity: 1; transform: translateX(0); }
+    .organ-icon { font-size: 2.2rem; margin-bottom: 0.6rem; display:block; }
+    .organ-name { font-size: 0.9rem; font-weight:700; margin-bottom:0.35rem; }
+    .organ-desc { font-size: 0.75rem; color: rgba(255,255,255,0.5); line-height:1.4; }
+    .organ-arrow {
+      position: absolute; top: 0.75rem; right: 0.75rem;
+      font-size: 0.8rem; color: var(--color-primary-light);
+      opacity: 0; transform: translateX(-4px); transition: all 0.2s;
+    }
+
+    /* ══════════════════════════════════════════════════════
+       MODAL CẤP 2: DETAIL (AI)
+    ══════════════════════════════════════════════════════ */
+    #detail-modal .modal {
+      max-width: 860px; width: 95vw;
+      background: rgba(14,14,20,0.98);
+      border-radius: 1.5rem;
+    }
+    .detail-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.5rem 1.75rem 0;
+    }
+    .detail-header-left { display: flex; align-items: center; gap: 0.75rem; }
+    .detail-organ-icon { font-size: 2rem; }
+    .detail-organ-name { font-size: 1.2rem; font-weight: 700; margin: 0; }
+    .detail-system-breadcrumb {
+      font-size: 0.75rem; color: rgba(255,255,255,0.4);
+      display: flex; align-items: center; gap: 0.35rem; margin-top: 0.2rem;
+    }
+
+    .back-btn {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      padding: 0.4rem 1rem;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 999px; font-size: 0.8rem; font-weight: 600;
+      color: rgba(255,255,255,0.7); cursor: pointer;
+      transition: all 0.2s; font-family: var(--font-family);
+      margin-right: 0.5rem;
+    }
+    .back-btn:hover { background: rgba(124,58,237,0.2); color: var(--color-primary-light); border-color: rgba(167,139,250,0.4); }
+
+    /* Tabs */
+    .art-tabs {
+      display: flex; gap: 0.35rem; flex-wrap: wrap;
+      padding: 1.25rem 1.75rem;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+    }
+    .art-tab {
+      padding: 0.4rem 1rem;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 999px; font-size: 0.82rem; font-weight: 600;
+      color: rgba(255,255,255,0.6); cursor: pointer;
+      transition: all 0.3s; font-family: var(--font-family);
+    }
+    .art-tab:hover { color:white; transform: translateY(-2px); }
+    .art-tab.active {
+      background: rgba(124,58,237,0.3);
+      border-color: var(--color-primary-light);
+      color: var(--color-primary-light);
+      box-shadow: 0 4px 12px rgba(124,58,237,0.2);
+    }
+
+    .detail-body {
+      padding: 1.25rem 1.75rem 1.75rem;
+      max-height: 60vh; overflow-y: auto; scroll-behavior: smooth;
+    }
+    .detail-body::-webkit-scrollbar { width: 5px; }
+    .detail-body::-webkit-scrollbar-thumb { background: var(--color-primary); border-radius: 999px; }
+
+    .art-section { display:none; opacity:0; transform:translateY(8px); transition: all 0.35s ease; }
+    .art-section.active { display:block; opacity:1; transform:translateY(0); }
+    .art-section h4 { font-size:1.05rem; margin:1.25rem 0 0.65rem; color:var(--color-primary-light); border-left:3px solid var(--color-primary); padding-left:0.75rem; }
+    .art-section p { font-size:0.92rem; color:rgba(255,255,255,0.85); line-height:1.7; margin-bottom:0.875rem; }
+    .art-section ul { list-style:none; margin-bottom:1rem; background:rgba(0,0,0,0.15); border-radius:0.875rem; padding:0.875rem 1rem; }
+    .art-section ul li { padding:0.45rem 0; font-size:0.88rem; color:rgba(255,255,255,0.8); border-bottom:1px dashed rgba(255,255,255,0.05); display:flex; align-items:flex-start; gap:0.5rem; }
+    .art-section ul li:last-child { border-bottom:none; }
+    .art-section ul li::before { content:'👉'; display:block; font-size:0.85rem; flex-shrink:0; }
+
+    .sgk-box { background:linear-gradient(135deg,rgba(239,68,68,0.1),rgba(239,68,68,0.02)); border:1px solid rgba(239,68,68,0.3); border-radius:1rem; padding:1.25rem; margin:1.25rem 0; }
+    .sgk-box-title { font-size:0.82rem; font-weight:700; color:#FCA5A5; margin-bottom:0.75rem; text-transform:uppercase; letter-spacing:0.08em; display:flex; align-items:center; gap:0.5rem; }
+
+    .reallife-box { background:linear-gradient(135deg,rgba(16,185,129,0.1),rgba(16,185,129,0.02)); border:1px solid rgba(16,185,129,0.3); border-radius:1rem; padding:1.25rem; margin:1.25rem 0; }
+    .reallife-box-title { font-size:0.82rem; font-weight:700; color:#6EE7B7; margin-bottom:0.75rem; text-transform:uppercase; letter-spacing:0.08em; display:flex; align-items:center; gap:0.5rem; }
+ 
     .wiki-btn {
-        background: #fff; color: #000; padding: 0.5rem 1rem; border-radius: 0.5rem; font-weight: bold; font-size: 0.8rem;
-        display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 1rem; transition: 0.3s;
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      padding: 0.35rem 0.85rem;
+      background: #fff;
+      border: 1px solid #aaa;
+      border-radius: 6px; font-size: 0.72rem; font-weight: 700;
+      color: #333; cursor: pointer;
+      transition: all 0.2s; font-family: var(--font-family);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      margin-left: 0.75rem;
     }
-    .wiki-btn:hover { background: #00f2ff; transform: scale(1.05); }
+    .wiki-btn:hover { background: #f6f6f6; transform: translateY(-1px); box-shadow: 0 4px 8px rgba(0,0,0,0.15); }
+    .wiki-btn img { width: 14px; height: 14px; }
 
-    /* ── Quiz ── */
-    .quiz-section { background: rgba(0, 242, 255, 0.05); border: 1px dashed #00f2ff; border-radius: 1rem; padding: 2rem; margin-top: 2rem; }
-    .quiz-option {
-        width: 100%; text-align: left; padding: 1rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
-        border-radius: 0.5rem; margin-bottom: 0.5rem; cursor: pointer; transition: 0.2s;
+    /* ── Skeleton Loader ── */
+    .skeleton-wrap { padding: 1.5rem 0; }
+    .sk-line {
+      height: 14px; border-radius: 999px;
+      background: linear-gradient(90deg, rgba(255,255,255,0.06) 25%, rgba(255,255,255,0.12) 50%, rgba(255,255,255,0.06) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+      margin-bottom: 0.8rem;
     }
-    .quiz-option:hover { background: rgba(0, 242, 255, 0.1); border-color: #00f2ff; }
-    .quiz-option.correct { background: rgba(16, 185, 129, 0.2); border-color: #10B981; }
-    .quiz-option.wrong { background: rgba(239, 68, 68, 0.2); border-color: #EF4444; }
+    .sk-line.sk-title { height: 20px; width: 40%; margin-bottom: 1.25rem; }
+    .sk-line.sk-short { width: 60%; }
+    .sk-line.sk-med   { width: 80%; }
+    .sk-line.sk-full  { width: 100%; }
+    .sk-block { height: 80px; border-radius: 1rem; background: linear-gradient(90deg, rgba(255,255,255,0.06) 25%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.06) 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; margin: 1rem 0; }
+    .sk-status { display:flex; align-items:center; gap:0.6rem; font-size:0.82rem; color: rgba(167,139,250,0.7); margin-bottom: 1.25rem; }
+    .sk-status-dot { width:8px; height:8px; border-radius:50%; background: var(--color-primary-light); animation: pulse 1s infinite; }
+    @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
 
+    /* ── Wikipedia ── */
+    .wiki-popup {
+      position:fixed; top:50%; left:50%;
+      transform:translate(-50%,-50%) scale(0.9);
+      width:90vw; max-width:600px;
+      background:#111; border:1px solid rgba(255,255,255,0.15);
+      border-radius:1rem; padding:1.5rem; z-index:10000;
+      box-shadow:0 25px 50px rgba(0,0,0,0.8);
+      opacity:0; visibility:hidden; transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .wiki-popup.open { opacity:1; visibility:visible; transform:translate(-50%,-50%) scale(1); }
+    .wiki-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; padding-bottom:0.5rem; border-bottom:1px solid rgba(255,255,255,0.1); }
+    .wiki-content { font-size:0.88rem; line-height:1.6; color:rgba(255,255,255,0.8); max-height:50vh; overflow-y:auto; }
+    .wiki-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.6); backdrop-filter:blur(4px); z-index:9999; opacity:0; visibility:hidden; transition:0.3s; }
+    .wiki-overlay.open { opacity:1; visibility:visible; }
   </style>
 </head>
 <body class="page-enter">
 
   <nav class="navbar">
     <div class="container navbar-inner">
-      <a href="index.html" class="navbar-brand">🏥 Digital BioHospital</a>
-      <ul class="navbar-nav">
-        <li><a href="index.html">🏠 Trang chủ</a></li>
-        <li><a href="departments.html">🏥 Lâm Sàng</a></li>
-        <li><a href="metabolism.html">🔬 Phòng Lab</a></li>
-        <li><a href="genetics.html">🧬 Di Truyền</a></li>
-        <li><a href="library.html" class="active">📚 Thư Viện</a></li>
+      <a href="index.html" class="navbar-brand">
+        <div class="brand-icon">🏥</div>
+        <span>Digital BioHospital</span>
+      </a>
+      <ul class="navbar-nav" role="list">
+        <li><a href="index.html" id="nav-home">🏠 Trang chủ</a></li>
+        <li class="nav-item">
+          <a href="#" style="cursor:default;">🏥 Lâm Sàng (Lớp 11) ▼</a>
+          <div class="nav-dropdown flex-col">
+            <a href="reception.html">📋 Phòng Tiếp nhận</a>
+            <a href="departments.html">🏥 Khám Chuyên khoa</a>
+            <a href="anatomy.html">🧬 Giải phẫu 3D</a>
+          </div>
+        </li>
+        <li class="nav-item">
+          <a href="#" style="cursor:default;">🔬 Phòng Lab (Lớp 10) ▼</a>
+          <div class="nav-dropdown flex-col">
+            <a href="microscope.html">🔬 Soi Kính Hiển Vi</a>
+            <a href="metabolism.html">⚡ Chuyển Hóa & Năng Lượng</a>
+            <a href="microbiology.html">🦠 Vi Sinh & Miễn Dịch</a>
+          </div>
+        </li>
+        <li class="nav-item">
+          <a href="#" style="cursor:default;">🧬 Di Truyền Học (Lớp 12) ▼</a>
+          <div class="nav-dropdown flex-col">
+            <a href="genetics.html">🧬 Bản Đồ Gene</a>
+            <a href="prediction.html">🔮 Dự Báo Tương Lai</a>
+          </div>
+        </li>
+        <li class="nav-item">
+          <a href="#" style="cursor:default;">🏆 Hồ Sơ & Thành Tựu ▼</a>
+          <div class="nav-dropdown flex-col">
+            <a href="profile.html">👤 Hộ Chiếu Sức Khỏe</a>
+            <a href="personalize.html">🌱 Kế Hoạch Cá Nhân</a>
+            <a href="leaderboard.html">🏆 Bảng Xếp Hạng</a>
+            <a href="library.html">📚 Thư Viện Y Khoa</a>
+          </div>
+        </li>
       </ul>
+      <a href="reception.html" class="navbar-patient-btn btn btn-sm">🧑‍⚕️ Hồ sơ</a>
     </div>
   </nav>
 
-  <main class="container" style="padding-top: 5rem;">
-    <div class="page-header text-center">
-      <div class="section-tag">Medical Library</div>
-      <h1>📚 Thư Viện Y Khoa AI</h1>
-      <p>Kho tàng kiến thức Sinh học 10, 11, 12 được chuẩn hóa theo SGK & Wikipedia.</p>
+  <main id="main">
+    <div class="page-header" style="background:linear-gradient(180deg,rgba(59,130,246,0.08) 0%,transparent 100%);border-bottom:1px solid rgba(255,255,255,0.05);">
+      <div class="container">
+        <div class="section-tag animate-fadeInUp" style="color:#93C5FD;border-color:rgba(59,130,246,0.3)">📚 Sinh Học 11</div>
+        <h1 class="animate-fadeInUp delay-100">Thư Viện Sinh Học</h1>
+        <p class="animate-fadeInUp delay-200">6 hệ cơ quan · Mỗi hệ có <strong>chi tiết từng bộ phận</strong> · AI phân tích từ PDF sách giáo khoa</p>
+      </div>
     </div>
 
-    <div class="search-bar">
-      <input type="text" id="search-input" placeholder="Tìm kiếm kiến thức: DNA, Ti thể, Neuron..." oninput="filterLibrary()" />
-    </div>
+    <div class="container" style="padding-top:2rem;padding-bottom:4rem">
 
-    <div class="filter-tabs">
-      <button class="filter-btn active" data-grade="all" onclick="setFilter('all')">Tất cả</button>
-      <button class="filter-btn" data-grade="10" onclick="setFilter('10')">Lớp 10 (Vi mô)</button>
-      <button class="filter-btn" data-grade="11" onclick="setFilter('11')">Lớp 11 (Vĩ mô)</button>
-      <button class="filter-btn" data-grade="12" onclick="setFilter('12')">Lớp 12 (Di truyền)</button>
-    </div>
+      <!-- Search -->
+      <div class="search-bar animate-fadeInDown">
+        <span>🔍</span>
+        <input type="text" id="search-input" placeholder="Tìm kiếm: tim, phổi, neuron, kháng thể..." aria-label="Tìm kiếm thư viện" />
+      </div>
 
-    <div class="library-grid" id="library-grid">
-      <!-- Cards populated by JS -->
+      <!-- Filter tabs -->
+      <div class="filter-tabs animate-fadeIn">
+        <button class="filter-btn active" data-filter="all" id="filter-all">Tất cả</button>
+        <button class="filter-btn" data-filter="circulation" id="filter-circ">❤️ Tuần hoàn</button>
+        <button class="filter-btn" data-filter="respiratory" id="filter-resp">🫁 Hô hấp</button>
+        <button class="filter-btn" data-filter="neuro" id="filter-neuro">🧠 Thần kinh</button>
+        <button class="filter-btn" data-filter="immune" id="filter-immune">🛡️ Miễn dịch</button>
+        <button class="filter-btn" data-filter="homeostasis" id="filter-homeo">⚖️ Nội môi</button>
+        <button class="filter-btn" data-filter="digestive" id="filter-digest">🍽️ Tiêu hóa</button>
+        <button class="filter-btn" data-filter="genetics" id="filter-genetics">🧬 Di truyền</button>
+        <button class="filter-btn" data-filter="cell" id="filter-cell">🧪 Tế bào</button>
+        <button class="filter-btn" data-filter="evolution" id="filter-evolution">🐒 Tiến hóa</button>
+      </div>
+
+      <!-- Article Grid -->
+      <div class="library-grid stagger" id="library-grid">
+
+        <!-- 1: HỆ TUẦN HOÀN -->
+        <article class="lib-card lib-cat-circulation reveal" data-cat="circulation" data-title="Hệ Tuần Hoàn Tim mạch máu" onclick="openOrgansModal('circulation')">
+          <span class="lib-bg-icon">❤️</span>
+          <span class="lib-icon">❤️</span>
+          <h2 class="lib-title">Hệ Tuần Hoàn</h2>
+          <p class="lib-excerpt">Tim, mạch máu, tính tự động của tim. Chu kì co – giãn 0.8 giây. Vòng tuần hoàn lớn và nhỏ.</p>
+          <div class="lib-card-footer">
+            <div class="lib-organ-count">🔬 5 bộ phận →</div>
+            <div class="lib-tags">
+              <span class="lib-tag tag-sgk">SGK 11</span>
+              <span class="lib-tag tag-thucte">Thực tế</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- 2: HỆ HÔ HẤP -->
+        <article class="lib-card lib-cat-respiratory reveal delay-100" data-cat="respiratory" data-title="Hệ Hô Hấp Phổi khí" onclick="openOrgansModal('respiratory')">
+          <span class="lib-bg-icon">🫁</span>
+          <span class="lib-icon">🫁</span>
+          <h2 class="lib-title">Hệ Hô Hấp</h2>
+          <p class="lib-excerpt">Trao đổi khí O₂ – CO₂. Cơ chế hít vào – thở ra. Phế nang: 70m² trao đổi khí mỗi ngày.</p>
+          <div class="lib-card-footer">
+            <div class="lib-organ-count">🔬 4 bộ phận →</div>
+            <div class="lib-tags">
+              <span class="lib-tag tag-sgk">SGK 11</span>
+              <span class="lib-tag tag-thucte">Thực tế</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- 3: HỆ THẦN KINH -->
+        <article class="lib-card lib-cat-neuro reveal delay-200" data-cat="neuro" data-title="Hệ Thần Kinh Não neuron phản xạ" onclick="openOrgansModal('nervous')">
+          <span class="lib-bg-icon">🧠</span>
+          <span class="lib-icon">🧠</span>
+          <h2 class="lib-title">Hệ Thần Kinh</h2>
+          <p class="lib-excerpt">Phản xạ, cung phản xạ, điện thế hoạt động. Hệ thần kinh trung ương và ngoại biên.</p>
+          <div class="lib-card-footer">
+            <div class="lib-organ-count">🔬 5 bộ phận →</div>
+            <div class="lib-tags">
+              <span class="lib-tag tag-sgk">SGK 11</span>
+              <span class="lib-tag tag-thucte">Thực tế</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- 4: HỆ MIỄN DỊCH -->
+        <article class="lib-card lib-cat-immune reveal delay-300" data-cat="immune" data-title="Hệ Miễn Dịch kháng thể tế bào B T" onclick="openOrgansModal('immune')">
+          <span class="lib-bg-icon">🛡️</span>
+          <span class="lib-icon">🛡️</span>
+          <h2 class="lib-title">Hệ Miễn Dịch</h2>
+          <p class="lib-excerpt">Bảo vệ cơ thể khỏi mầm bệnh. Tế bào B, tế bào T, kháng thể. Miễn dịch đặc hiệu và không đặc hiệu.</p>
+          <div class="lib-card-footer">
+            <div class="lib-organ-count">🔬 5 bộ phận →</div>
+            <div class="lib-tags">
+              <span class="lib-tag tag-sgk">SGK 11</span>
+              <span class="lib-tag tag-thucte">Vaccine</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- 5: CÂN BẰNG NỘI MÔI -->
+        <article class="lib-card lib-cat-homeostasis reveal delay-400" data-cat="homeostasis" data-title="Cân Bằng Nội Môi thận insulin glucose" onclick="openOrgansModal('homeostasis')">
+          <span class="lib-bg-icon">⚖️</span>
+          <span class="lib-icon">⚖️</span>
+          <h2 class="lib-title">Cân Bằng Nội Môi</h2>
+          <p class="lib-excerpt">Ổn định môi trường trong: pH, nhiệt độ, áp suất thẩm thấu. Cơ chế phản hồi âm (negative feedback).</p>
+          <div class="lib-card-footer">
+            <div class="lib-organ-count">🔬 5 bộ phận →</div>
+            <div class="lib-tags">
+              <span class="lib-tag tag-sgk">SGK 11</span>
+              <span class="lib-tag tag-thucte">Thực tế</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- 6: HỆ TIÊU HÓA -->
+        <article class="lib-card lib-cat-digestive reveal delay-500" data-cat="digestive" data-title="Hệ Tiêu Hóa dạ dày ruột enzyme" onclick="openOrgansModal('digestive')">
+          <span class="lib-bg-icon">🍽️</span>
+          <span class="lib-icon">🍽️</span>
+          <h2 class="lib-title">Hệ Tiêu Hóa</h2>
+          <p class="lib-excerpt">Tiêu hóa cơ học và hóa học. Enzyme tiêu hóa, ruột non hấp thu dưỡng chất, vi khuẩn đường ruột.</p>
+          <div class="lib-card-footer">
+            <div class="lib-organ-count">🔬 6 bộ phận →</div>
+            <div class="lib-tags">
+              <span class="lib-tag tag-sgk">SGK 11</span>
+              <span class="lib-tag tag-thucte">Dinh dưỡng</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- 7: DI TRUYỀN HỌC -->
+        <article class="lib-card lib-cat-genetics reveal delay-600" data-cat="genetics" data-title="Di Truyền Học NST Đột Biến Gen Ung Thư" onclick="openOrgansModal('genetics')">
+          <span class="lib-bg-icon">🧬</span>
+          <span class="lib-icon">🧬</span>
+          <h2 class="lib-title">Di Truyền Học</h2>
+          <p class="lib-excerpt">Cơ sở phân tử của sự sống. Đột biến Gen, NST, cơ chế ung thư và di truyền y học hiện đại.</p>
+          <div class="lib-card-footer">
+            <div class="lib-organ-count">🔬 5 bộ phận →</div>
+            <div class="lib-tags">
+              <span class="lib-tag tag-sgk">SGK 11+12</span>
+              <span class="lib-tag tag-thucte">Y học</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- 8: SINH HỌC TẾ BÀO -->
+        <article class="lib-card lib-cat-cell reveal delay-700" data-cat="cell" data-title="Sinh Học Tế Bào Chu Kỳ Apoptosis Hô Hấp" onclick="openOrgansModal('cell')">
+          <span class="lib-bg-icon">🧪</span>
+          <span class="lib-icon">🧪</span>
+          <h2 class="lib-title">Sinh Học Tế Bào</h2>
+          <p class="lib-excerpt">Chu kỳ tế bào, apoptosis (chết theo chương trình). Chuyển hóa năng lượng và công nghệ tế bào gốc.</p>
+          <div class="lib-card-footer">
+            <div class="lib-organ-count">🔬 5 bộ phận →</div>
+            <div class="lib-tags">
+              <span class="lib-tag tag-sgk">SGK 11</span>
+              <span class="lib-tag tag-thucte">Tế bào gốc</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- 9: TIẾN HÓA NGƯỜI -->
+        <article class="lib-card lib-cat-evolution reveal delay-800" data-cat="evolution" data-title="Tiến Hóa Người Nguồn Gốc Linh Trưởng" onclick="openOrgansModal('evolution')">
+          <span class="lib-bg-icon">🐒</span>
+          <span class="lib-icon">🐒</span>
+          <h2 class="lib-title">Tiến Hóa Người</h2>
+          <p class="lib-excerpt">Nguồn gốc loài người, bằng chứng tiến hóa phân tử. Sự tiến hóa của ngôn ngữ và các gen đặc thù.</p>
+          <div class="lib-card-footer">
+            <div class="lib-organ-count">🔬 4 bộ phận →</div>
+            <div class="lib-tags">
+              <span class="lib-tag tag-sgk">Nâng cao</span>
+              <span class="lib-tag tag-thucte">Khoa học</span>
+            </div>
+          </div>
+        </article>
+
+      </div>
     </div>
   </main>
 
-  <!-- Modal -->
-  <div class="modal-overlay" id="modal-overlay">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2 id="modal-title" style="color: #00f2ff;">Tiêu đề</h2>
-        <button onclick="closeModal()" style="color: #fff; font-size: 1.5rem;">✕</button>
+  <footer>
+    <div class="container">
+      <p>📚 Thư Viện Sinh Học 11 · Bệnh Viện Sinh Học Thông Minh · <a href="disclaimer.html">Nội quy</a></p>
+    </div>
+  </footer>
+
+  <!-- ══ MODAL CẤP 1: DANH SÁCH BỘ PHẬN ══ -->
+  <div class="modal-overlay" id="organs-modal" role="dialog" aria-modal="true" aria-label="Danh sách bộ phận">
+    <div class="modal" style="border-radius:1.5rem; padding:2rem;">
+      <div class="organs-header">
+        <div class="organs-title">
+          <span class="sys-icon" id="organs-modal-icon">❤️</span>
+          <div>
+            <h2 id="organs-modal-title">Hệ Tuần Hoàn</h2>
+            <div style="font-size:0.78rem; color:rgba(255,255,255,0.4); margin-top:0.15rem;">Chọn bộ phận để xem chi tiết</div>
+          </div>
+        </div>
+        <button class="modal-close" id="organs-modal-close" aria-label="Đóng">✕</button>
       </div>
-      <div class="modal-body" id="modal-body">
-        <!-- Content -->
+      <div class="organs-grid" id="organs-grid"></div>
+    </div>
+  </div>
+
+  <!-- ══ MODAL CẤP 2: BỘ PHẬN CHI TIẾT (AI) ══ -->
+  <div class="modal-overlay" id="detail-modal" role="dialog" aria-modal="true" aria-labelledby="detail-organ-title">
+    <div class="modal">
+      <div class="detail-header">
+        <div class="detail-header-left">
+          <span class="detail-organ-icon" id="detail-organ-icon">❤️</span>
+          <div>
+            <h2 class="detail-organ-name" id="detail-organ-title">Tim</h2>
+            <div class="detail-system-breadcrumb" id="detail-breadcrumb">
+              📚 Sinh Học 11 › ❤️ Hệ Tuần Hoàn › Tim
+            </div>
+          </div>
+          <button class="wiki-btn" id="wiki-trigger" onclick="openWiki(currentOrganName)">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/7/77/Wikipedia_svg_logo.svg" alt="W" />
+            Wikipedia
+          </button>
+        </div>
+        <div style="display:flex; align-items:center; gap:0.5rem;">
+          <button class="back-btn" id="back-to-organs-btn">← Quay lại</button>
+          <button class="wiki-btn" id="wiki-trigger-btn" onclick="openWiki('')">🌐 Wikipedia</button>
+          <button class="modal-close" id="detail-modal-close" aria-label="Đóng">✕</button>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="art-tabs" id="detail-tabs"></div>
+
+      <!-- Body -->
+      <div class="detail-body" id="detail-body">
+        <div id="detail-skeleton" class="skeleton-wrap">
+          <div class="sk-status">
+            <div class="sk-status-dot"></div>
+            <span id="sk-status-text">🧠 AI đang phân tích từ PDF Sinh học 11...</span>
+          </div>
+          <div class="sk-line sk-title"></div>
+          <div class="sk-line sk-full"></div>
+          <div class="sk-line sk-med"></div>
+          <div class="sk-line sk-short"></div>
+          <div class="sk-block"></div>
+          <div class="sk-line sk-full"></div>
+          <div class="sk-line sk-med"></div>
+          <div class="sk-line sk-full"></div>
+          <div class="sk-line sk-short"></div>
+        </div>
+        <div id="detail-content" style="display:none;"></div>
       </div>
     </div>
   </div>
 
+  <!-- Wikipedia Plugin -->
+  <div class="wiki-overlay" id="wiki-overlay" onclick="closeWiki()"></div>
+  <div class="wiki-popup" id="wiki-popup">
+    <div class="wiki-header">
+      <h3 style="display:flex;align-items:center;gap:0.5rem;font-size:1rem"><span style="font-size:1.4rem">🌐</span> Wikipedia Tiếng Việt</h3>
+      <button class="modal-close" style="position:static;margin:0;" onclick="closeWiki()">✕</button>
+    </div>
+    <div class="wiki-content" id="wiki-content">
+      <div style="text-align:center;padding:2rem;">🔍 Đang tìm thông tin...</div>
+    </div>
+  </div>
+
+  <script src="js/api.js"></script>
   <script src="js/patient.js"></script>
   <script>
-    const KNOWLEDGE_BASE = [
-      {
-        id: "mitochondria",
-        grade: "10",
-        title: "Ti thể (Mitochondria)",
-        icon: "⚡",
-        excerpt: "Nhà máy năng lượng của tế bào, nơi diễn ra hô hấp tế bào tạo ATP.",
-        wiki: "https://vi.wikipedia.org/wiki/Ti_thể",
-        details: "Ti thể là bào quan có hai lớp màng bao bọc. Màng ngoài trơn nhẵn, màng trong gấp nếp tạo thành các mào (cristae). Đây là nơi chứa các enzyme hô hấp thực hiện chu trình Krebs và chuỗi truyền electron để tạo ra ATP - đồng tiền năng lượng của sự sống.",
-        quiz: {
-            question: "Cấu trúc nào của ti thể giúp tăng diện tích bề mặt để chứa enzyme hô hấp?",
-            options: ["Màng ngoài", "Mào (Cristae)", "Chất nền", "DNA ti thể"],
-            answer: 1
-        }
-      },
-      {
-        id: "cell_membrane",
-        grade: "10",
-        title: "Màng sinh chất",
-        icon: "🛡️",
-        excerpt: "Cấu trúc khảm động điều khiển sự trao đổi chất giữa tế bào và môi trường.",
-        wiki: "https://vi.wikipedia.org/wiki/Màng_sinh_chất",
-        details: "Màng sinh chất cấu tạo từ lớp kép phospholipid và các phân tử protein khảm trên đó. Nó có tính bán thấm, cho phép một số chất đi qua và ngăn cản các chất khác, đảm bảo sự ổn định nội môi của tế bào.",
-        quiz: {
-            question: "Thành phần chính tạo nên khung của màng sinh chất là gì?",
-            options: ["Protein", "Cholesterol", "Phospholipid kép", "Carbohydrate"],
-            answer: 2
-        }
-      },
-      {
-        id: "heart",
-        grade: "11",
-        title: "Hệ tuần hoàn (Tim)",
-        icon: "❤️",
-        excerpt: "Cơ quan đẩy máu đi nuôi cơ thể, hoạt động theo chu kỳ co giãn tự động.",
-        wiki: "https://vi.wikipedia.org/wiki/Tim",
-        details: "Tim người có 4 ngăn, hoạt động nhờ hệ dẫn truyền tim tự động (nút xoang nhĩ). Một chu kỳ tim kéo dài 0.8s bao gồm tâm nhĩ co, tâm thất co và giãn chung.",
-        quiz: {
-            question: "Nút nào được mệnh danh là 'Máy tạo nhịp tự nhiên' của tim?",
-            options: ["Nút xoang nhĩ", "Nút nhĩ thất", "Bó His", "Mạng lưới Purkinje"],
-            answer: 0
-        }
-      },
-      {
-        id: "dna",
-        grade: "12",
-        title: "Cấu trúc DNA",
-        icon: "🧬",
-        excerpt: "Vật chất di truyền ở cấp độ phân tử, lưu trữ thông tin về mọi tính trạng.",
-        wiki: "https://vi.wikipedia.org/wiki/DNA",
-        details: "DNA là chuỗi xoắn kép gồm hai mạch polynucleotide ngược chiều nhau. Các nucleotide liên kết với nhau theo nguyên tắc bổ sung: A-T, G-C.",
-        quiz: {
-            question: "Liên kết nào giữ hai mạch DNA lại với nhau?",
-            options: ["Liên kết Peptide", "Liên kết Hydro", "Liên kết Cộng hóa trị", "Liên kết Ion"],
-            answer: 1
-        }
-      },
-      {
-        id: "evolution",
-        grade: "12",
-        title: "Tiến hóa (Darwin)",
-        icon: "🐒",
-        excerpt: "Học thuyết về sự biến đổi của các loài qua chọn lọc tự nhiên.",
-        wiki: "https://vi.wikipedia.org/wiki/Tiến_hóa",
-        details: "Chọn lọc tự nhiên là quá trình giữ lại những biến dị có lợi và đào thải những biến dị có hại, dẫn đến sự thích nghi và hình thành loài mới.",
-        quiz: {
-            question: "Ai là tác giả của cuốn sách 'Nguồn gốc các loài'?",
-            options: ["Lamarck", "Mendel", "Charles Darwin", "Morgan"],
-            answer: 2
-        }
+    /* ═══════════════════════════════════════════════════
+       STATE
+    ═══════════════════════════════════════════════════ */
+    const BASE_URL = API.baseUrl;
+    let currentSystem = null;   // e.g. 'circulation'
+    let currentSystemLabel = '';
+    let currentOrganId = null;
+    let currentOrganName = '';
+
+    // Frontend localStorage cache key
+    function cacheKey(sys, org) { return `biolib_v2_${sys}_${org}`; }
+
+    /* ═══════════════════════════════════════════════════
+       MODAL LEVEL 1: OPEN ORGANS LIST
+    ═══════════════════════════════════════════════════ */
+    async function openOrgansModal(systemId) {
+      currentSystem = systemId;
+
+      // Show modal immediately (data from API is fast – just static JSON)
+      const modal = document.getElementById('organs-modal');
+      modal.style.display = 'flex';
+      setTimeout(() => modal.classList.add('open'), 10);
+
+      const grid = document.getElementById('organs-grid');
+      grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:2rem;opacity:0.5">Đang tải...</div>`;
+
+      try {
+        const data = await API.Library.getSystem(systemId);
+
+        currentSystemLabel = data.label;
+        document.getElementById('organs-modal-title').textContent = data.label;
+        // Extract icon from label (first char could be emoji)
+        document.getElementById('organs-modal-icon').textContent = data.organs[0]?.icon ?? '🔬';
+
+        grid.innerHTML = data.organs.map(organ => `
+          <div class="organ-card" onclick="openDetailModal('${systemId}', '${organ.id}', '${organ.name}', '${organ.icon}')" id="organ-card-${organ.id}">
+            <span class="organ-arrow">→</span>
+            <span class="organ-icon">${organ.icon}</span>
+            <div class="organ-name">${organ.name}</div>
+            <div class="organ-desc">${organ.desc}</div>
+          </div>
+        `).join('');
+      } catch (err) {
+        grid.innerHTML = `<div style="grid-column:1/-1;color:#FCA5A5;text-align:center;padding:2rem">Lỗi tải dữ liệu: ${err.message}<br/>Hãy đảm bảo server đang chạy.</div>`;
       }
-    ];
+    }
 
-    let currentFilter = 'all';
+    /* ═══════════════════════════════════════════════════
+       MODAL LEVEL 2: OPEN ORGAN DETAIL
+    ═══════════════════════════════════════════════════ */
+    async function openDetailModal(systemId, organId, organName, organIcon) {
+      currentOrganId = organId;
+      currentOrganName = organName;
 
-    function initLibrary() {
-      const grid = document.getElementById('library-grid');
-      grid.innerHTML = '';
-      
-      const filtered = KNOWLEDGE_BASE.filter(item => currentFilter === 'all' || item.grade === currentFilter);
-      
-      filtered.forEach(item => {
-        const card = document.createElement('div');
-        card.className = 'lib-card animate-fadeInUp';
-        card.innerHTML = `
-          <span class="icon">${item.icon}</span>
-          <div style="font-size: 0.7rem; color: #00f2ff; margin-bottom: 0.5rem; text-transform: uppercase;">Lớp ${item.grade}</div>
-          <h3>${item.title}</h3>
-          <p>${item.excerpt}</p>
+      // Close level-1, open level-2
+      closeOrgansModal(false);
+
+      const modal = document.getElementById('detail-modal');
+      modal.style.display = 'flex';
+      setTimeout(() => modal.classList.add('open'), 10);
+
+      // Set header
+      document.getElementById('detail-organ-icon').textContent = organIcon;
+      document.getElementById('detail-organ-title').textContent = organName;
+      document.getElementById('detail-breadcrumb').textContent = `📚 Sinh Học 11 › ${currentSystemLabel} › ${organName}`;
+      document.getElementById('wiki-trigger-btn').onclick = () => openWiki(organName);
+      document.getElementById('back-to-organs-btn').onclick = () => {
+        closeDetailModal();
+        openOrgansModal(systemId);
+      };
+
+      // Show skeleton, hide content
+      document.getElementById('detail-skeleton').style.display = 'block';
+      document.getElementById('detail-content').style.display = 'none';
+      document.getElementById('detail-tabs').innerHTML = '';
+      document.getElementById('sk-status-text').textContent = `🧠 AI đang phân tích ${organName} từ PDF Sinh học 11...`;
+
+      // Check localStorage cache first
+      const stored = localStorage.getItem(cacheKey(systemId, organId));
+      if (stored) {
+        try {
+          const cached = JSON.parse(stored);
+          renderDetailTabs(cached);
+          return;
+        } catch(e) { /* ignore bad cache */ }
+      }
+
+      try {
+        const data = await API.Library.getOrgan(systemId, organId);
+
+        // Save to localStorage
+        localStorage.setItem(cacheKey(systemId, organId), JSON.stringify(data));
+        renderDetailTabs(data);
+      } catch (err) {
+        document.getElementById('detail-skeleton').style.display = 'none';
+        document.getElementById('detail-content').style.display = 'block';
+        document.getElementById('detail-content').innerHTML = `
+          <div style="text-align:center;padding:2rem">
+            <div style="font-size:2.5rem;margin-bottom:1rem">⚠️</div>
+            <p style="color:#FCA5A5">Lỗi tải nội dung: ${err.message}</p>
+            <p style="color:rgba(255,255,255,0.4);font-size:0.85rem">Hãy đảm bảo server đang chạy tại localhost:5000</p>
+          </div>
         `;
-        card.onclick = () => openDetail(item);
-        grid.appendChild(card);
-      });
+      }
     }
 
-    function setFilter(grade) {
-      currentFilter = grade;
-      document.querySelectorAll('.filter-btn').forEach(btn => {
-        btn.classList.toggle('active', btn.getAttribute('data-grade') === grade);
-      });
-      initLibrary();
+    function renderDetailTabs(data) {
+      const tabs = data.tabs || [];
+      const tabsEl = document.getElementById('detail-tabs');
+      const contentEl = document.getElementById('detail-content');
+
+      // Thêm tab Quiz vào cuối
+      const quizTabIdx = tabs.length;
+
+      tabsEl.innerHTML = tabs.map((tab, i) => `
+        <button class="art-tab${i===0?' active':''}" onclick="switchDetailTab(${i})" id="dtab-${i}">${tab.label}</button>
+      `).join('') + `<button class="art-tab" onclick="switchDetailTab(${quizTabIdx}); loadQuiz()" id="dtab-${quizTabIdx}" style="color:#FBBF24;border-color:rgba(251,191,36,0.3)">🧪 Thử thách</button>`;
+
+      contentEl.innerHTML = tabs.map((tab, i) => `
+        <div class="art-section${i===0?' active':''}" id="dsec-${i}">${tab.html}</div>
+      `).join('') + `<div class="art-section" id="dsec-${quizTabIdx}"><div id="quiz-container" style="text-align:center;padding:2rem;"><div style="font-size:2.5rem;margin-bottom:1rem">🧪</div><p style="color:rgba(255,255,255,0.6)">Nhấn nút bên dưới để AI tạo ca bệnh chẩn đoán!</p><button onclick="generateQuiz()" class="btn btn-primary" style="margin-top:1rem" id="quiz-generate-btn">🤖 Tạo ca bệnh AI</button></div></div>`;
+
+      document.getElementById('detail-skeleton').style.display = 'none';
+      contentEl.style.display = 'block';
+      document.getElementById('detail-body').scrollTop = 0;
+
+      // Cộng EXP đọc bài (+3)
+      if(window.BioAuth?.earnEXP) {
+        window.BioAuth.earnEXP(3, `read-${currentSystem}-${currentOrganId}`);
+      }
     }
 
-    function openDetail(item) {
-      const overlay = document.getElementById('modal-overlay');
-      const title = document.getElementById('modal-title');
-      const body = document.getElementById('modal-body');
-      
-      title.innerText = item.title;
-      body.innerHTML = `
-        <div class="animate-fadeIn">
-            <p style="font-size: 1.1rem; line-height: 1.8; color: rgba(255,255,255,0.8);">${item.details}</p>
-            <a href="${item.wiki}" target="_blank" class="wiki-btn">
-                🌐 Xem thêm trên Wikipedia
-            </a>
-            
-            <div class="quiz-section">
-                <h3 style="margin-bottom: 1.5rem; color: #00f2ff;">🧪 Thử thách Trải nghiệm AI</h3>
-                <p style="margin-bottom: 1rem; font-size: 0.95rem;">${item.quiz.question}</p>
-                <div id="quiz-options">
-                    ${item.quiz.options.map((opt, i) => `
-                        <button class="quiz-option" onclick="checkAnswer(${i}, ${item.quiz.answer}, this)">${opt}</button>
-                    `).join('')}
-                </div>
-                <div id="quiz-feedback" style="margin-top: 1rem; font-weight: bold; display: none;"></div>
+    function switchDetailTab(idx) {
+      document.querySelectorAll('[id^="dtab-"]').forEach((t, i) => t.classList.toggle('active', i === idx));
+      document.querySelectorAll('[id^="dsec-"]').forEach((s, i) => s.classList.toggle('active', i === idx));
+    }
+
+    /* ═══════════════════════════════════════════════════
+       CLOSE MODALS
+    ═══════════════════════════════════════════════════ */
+    function closeOrgansModal(reset = true) {
+      const modal = document.getElementById('organs-modal');
+      modal.classList.remove('open');
+      setTimeout(() => { modal.style.display = 'none'; }, 400);
+      if (reset) currentSystem = null;
+    }
+
+    function closeDetailModal() {
+      const modal = document.getElementById('detail-modal');
+      modal.classList.remove('open');
+      setTimeout(() => { modal.style.display = 'none'; }, 400);
+    }
+
+    // Close buttons
+    document.getElementById('organs-modal-close').addEventListener('click', () => closeOrgansModal());
+    document.getElementById('detail-modal-close').addEventListener('click', closeDetailModal);
+
+    // Click backdrop to close
+    document.getElementById('organs-modal').addEventListener('click', e => {
+      if (e.target === document.getElementById('organs-modal')) closeOrgansModal();
+    });
+    document.getElementById('detail-modal').addEventListener('click', e => {
+      if (e.target === document.getElementById('detail-modal')) closeDetailModal();
+    });
+
+    // ESC key
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') {
+        if (document.getElementById('detail-modal').classList.contains('open')) closeDetailModal();
+        else if (document.getElementById('organs-modal').classList.contains('open')) closeOrgansModal();
+        else closeWiki();
+      }
+    });
+
+    /* ═══════════════════════════════════════════════════
+       WIKIPEDIA API
+    ═══════════════════════════════════════════════════ */
+    async function openWiki(keyword) {
+      if (!keyword) return;
+      document.getElementById('wiki-overlay').classList.add('open');
+      document.getElementById('wiki-popup').classList.add('open');
+      const content = document.getElementById('wiki-content');
+      content.innerHTML = `<div style="text-align:center;padding:2rem"><span style="font-size:2rem">🔍</span><br/>Đang kết nối Wikipedia...</div>`;
+
+      try {
+        const res = await fetch(`https://vi.wikipedia.org/w/api.php?action=query&prop=extracts&exintro&explaintext&format=json&origin=*&titles=${encodeURIComponent(keyword)}`);
+        const data = await res.json();
+        const pages = data.query.pages;
+        const pageId = Object.keys(pages)[0];
+
+        if (pageId === '-1') {
+          content.innerHTML = `<p style="color:#FCA5A5">Không tìm thấy bài viết cho "<strong>${keyword}</strong>" trên Wikipedia.</p>`;
+        } else {
+          const extract = pages[pageId].extract;
+          const url = `https://vi.wikipedia.org/wiki/${encodeURIComponent(pages[pageId].title)}`;
+          const paragraphs = extract.split('\n').filter(p => p.trim()).slice(0, 3).map(p => `<p style="margin-bottom:0.875rem">${p}</p>`).join('');
+          
+          content.innerHTML = `
+            <div style="display:flex; align-items:center; gap:0.75rem; margin-bottom:1.25rem; background:rgba(255,255,255,0.05); padding:1rem; border-radius:0.75rem; border:1px solid rgba(255,255,255,0.1)">
+              <img src="https://upload.wikimedia.org/wikipedia/commons/7/77/Wikipedia_svg_logo.svg" style="width:40px; height:40px" />
+              <div>
+                <h3 style="margin:0; font-size:1.1rem; color:white">${pages[pageId].title}</h3>
+                <div style="font-size:0.75rem; opacity:0.6">Bách khoa toàn thư mở</div>
+              </div>
             </div>
+            ${paragraphs}
+            <p style="opacity:0.6; font-style:italic; font-size:0.8rem">... (Và nhiều thông tin khác trên Wikipedia)</p>
+            <div style="margin-top:2rem; text-align:center">
+              <a href="${url}" target="_blank" class="btn" style="background:#fff; color:#000; padding:0.75rem 2rem; border-radius:999px; font-weight:700; text-decoration:none; display:inline-block; box-shadow: 0 4px 15px rgba(255,255,255,0.2)">
+                Mở Wikipedia Tiếng Việt →
+              </a>
+            </div>
+          `;
+        }
+      } catch (e) {
+        content.innerHTML = `<p style="color:#FCA5A5">Lỗi kết nối: ${e.message}</p>`;
+      }
+    }
+
+    function closeWiki() {
+      document.getElementById('wiki-overlay').classList.remove('open');
+      document.getElementById('wiki-popup').classList.remove('open');
+    }
+
+    /* ═══════════════════════════════════════════════════
+       SEARCH & FILTER
+    ═══════════════════════════════════════════════════ */
+    document.getElementById('search-input').addEventListener('input', function() {
+      const q = this.value.toLowerCase();
+      document.querySelectorAll('.lib-card').forEach(card => {
+        card.style.display = (card.dataset.title || '').toLowerCase().includes(q) || !q ? '' : 'none';
+      });
+    });
+
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const f = btn.dataset.filter;
+        document.querySelectorAll('.lib-card').forEach(card => {
+          card.style.display = (f === 'all' || card.dataset.cat === f) ? '' : 'none';
+        });
+      });
+    });
+
+    /* ═══════════════════════════════════════════════════
+       QUIZ SYSTEM
+    ═══════════════════════════════════════════════════ */
+    let currentQuizData = null;
+    let currentQuizId = null;
+
+    function loadQuiz() {
+      // Trigger: tab clicked
+    }
+
+    async function generateQuiz() {
+      const container = document.getElementById('quiz-container');
+      container.innerHTML = `<div style="text-align:center;padding:2rem;"><div class="thinking-dots" style="justify-content:center;margin-bottom:1rem"><span></span><span></span><span></span></div><p style="color:rgba(167,139,250,0.7);font-size:0.9rem">🤖 AI đang tạo ca bệnh chẩn đoán...</p></div>`;
+
+      try {
+        const res = await fetch(BASE_URL + '/api/quiz/generate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ system: currentSystem || 'circulation', organ: currentOrganName || '' })
+        });
+        const data = await res.json();
+        if (!data.success) throw new Error(data.error || 'Đã xảy ra lỗi');
+
+        currentQuizData = data.quiz;
+        currentQuizId = data.quizId;
+        renderQuiz(data.quiz);
+      } catch (err) {
+        container.innerHTML = `<div style="text-align:center;padding:2rem;color:#FCA5A5">⚠️ Lỗi tạo quiz: ${err.message}<br/><button onclick="generateQuiz()" class="btn btn-outline btn-sm" style="margin-top:1rem">Thử lại</button></div>`;
+      }
+    }
+
+    function renderQuiz(quiz) {
+      const container = document.getElementById('quiz-container');
+      container.innerHTML = `
+        <div style="text-align:left;">
+          <div style="background:linear-gradient(135deg,rgba(124,58,237,0.15),rgba(236,72,153,0.08));border:1px solid rgba(167,139,250,0.3);border-radius:1rem;padding:1.25rem;margin-bottom:1.25rem;">
+            <div style="font-size:0.75rem;font-weight:700;color:#FBBF24;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.5rem;">🏥 Ca Bệnh</div>
+            <h4 style="color:white;margin-bottom:0.5rem;">${quiz.caseTitle}</h4>
+            <p style="font-size:0.88rem;color:rgba(255,255,255,0.8);line-height:1.6;">${quiz.patientInfo}</p>
+          </div>
+          <h4 style="color:var(--color-primary-light);margin-bottom:1rem;font-size:0.95rem;">❓ ${quiz.question}</h4>
+          <div id="quiz-options" style="display:flex;flex-direction:column;gap:0.6rem;">
+            ${quiz.options.map(opt => `
+              <button class="quiz-option" onclick="selectQuizAnswer('${opt.id}')" id="quiz-opt-${opt.id}" style="
+                padding:0.75rem 1rem;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);
+                border-radius:0.75rem;text-align:left;color:rgba(255,255,255,0.85);font-size:0.88rem;
+                cursor:pointer;transition:all 0.2s;font-family:inherit;
+              "><strong style="color:var(--color-primary-light)">${opt.id}.</strong> ${opt.text}</button>
+            `).join('')}
+          </div>
+          <div id="quiz-result" style="display:none;margin-top:1.25rem;"></div>
         </div>
       `;
-      
-      overlay.classList.add('open');
     }
 
-    function checkAnswer(selected, correct, btn) {
-        const feedback = document.getElementById('quiz-feedback');
-        const buttons = document.querySelectorAll('.quiz-option');
-        
-        buttons.forEach(b => b.disabled = true);
-        
-        if (selected === correct) {
-            btn.classList.add('correct');
-            feedback.innerText = "🎉 Chính xác! Bạn nhận được 10 EXP.";
-            feedback.style.color = "#10B981";
-            if(window.BioAuth?.earnEXP) window.BioAuth.earnEXP(10, 'quiz');
-        } else {
-            btn.classList.add('wrong');
-            buttons[correct].classList.add('correct');
-            feedback.innerText = "❌ Tiếc quá, hãy đọc kỹ lại kiến thức phía trên nhé!";
-            feedback.style.color = "#EF4444";
-        }
-        feedback.style.display = "block";
-    }
+    async function selectQuizAnswer(answerId) {
+      if (!currentQuizData) return;
+      // Disable all options
+      document.querySelectorAll('.quiz-option').forEach(btn => {
+        btn.style.pointerEvents = 'none';
+      });
 
-    function closeModal() {
-      document.getElementById('modal-overlay').classList.remove('open');
-    }
+      const correct = currentQuizData.correctAnswer;
+      const isCorrect = answerId === correct;
 
-    function filterLibrary() {
-        const q = document.getElementById('search-input').value.toLowerCase();
-        const cards = document.querySelectorAll('.lib-card');
-        cards.forEach(card => {
-            const text = card.innerText.toLowerCase();
-            card.style.display = text.includes(q) ? 'block' : 'none';
-        });
-    }
+      // Highlight correct/wrong
+      document.getElementById('quiz-opt-' + correct).style.borderColor = '#10B981';
+      document.getElementById('quiz-opt-' + correct).style.background = 'rgba(16,185,129,0.15)';
 
-    window.onload = initLibrary;
+      if (!isCorrect) {
+        document.getElementById('quiz-opt-' + answerId).style.borderColor = '#EF4444';
+        document.getElementById('quiz-opt-' + answerId).style.background = 'rgba(239,68,68,0.15)';
+      }
+
+      // Show result
+      const resultEl = document.getElementById('quiz-result');
+      const score = isCorrect ? 100 : 0;
+      resultEl.style.display = 'block';
+      resultEl.innerHTML = `
+        <div style="background:${isCorrect ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.1)'};border:1px solid ${isCorrect ? 'rgba(16,185,129,0.3)' : 'rgba(239,68,68,0.3)'};border-radius:1rem;padding:1.25rem;">
+          <div style="font-size:1.2rem;font-weight:900;margin-bottom:0.5rem;color:${isCorrect ? '#10B981' : '#EF4444'}">
+            ${isCorrect ? '✅ Chính xác! +20 EXP' : '❌ Sai rồi! +10 EXP (EXP tham gia)'}
+          </div>
+          <p style="font-size:0.88rem;color:rgba(255,255,255,0.8);line-height:1.6;">${currentQuizData.explanation}</p>
+          <div style="margin-top:1rem;display:flex;gap:0.5rem;flex-wrap:wrap;">
+            ${currentQuizData.relatedKnowledge ? `
+              <span style="padding:0.25rem 0.6rem;background:rgba(239,68,68,0.15);border-radius:999px;font-size:0.72rem;font-weight:700;color:#FCA5A5;">Sinh 10: ${currentQuizData.relatedKnowledge.biology10}</span>
+              <span style="padding:0.25rem 0.6rem;background:rgba(124,58,237,0.15);border-radius:999px;font-size:0.72rem;font-weight:700;color:#A78BFA;">Sinh 11: ${currentQuizData.relatedKnowledge.biology11}</span>
+              <span style="padding:0.25rem 0.6rem;background:rgba(16,185,129,0.15);border-radius:999px;font-size:0.72rem;font-weight:700;color:#6EE7B7;">Sinh 12: ${currentQuizData.relatedKnowledge.biology12}</span>
+            ` : ''}
+          </div>
+          <button onclick="generateQuiz()" class="btn btn-outline btn-sm" style="margin-top:1rem;">🔁 Ca bệnh mới</button>
+        </div>
+      `;
+
+      // Ghi nhận quiz + EXP
+      if (window.BioAuth?.completeQuiz && currentQuizId) {
+        await window.BioAuth.completeQuiz(currentQuizId, score);
+      } else if (window.BioAuth?.earnEXP) {
+        window.BioAuth.earnEXP(isCorrect ? 20 : 10, 'quiz-' + currentSystem);
+      }
+    }
   </script>
+  <script type="module" src="js/auth.js"></script>
+  <!-- Floating Chatbot Button -->
+  <a href="chatbot.html" class="floating-chat-btn" title="Tư vấn AI">🤖</a>
 </body>
 </html>
