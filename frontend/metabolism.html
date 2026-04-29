@@ -192,12 +192,21 @@
     </div>
 
     <!-- Analysis Bar (Luồng dữ liệu khép kín) -->
-    <div class="container" style="margin-top: 1rem;">
-      <div class="card" style="padding: 1rem 1.5rem; border: 1px solid rgba(16,185,129,0.3); background: rgba(16,185,129,0.05); display: flex; align-items: center; gap: 1rem;">
+    <div class="container" style="margin-top: 1rem; display: flex; gap: 1rem;">
+      <div class="card" style="flex: 1; padding: 1rem 1.5rem; border: 1px solid rgba(16,185,129,0.3); background: rgba(16,185,129,0.05); display: flex; align-items: center; gap: 1rem;">
         <div class="status-dot pulse-green"></div>
         <div id="connection-status" style="font-size: 0.9rem; color: #10B981; font-weight: 600;">
           Hệ thống đang đồng bộ dữ liệu lâm sàng để phân tích ATP...
         </div>
+      </div>
+      
+      <!-- Progress Tracker -->
+      <div class="card" style="flex: 0 0 350px; padding: 0.5rem 1rem; display: flex; align-items: center; justify-content: space-around;">
+        <div class="step-mini active" title="Chuyển hóa">⚡</div>
+        <div style="width: 20px; height: 2px; background: rgba(255,255,255,0.1)"></div>
+        <div class="step-mini" title="Kính hiển vi" style="opacity: 0.3">🔬</div>
+        <div style="width: 20px; height: 2px; background: rgba(255,255,255,0.1)"></div>
+        <div class="step-mini" title="Vi sinh" style="opacity: 0.3">🦠</div>
       </div>
     </div>
 
@@ -324,6 +333,14 @@
             <div style="font-size:0.85rem; color:rgba(255,255,255,0.5); text-transform:uppercase;">Tổng Sản Lượng Năng Lượng (Từ 1 Glucose)</div>
             <div class="atp-count-display" id="total-atp">38 ATP</div>
           </div>
+
+          <div style="display: flex; justify-content: flex-end; margin-top: 2rem;">
+            <a href="microscope.html" class="btn btn-primary btn-xl" id="btn-next-station">
+              🔬 Tiếp theo: Trạm Kính Hiển Vi ➔
+            </a>
+          </div>
+        </div>
+      </section>
         </div>
       </section>
 
