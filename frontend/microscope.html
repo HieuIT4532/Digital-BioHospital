@@ -3,118 +3,115 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Trạm Kính Hiển Vi – Digital BioHospital</title>
+  <title>Kính Hiển Vi Thông Minh AI – Digital BioHospital</title>
   <link rel="stylesheet" href="css/global.css" />
   <link rel="stylesheet" href="css/components.css" />
   <link rel="stylesheet" href="css/animations.css" />
   <style>
-    /* Bảng điều khiển */
-    .lab-panel {
-      background: rgba(14, 14, 20, 0.6);
-      border: 1px solid rgba(167, 139, 250, 0.2);
-      border-radius: 1.5rem;
-      padding: 1.5rem;
-      backdrop-filter: blur(10px);
+    .lab-grid {
+      display: grid;
+      grid-template-columns: 1fr 350px;
+      gap: 2rem;
+      margin-top: 2rem;
     }
 
-    .clinical-case {
-      background: linear-gradient(135deg, rgba(16,185,129,0.1), rgba(124,58,237,0.1));
-      border: 1px solid rgba(16,185,129,0.3);
-      border-radius: 1rem;
-      padding: 1.5rem;
-      margin-bottom: 2rem;
-      display: flex;
-      gap: 1.5rem;
-      align-items: center;
-    }
-    .scanner-icon {
-      font-size: 3rem;
-      animation: pulse 2s infinite;
-      text-shadow: 0 0 20px rgba(16,185,129,0.5);
-    }
-
-    /* ──── Kính Hiển Vi ──── */
-    .microscope-stage {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 1rem;
+    /* ── VIRTUAL MICROSCOPE UI ── */
+    .microscope-container {
+      background: #0a0a0f;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 2.5rem;
+      padding: 2.5rem;
       position: relative;
     }
 
     .lens-view {
-      width: 300px;
-      height: 300px;
+      width: 450px;
+      height: 450px;
+      margin: 0 auto;
       border-radius: 50%;
+      border: 15px solid #1a1a2e;
       background: #000;
-      border: 8px solid #333;
-      box-shadow: 0 0 0 10px #1a1a1a, inset 0 0 40px rgba(255,255,255,0.2);
       position: relative;
       overflow: hidden;
+      box-shadow: 0 0 50px rgba(0,0,0,0.8), inset 0 0 100px rgba(99, 102, 241, 0.2);
+    }
+
+    .cell-membrane-sim {
+      width: 200%;
+      height: 200%;
+      position: absolute;
+      top: -50%; left: -50%;
+      background: radial-gradient(circle at 50% 50%, rgba(99, 102, 241, 0.1) 0%, transparent 70%);
       display: flex;
       justify-content: center;
       align-items: center;
+      transition: transform 0.5s ease-out;
     }
 
-    /* Crosshair */
-    .lens-view::before, .lens-view::after {
+    /* Fluid Mosaic Model Representation */
+    .bilayer {
+      width: 100%;
+      height: 40px;
+      background: repeating-linear-gradient(90deg, #6366f1 0, #6366f1 5px, transparent 5px, transparent 15px);
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      opacity: 0.5;
+    }
+
+    .receptor-protein {
+      width: 40px;
+      height: 60px;
+      background: #a855f7;
+      border-radius: 10px;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      box-shadow: 0 0 15px #a855f7;
+    }
+
+    .exocytosis-vesicle {
+      width: 30px;
+      height: 30px;
+      border: 2px solid #10B981;
+      border-radius: 50%;
+      position: absolute;
+      bottom: 20%;
+      transition: all 2s ease-in;
+    }
+
+    /* ── CONTROLS ── */
+    .scope-controls {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .knob-container {
+      text-align: center;
+    }
+
+    .knob {
+      width: 60px;
+      height: 60px;
+      background: #1a1a2e;
+      border: 2px solid var(--color-primary);
+      border-radius: 50%;
+      margin: 10px auto;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .knob::after {
       content: '';
       position: absolute;
-      background: rgba(255,255,255,0.2);
-    }
-    .lens-view::before { width: 100%; height: 1px; top: 50%; left: 0; }
-    .lens-view::after { height: 100%; width: 1px; left: 50%; top: 0; }
-
-    /* SVG Content inside lens */
-    #specimen {
-      width: 100%;
-      height: 100%;
-      transition: transform 0.5s ease-in-out, filter 0.5s;
-    }
-
-    /* Các thành phần màng tế bào */
-    .membrane {
-      fill: none;
-      stroke: #7C3AED;
-      stroke-width: 8;
-      stroke-dasharray: 4 8;
-      opacity: 0;
-      transition: opacity 0.5s;
-    }
-    .receptor {
-      fill: #3B82F6;
-      opacity: 0;
-      transition: opacity 0.5s;
-      transform-origin: center;
-    }
-
-    /* Hạt Histamine (Vesicles) */
-    .vesicle {
-      fill: #EF4444;
-      opacity: 0;
-      transform-origin: center;
-    }
-
-    /* Animation Xuất bào */
-    @keyframes exocytosis {
-      0% { transform: translateY(50px) scale(0.5); opacity: 1; }
-      50% { transform: translateY(0) scale(1.2); opacity: 1; }
-      100% { transform: translateY(-20px) scale(0.1); opacity: 0; }
-    }
-
-    .histamine-storm .vesicle {
-      animation: exocytosis 1.5s infinite;
-    }
-    
-    /* Vị trí các bọng lệch nhau để tự nhiên */
-    .vesicle:nth-child(1) { animation-delay: 0s; cx: 30; cy: 70; }
-    .vesicle:nth-child(2) { animation-delay: 0.3s; cx: 50; cy: 80; }
-    .vesicle:nth-child(3) { animation-delay: 0.6s; cx: 70; cy: 70; }
-    
-    .antihistamine-shield {
-      fill: #10B981;
-      opacity: 0;
-      transition: opacity 0.5s;
+      top: 5px;
+      left: 50%;
+      width: 4px;
+      height: 15px;
+      background: var(--color-primary);
+      transform: translateX(-50%);
     }
 
   </style>
@@ -128,275 +125,143 @@
         <div class="brand-icon">🏥</div>
         <span>Digital BioHospital</span>
       </a>
-      <ul class="navbar-nav" role="list">
-        <li><a href="index.html" id="nav-home">🏠 Trang chủ</a></li>
+      <ul class="navbar-nav">
+        <li><a href="index.html">🏠 Trang chủ</a></li>
         <li class="nav-item">
-          <a href="#" style="cursor:default;">🏥 Lâm Sàng (Lớp 11) ▼</a>
+          <a href="#" class="active">🔬 Lab Lớp 10 ▼</a>
           <div class="nav-dropdown flex-col">
-            <a href="reception.html">📋 Phòng Tiếp nhận</a>
-            <a href="departments.html">🏥 Khám Chuyên khoa</a>
-            <a href="anatomy.html">🧬 Giải phẫu 3D</a>
-          </div>
-        </li>
-        <li class="nav-item">
-          <a href="#" style="cursor:default;" class="active">🔬 Phòng Lab (Lớp 10) ▼</a>
-          <div class="nav-dropdown flex-col">
-            <a href="microscope.html" style="color:var(--color-primary-light)">🔬 Soi Kính Hiển Vi</a>
-            <a href="metabolism.html">⚡ Chuyển Hóa & Năng Lượng</a>
-            <a href="microbiology.html">🦠 Vi Sinh & Miễn Dịch</a>
-          </div>
-        </li>
-        <li class="nav-item">
-          <a href="#" style="cursor:default;">🧬 Di Truyền Học (Lớp 12) ▼</a>
-          <div class="nav-dropdown flex-col">
-            <a href="genetics.html">🧬 Bản Đồ Gene</a>
-            <a href="prediction.html">🔮 Dự Báo Tương Lai</a>
-          </div>
-        </li>
-        <li class="nav-item">
-          <a href="#" style="cursor:default;">🏆 Hồ Sơ & Thành Tựu ▼</a>
-          <div class="nav-dropdown flex-col">
-            <a href="profile.html">👤 Hộ Chiếu Sức Khỏe</a>
-            <a href="personalize.html">🌱 Kế Hoạch Cá Nhân</a>
-            <a href="leaderboard.html">🏆 Bảng Xếp Hạng</a>
-            <a href="library.html">📚 Thư Viện Y Khoa</a>
+            <a href="metabolism.html">⚡ Chuyển Hóa</a>
+            <a href="microscope.html" style="color:var(--color-primary-light)">🔬 Kính Hiển Vi</a>
+            <a href="microbiology.html">🦠 Vi Sinh</a>
           </div>
         </li>
       </ul>
-      <a href="reception.html" class="navbar-patient-btn btn btn-sm">🧑‍⚕️ Bắt đầu khám</a>
     </div>
   </nav>
 
   <main id="main">
-    <div class="page-header" style="background: linear-gradient(180deg, rgba(124,58,237,0.08) 0%, transparent 100%); border-bottom: 1px solid rgba(255,255,255,0.05);">
-      <div class="container">
-        <div class="section-tag animate-fadeInUp">Phòng Lab Sinh 10</div>
-        <h1 class="animate-fadeInUp delay-100">🔬 Trạm Soi Kính Hiển Vi</h1>
-        <p class="animate-fadeInUp delay-200">Quan sát Màng sinh chất và các quá trình vận chuyển vi mô.</p>
-<<<<<<< HEAD
-      </div>
-    </div>
-
-    <!-- Analysis Bar (Luồng dữ liệu khép kín) -->
-    <div class="container" style="margin-top: 1rem; display: flex; gap: 1rem;">
-      <div class="card" style="flex: 1; padding: 1rem 1.5rem; border: 1px solid rgba(16,185,129,0.3); background: rgba(16,185,129,0.05); display: flex; align-items: center; gap: 1rem;">
-        <div class="status-dot pulse-green"></div>
-        <div id="connection-status" style="font-size: 0.9rem; color: #10B981; font-weight: 600;">
-          Hệ thống đang quét cấu trúc tế bào từ dữ liệu lâm sàng...
-        </div>
+    <div class="container">
+      <div class="card" style="margin-top:1rem; padding: 0.8rem 1.5rem; font-size: 0.7rem; color: rgba(255,255,255,0.4);">
+        Cơ thể ➔ Hệ cơ quan ➔ Cơ quan ➔ <span style="color:var(--color-primary-light); font-weight:800;">Mô ➔ Tế bào</span>
       </div>
 
-      <!-- Progress Tracker -->
-      <div class="card" style="flex: 0 0 350px; padding: 0.5rem 1rem; display: flex; align-items: center; justify-content: space-around;">
-        <div class="step-mini done" title="Chuyển hóa">⚡</div>
-        <div style="width: 20px; height: 2px; background: var(--color-primary)"></div>
-        <div class="step-mini active" title="Kính hiển vi">🔬</div>
-        <div style="width: 20px; height: 2px; background: rgba(255,255,255,0.1)"></div>
-        <div class="step-mini" title="Vi sinh" style="opacity: 0.3">🦠</div>
-=======
->>>>>>> parent of d86b60d (up)
-      </div>
-    </div>
-
-    <div class="container" style="padding-top: 2rem;">
-
-      <!-- 1. LIÊN KẾT BỆNH ÁN LÂM SÀNG -->
-      <div class="clinical-case animate-slideUp">
-        <div class="scanner-icon">🔬</div>
+      <div class="lab-grid">
+        <!-- LEFT: MICROSCOPE -->
         <div>
-          <h3 style="color:#10B981; margin-bottom:0.5rem">Đồng Bộ Hồ Sơ Bệnh Nhân</h3>
-          <div id="patient-data-display">
-            <p style="color:rgba(255,255,255,0.7); font-size:0.9rem;">Hệ thống đang dò tìm dữ liệu bệnh án từ Phòng tiếp nhận...</p>
+          <div class="microscope-container">
+            <div class="flex-between" style="margin-bottom: 1.5rem">
+              <div>
+                <h2 style="font-size: 1.5rem">🔬 AI Virtual Scope</h2>
+                <p style="font-size: 0.8rem; opacity: 0.5;">Đang soi: Mẫu biểu bì nhạy cảm (Dị ứng)</p>
+              </div>
+              <div id="zoom-indicator" class="badge badge-green">100x</div>
+            </div>
+
+            <div class="lens-view">
+              <div class="cell-membrane-sim" id="sim-view">
+                <div class="bilayer"></div>
+                <div class="receptor-protein" style="left: 40%"></div>
+                <div class="receptor-protein" style="left: 60%"></div>
+                <div id="vesicle" class="exocytosis-vesicle" style="left: 48%; display:none;"></div>
+              </div>
+            </div>
+
+            <div class="scope-controls">
+              <div class="knob-container">
+                <label style="font-size:0.7rem; text-transform:uppercase;">Độ phóng đại (Zoom)</label>
+                <div class="knob" id="knob-zoom" style="transform: rotate(0deg);"></div>
+              </div>
+              <div class="knob-container">
+                <label style="font-size:0.7rem; text-transform:uppercase;">Lấy nét (Focus)</label>
+                <div class="knob" id="knob-focus" style="transform: rotate(45deg);"></div>
+              </div>
+            </div>
+
+            <div id="ai-analysis-box" class="card" style="margin-top: 1.5rem; display:none; border-color: #EF4444; background: rgba(239,68,68,0.05);">
+              <h4 style="color: #EF4444; font-size: 0.9rem;">⚠️ Phát hiện phản ứng Xuất bào (Exocytosis)</h4>
+              <p id="analysis-text" style="font-size: 0.85rem; margin-top: 0.5rem; line-height: 1.5;"></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: SIDEBAR -->
+        <div class="animate-slideRight">
+          <div class="card" style="position: sticky; top: 100px;">
+            <div id="patient-info" style="margin-bottom: 2rem;">
+              <div style="font-size: 0.7rem; opacity: 0.5;">BỆNH NHÂN:</div>
+              <div id="p-name" style="font-weight: 800; font-size: 1.2rem;">--</div>
+              <div id="p-symptoms" style="font-size: 0.8rem; color: #EF4444; margin-top: 5px;">--</div>
+            </div>
+
+            <button class="btn btn-primary" style="width: 100%;" id="btn-trigger-exocytosis">Mô phỏng phản ứng dị ứng</button>
+            <p style="font-size: 0.7rem; color: rgba(255,255,255,0.4); margin-top: 10px; text-align: center;">
+              Giải thích: Protein thụ thể màng tế bào nhận diện kháng nguyên gây ra quá trình phóng thích Histamine.
+            </p>
+
+            <div style="margin-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1.5rem;">
+              <h4 style="font-size: 0.8rem; color: var(--color-primary-light); margin-bottom: 1rem;">Trạm 2/3 Lab 10:</h4>
+              <div class="progress-steps" style="display:flex; flex-direction:column; gap:10px;">
+                <div class="step done">⚡ Chuyển hóa & Năng lượng</div>
+                <div class="step active">🔬 Soi Kính Hiển Vi</div>
+                <div class="step">🦠 Vi Sinh & Miễn Dịch</div>
+              </div>
+            </div>
+
+            <a href="microbiology.html" class="btn btn-outline" style="width: 100%; margin-top: 2rem;">➔ Trạm Vi Sinh</a>
           </div>
         </div>
       </div>
-
-      <!-- 2. KHU VỰC THÍ NGHIỆM -->
-      <section>
-        <div class="grid-2">
-          
-          <!-- Bảng Điều Khiển -->
-          <div class="lab-panel">
-            <h3 style="margin-bottom:1rem; color:var(--color-primary-light)">Bảng Điều Khiển Vật Kính</h3>
-            <p style="font-size:0.85rem; color:rgba(255,255,255,0.6); margin-bottom:1.5rem">Xoay nấc tiêu cự để phóng to tiêu bản. Màng sinh chất chỉ có thể quan sát rõ ở độ phóng đại cực đại (100x).</p>
-
-            <div class="form-group">
-              <label class="form-label">Độ Phóng Đại: <span id="zoom-display" style="color:#6EE7B7; font-weight:700">10x</span></label>
-              <input type="range" id="slider-zoom" class="form-range" min="1" max="3" value="1" step="1" />
-              <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:rgba(255,255,255,0.4)">
-                <span>10x (Mờ)</span><span>40x (Vừa)</span><span>100x (Siêu rõ)</span>
-              </div>
-            </div>
-
-            <div id="action-panel" style="display:none; margin-top:2rem; padding-top:1.5rem; border-top:1px solid rgba(255,255,255,0.1)">
-              <div id="alert-msg" style="color:#FCA5A5; font-size:0.9rem; margin-bottom:1rem; padding:1rem; background:rgba(239,68,68,0.15); border-radius:0.75rem; border:1px solid rgba(239,68,68,0.3);">
-                <strong>Cảnh báo:</strong> Tế bào biểu bì đang kích hoạt cơ chế <em>Xuất Bào (Exocytosis)</em>, liên tục phóng thích Histamine gây mẩn đỏ và ngứa!
-              </div>
-              <button class="btn btn-primary" id="btn-inject" style="width:100%">💉 Tiêm Kháng Histamin</button>
-            </div>
-            
-            <div id="success-msg" style="display:none; margin-top:2rem; padding:1rem; background:rgba(16,185,129,0.15); border-radius:0.75rem; border:1px solid rgba(16,185,129,0.3); color:#6EE7B7; font-size:0.9rem;">
-              <strong>Thành công!</strong> Các Thụ thể màng đã bị phong bế. Quá trình xuất bào Histamine đã bị chặn đứng. Bệnh nhân sẽ sớm hết dị ứng.
-            </div>
-
-          </div>
-
-          <!-- Màn Hình Kính Hiển Vi -->
-          <div class="lab-panel microscope-stage">
-            <h3 style="color:rgba(255,255,255,0.5); font-size:0.9rem">Màn Hình Phân Tích (Live Feed)</h3>
-            <div class="lens-view">
-              <svg id="specimen" viewBox="0 0 100 100" style="transform: scale(0.5); filter: blur(5px);">
-                <!-- Khối tế bào mờ mờ ở nền -->
-                <circle cx="50" cy="50" r="45" fill="rgba(124,58,237,0.2)" />
-                <circle cx="60" cy="40" r="15" fill="rgba(167,139,250,0.3)" />
-                
-                <!-- Màng sinh chất (Fluid Mosaic Model) -->
-                <g class="membrane-group">
-                  <path class="membrane" d="M 10 50 Q 50 30 90 50" />
-                  <path class="membrane" d="M 10 55 Q 50 35 90 55" />
-                  
-                  <!-- Protein xuyên màng / Thụ thể -->
-                  <path class="receptor" d="M 45 40 L 55 40 L 55 55 L 45 55 Z" />
-                  <polygon class="receptor" points="40,35 60,35 50,45" fill="#2563EB" />
-                  
-                  <!-- Thuốc kháng Histamine bám vào Thụ thể -->
-                  <circle class="antihistamine-shield" cx="50" cy="35" r="8" />
-                </g>
-
-                <!-- Bọng Histamine (Vesicles) -->
-                <g class="vesicle-group">
-                  <circle class="vesicle" r="4" />
-                  <circle class="vesicle" r="4" />
-                  <circle class="vesicle" r="4" />
-                </g>
-              </svg>
-            </div>
-            <p id="lens-status" style="font-size:0.8rem; color:var(--color-primary-light)">Tiêu bản: Màng tế bào biểu bì.</p>
-          </div>
-
-        </div>
-<<<<<<< HEAD
-        
-        <div style="display: flex; justify-content: flex-end; margin-top: 2rem; width: 100%;">
-          <a href="microbiology.html" class="btn btn-primary btn-xl" id="btn-next-station">
-            🦠 Tiếp theo: Trạm Vi Sinh & Miễn Dịch ➔
-          </a>
-        </div>
-=======
->>>>>>> parent of d86b60d (up)
-      </section>
-
     </div>
   </main>
 
-  <!-- Floating Chatbot Button -->
-  <a href="chatbot.html" class="floating-chat-btn" title="Tư vấn AI">🤖</a>
-
-  <footer role="contentinfo">
-    <div class="container">
-      <p>🏥 Bệnh Viện Sinh Học Thông Minh</p>
-    </div>
-  </footer>
-
   <script src="js/patient.js"></script>
-  <script type="module">
-    import { BioDB } from './js/firebase-config.js';
+  <script>
+    let currentZoom = 1;
+    const view = document.getElementById('sim-view');
+    const badge = document.getElementById('zoom-indicator');
 
-    let hasAllergy = false;
-    let labCompleted = false;
-
-    // ── 1. ĐỒNG BỘ BỆNH ÁN ──
     window.addEventListener('load', () => {
-      const patient = PatientManager.get();
-      const display = document.getElementById('patient-data-display');
-      
-      if (patient && patient.currentSymptoms) {
-        display.innerHTML = `
-          <div style="font-size:1.1rem; font-weight:700; color:#FFF">Bệnh án #${patient.patientCode} - <span style="color:#A78BFA">${patient.name}</span></div>
-          <p style="font-size:0.95rem; color:rgba(255,255,255,0.8); margin-top:0.5rem;">
-            <strong>Triệu chứng Lâm sàng (Sinh 11):</strong> <span style="color:#FCA5A5; font-style:italic">"${patient.currentSymptoms}"</span>
-          </p>
-          <p style="font-size:0.85rem; color:rgba(255,255,255,0.6); margin-top:0.5rem;">
-            Vui lòng chỉnh tiêu cự Kính hiển vi lên mức tối đa để soi cấu trúc màng tế bào biểu bì.
-          </p>
-        `;
-
-        // Dò xem bệnh nhân có báo dị ứng hoặc mẩn đỏ ngứa không
-        const sym = patient.currentSymptoms.toLowerCase();
-        const med = patient.medicalHistory ? patient.medicalHistory.join(' ').toLowerCase() : '';
-        if (sym.includes('dị ứng') || sym.includes('ngứa') || sym.includes('mẩn đỏ') || med.includes('dị ứng')) {
-          hasAllergy = true;
-        } else {
-          // Bật mock kịch bản nếu người dùng chưa nhập dị ứng, để họ vẫn trải nghiệm được Lab
-          hasAllergy = true; 
-        }
-
-      } else {
-        display.innerHTML = `<p style="color:rgba(255,255,255,0.5)">Không tìm thấy hồ sơ triệu chứng chi tiết. Bạn có thể quay lại <a href="reception.html" style="text-decoration:underline; color:#A78BFA">Phòng Tiếp Nhận</a> để nhập liệu. Tuy nhiên, bạn vẫn có thể trải nghiệm Lab mặc định.</p>`;
-        hasAllergy = true; // Mặc định để trải nghiệm
-      }
-    });
-
-    // ── 2. XỬ LÝ KÍNH HIỂN VI ──
-    const sliderZoom = document.getElementById('slider-zoom');
-    const zoomDisplay = document.getElementById('zoom-display');
-    const specimen = document.getElementById('specimen');
-    const actionPanel = document.getElementById('action-panel');
-    const membraneEls = document.querySelectorAll('.membrane, .receptor');
-    const vesicleGroup = document.querySelector('.vesicle-group');
-
-    sliderZoom.addEventListener('input', () => {
-      const val = parseInt(sliderZoom.value);
-      
-      if (val === 1) {
-        zoomDisplay.textContent = "10x";
-        specimen.style.transform = "scale(0.5)";
-        specimen.style.filter = "blur(5px)";
-        membraneEls.forEach(el => el.style.opacity = "0");
-        vesicleGroup.classList.remove('histamine-storm');
-        actionPanel.style.display = "none";
-      } else if (val === 2) {
-        zoomDisplay.textContent = "40x";
-        specimen.style.transform = "scale(1)";
-        specimen.style.filter = "blur(2px)";
-        membraneEls.forEach(el => el.style.opacity = "0.3");
-        vesicleGroup.classList.remove('histamine-storm');
-        actionPanel.style.display = "none";
-      } else if (val === 3) {
-        zoomDisplay.textContent = "100x";
-        specimen.style.transform = "scale(2.5) translateY(10px)";
-        specimen.style.filter = "blur(0)";
-        membraneEls.forEach(el => el.style.opacity = "1");
+      const p = PatientManager.get();
+      if (p) {
+        document.getElementById('p-name').textContent = p.name;
+        document.getElementById('p-symptoms').textContent = `Triệu chứng: ${p.currentSymptoms || 'Dị ứng nhẹ'}`;
         
-        // Kích hoạt kịch bản dị ứng
-        if (hasAllergy && !labCompleted) {
-          vesicleGroup.classList.add('histamine-storm');
-          actionPanel.style.display = "block";
+        const symptoms = (p.currentSymptoms || "").toLowerCase();
+        if(symptoms.includes('dị ứng') || symptoms.includes('ngứa') || symptoms.includes('sưng')) {
+          document.getElementById('ai-analysis-box').style.display = 'block';
+          document.getElementById('analysis-text').textContent = `Dựa trên triệu chứng "${p.currentSymptoms}", AI đã định vị mẫu mô đang có hiện tượng quá mẫn. Quan sát mô hình Khảm động của màng tế bào để thấy quá trình đào thải Histamine.`;
         }
       }
     });
 
-    // ── 3. TIÊM KHÁNG HISTAMIN ──
-    document.getElementById('btn-inject').addEventListener('click', () => {
-      // Tắt bão Histamine
-      vesicleGroup.classList.remove('histamine-storm');
-      
-      // Hiện khiên bọc màng (Kháng histamin)
-      document.querySelector('.antihistamine-shield').style.opacity = "1";
-      
-      // Cập nhật UI
-      actionPanel.style.display = "none";
-      document.getElementById('success-msg').style.display = "block";
-      
-      labCompleted = true;
+    // ── ZOOM LOGIC ──
+    document.getElementById('knob-zoom').onclick = function() {
+      currentZoom = currentZoom === 1 ? 2 : (currentZoom === 2 ? 4 : 1);
+      this.style.transform = `rotate(${currentZoom * 90}deg)`;
+      view.style.transform = `scale(${currentZoom})`;
+      badge.textContent = (currentZoom * 100) + "x";
+      badge.className = `badge ${currentZoom === 4 ? 'badge-red' : 'badge-green'}`;
+    };
 
-      // Cộng điểm EXP
-      if (window.BioAuth?.earnEXP) {
-        window.BioAuth.earnEXP(15, 'lab-microscope-allergy');
-      }
-    });
+    // ── EXOCYTOSIS SIMULATION ──
+    document.getElementById('btn-trigger-exocytosis').onclick = function() {
+      const vesicle = document.getElementById('vesicle');
+      vesicle.style.display = 'block';
+      vesicle.style.bottom = '20%';
+      vesicle.style.opacity = '1';
+
+      setTimeout(() => {
+        vesicle.style.bottom = '50%'; // Move to membrane
+        setTimeout(() => {
+          vesicle.style.width = '60px';
+          vesicle.style.height = '10px';
+          vesicle.style.borderRadius = '0';
+          vesicle.style.opacity = '0';
+          showToast("Quá trình Xuất bào (Exocytosis) hoàn tất. Histamine đã được giải phóng.", 'warning');
+        }, 2000);
+      }, 100);
+    };
 
   </script>
-  <script type="module" src="js/auth.js"></script>
 </body>
 </html>
