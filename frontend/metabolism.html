@@ -348,8 +348,10 @@
     window.addEventListener('load', () => {
       const patient = PatientManager.get();
       const display = document.getElementById('patient-data-display');
+      const connStatus = document.getElementById('connection-status');
       
       if (patient && patient.currentSymptoms) {
+        const symptoms = patient.currentSymptoms.toLowerCase();
         display.innerHTML = `
           <div style="font-size:1.1rem; font-weight:700; color:#FFF">Bệnh án #${patient.patientCode} - <span style="color:#A78BFA">${patient.name}</span></div>
           <p style="font-size:0.95rem; color:rgba(255,255,255,0.8); margin-top:0.5rem;">
@@ -359,8 +361,17 @@
             Mời Bác sĩ tiến hành các thử nghiệm Vi mô (Sinh 10) bên dưới để tìm gốc rễ vấn đề.
           </p>
         `;
+
+        if (symptoms.includes('mệt') || symptoms.includes('cơ') || symptoms.includes('uể oải')) {
+          connStatus.textContent = `Phát hiện triệu chứng liên quan đến Năng lượng: "${patient.currentSymptoms}". Đang cấu hình máy quét ATP...`;
+          connStatus.style.color = "#FBBF24";
+        } else {
+          connStatus.textContent = `Đã đồng bộ dữ liệu của ${patient.name}. Sẵn sàng phân tích chuyển hóa.`;
+        }
       } else {
         display.innerHTML = `<p style="color:rgba(255,255,255,0.5)">Không tìm thấy hồ sơ triệu chứng chi tiết. Bạn có thể quay lại <a href="reception.html" style="text-decoration:underline; color:#A78BFA">Phòng Tiếp Nhận</a> để nhập liệu.</p>`;
+        connStatus.textContent = "Chế độ Demo: Chưa có dữ liệu bệnh nhân. Vui lòng nhập triệu chứng tại Phòng Tiếp Nhận.";
+        connStatus.style.color = "rgba(255,255,255,0.4)";
       }
     });
 

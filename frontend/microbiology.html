@@ -253,8 +253,12 @@
     window.addEventListener('load', () => {
       const patient = PatientManager.get();
       const display = document.getElementById('patient-data-display');
+      const connStatus = document.getElementById('connection-status');
       
       if (patient && patient.currentSymptoms) {
+        const sym = patient.currentSymptoms.toLowerCase();
+        const med = patient.medicalHistory ? patient.medicalHistory.join(' ').toLowerCase() : '';
+
         display.innerHTML = `
           <div style="font-size:1.1rem; font-weight:700; color:#FFF">Bệnh án #${patient.patientCode} - <span style="color:#A78BFA">${patient.name}</span></div>
           <p style="font-size:0.95rem; color:rgba(255,255,255,0.8); margin-top:0.5rem;">
@@ -266,15 +270,18 @@
         `;
 
         // Dò xem bệnh nhân có báo sốt, viêm, ho không
-        const sym = patient.currentSymptoms.toLowerCase();
-        const med = patient.medicalHistory ? patient.medicalHistory.join(' ').toLowerCase() : '';
         if (sym.includes('sốt') || sym.includes('viêm') || sym.includes('ho') || med.includes('viêm') || med.includes('nhiễm')) {
           hasInfection = true;
+          connStatus.textContent = `Phát hiện phản ứng viêm: "${patient.currentSymptoms}". Đang xác định mật độ mầm bệnh...`;
+          connStatus.style.color = "#FBBF24";
         } else {
-          hasInfection = true; // Chơi mặc định
+          hasInfection = false;
+          connStatus.textContent = `Đã đồng bộ dữ liệu của ${patient.name}. Hệ miễn dịch đang ở trạng thái giám sát.`;
         }
       } else {
-        display.innerHTML = `<p style="color:rgba(255,255,255,0.5)">Không tìm thấy hồ sơ triệu chứng chi tiết. Bạn có thể quay lại <a href="reception.html" style="text-decoration:underline; color:#A78BFA">Phòng Tiếp Nhận</a> để nhập liệu. Tuy nhiên, bạn vẫn có thể trải nghiệm Lab mặc định.</p>`;
+        display.innerHTML = `<p style="color:rgba(255,255,255,0.5)">Không tìm thấy hồ sơ triệu chứng chi tiết. Bạn có thể quay lại <a href="reception.html" style="text-decoration:underline; color:#A78BFA">Phòng Tiếp Nhận</a> để nhập liệu.</p>`;
+        connStatus.textContent = "Chế độ Demo: Chưa có dữ liệu bệnh nhân. Vui lòng nhập triệu chứng tại Phòng Tiếp Nhận.";
+        connStatus.style.color = "rgba(255,255,255,0.4)";
         hasInfection = true;
       }
     });
