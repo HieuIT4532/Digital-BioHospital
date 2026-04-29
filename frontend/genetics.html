@@ -173,17 +173,21 @@
     <script src="js/patient.js"></script>
     <script>
         const genomeData = {
-            1: { title: "Cặp số 1 (Lớn nhất)", info: "Chứa hơn 3000 gene. Đột biến liên quan đến Glaucoma và Ung thư tuyến tiền liệt. Là NST lớn nhất trong bộ đơn bội người.", tags: ["Lớn nhất", "Hơn 3000 gene"] },
-            5: { title: "Cặp số 5", info: "Hội chứng Cri-du-chat (Tiếng mèo kêu): Do đột biến cấu trúc NST (mất đoạn cánh ngắn NST số 5). Kiến thức trọng tâm Sinh 12.", tags: ["Mất đoạn", "Cri-du-chat"] },
-            6: { title: "Cặp số 6", info: "Chứa phức hợp MHC quan trọng cho miễn dịch. Đột biến liên quan đến các bệnh tự miễn và dị ứng màng.", tags: ["Hệ MHC", "Dị ứng"] },
-            9: { title: "Cặp số 9", info: "Quyết định nhóm máu hệ ABO (Di truyền đa allele). Liên quan đến bệnh Bạch cầu dòng tủy.", tags: ["Nhóm máu ABO"] },
-            11: { title: "Cặp số 11", info: "Chứa gene Hemoglobin. Đột biến điểm gây bệnh Hồng cầu hình liềm. Cũng chứa gene Insulin.", tags: ["Hồng cầu liềm", "Insulin"] },
-            12: { title: "Cặp số 12", info: "Bệnh Phenylketonuria (PKU) do đột biến gene mã hóa enzyme chuyển hóa Phenylalanine.", tags: ["Bệnh PKU"] },
-            13: { title: "Cặp số 13", info: "Hội chứng Patau (Trisomy 13): Đột biến số lượng NST gây dị tật bẩm sinh đa cơ quan.", tags: ["Patau", "Thể ba"] },
-            16: { title: "Cặp số 16", info: "Bệnh Thalassemia (Tan máu bẩm sinh). Phổ biến ở các quốc gia vùng Đông Nam Á.", tags: ["Thalassemia"] },
-            18: { title: "Cặp số 18", info: "Hội chứng Edwards (Trisomy 18): Trẻ sinh ra thường có các dị tật nghiêm trọng ở tim và thận.", tags: ["Edwards", "Thể ba"] },
-            21: { title: "Cặp số 21 (Nhỏ nhất)", info: "Hội chứng Down (Trisomy 21): Đột biến số lượng NST phổ biến nhất. Gây chậm phát triển trí tuệ.", tags: ["Down", "Trisomy 21"] },
-            23: { title: "Cặp số 23 (Giới tính)", info: "X mang gene bệnh Mù màu, Máu khó đông (Hemophilia). Y mang gene SRY quyết định giới tính Nam.", tags: ["Mù màu", "Máu khó đông"] }
+            1: { title: "Cặp số 1 (Lớn nhất)", info: "Chứa hơn 3000 gene. Liên quan đến các bệnh như Bệnh tăng nhãn áp (Glaucoma) và Ung thư tuyến tiền liệt.", tags: ["Nền tảng cấu trúc", "Hơn 3000 gene"] },
+            2: { title: "Cặp số 2", info: "Chứa gene liên quan đến Hệ thống miễn dịch và Sự phát triển não bộ.", tags: ["Não bộ", "Miễn dịch"] },
+            3: { title: "Cặp số 3", info: "Chứa cụm gene nhận diện mùi vị. Đột biến ở đây liên quan đến các bệnh Ung thư phổi.", tags: ["Vị giác", "Ung thư phổi"] },
+            4: { title: "Cặp số 4", info: "'Địa chỉ' của bệnh Huntington (thoái hóa thần kinh trung ương).", tags: ["Huntington", "Thần kinh"] },
+            5: { title: "Cặp số 5", info: "Liên quan đến hội chứng Cri-du-chat (Tiếng mèo kêu) do mất đoạn NST (Kiến thức trọng tâm Sinh 12).", tags: ["Mất đoạn", "Cri-du-chat"] },
+            6: { title: "Cặp số 6", info: "Chứa phức hợp phù hợp tổ chức chính (MHC) - cực kỳ quan trọng cho Hệ miễn dịch.", tags: ["Phức hợp MHC", "Miễn dịch"] },
+            7: { title: "Cặp số 7", info: "Chứa gene gây bệnh Xơ nang (Cystic Fibrosis) - liên quan đến triệu chứng khó thở ở Phòng khám.", tags: ["Xơ nang", "Hô hấp"] },
+            9: { title: "Cặp số 9", info: "Nơi quyết định Nhóm máu ABO (Liên kết rất tốt với Lab 10).", tags: ["Nhóm máu ABO"] },
+            11: { title: "Cặp số 11", info: "Chứa gene sản sinh Insulin và Hemoglobin. Đột biến gây bệnh Thiếu máu hồng cầu hình liềm và Tiểu đường.", tags: ["Hồng cầu liềm", "Tiểu đường"] },
+            12: { title: "Cặp số 12", info: "Liên quan đến bệnh Phenylketonuria (PKU) do rối loạn chuyển hóa acid amin (Kiến thức đột biến gene lớp 12).", tags: ["Bệnh PKU", "Đột biến gene"] },
+            13: { title: "Cặp số 13", info: "Hội chứng Patau (Ba nhiễm sắc thể 13) - Đột biến số lượng NST.", tags: ["Hội chứng Patau", "Trisomy 13"] },
+            18: { title: "Cặp số 18", info: "Hội chứng Edwards (Ba nhiễm sắc thể 18).", tags: ["Hội chứng Edwards", "Trisomy 18"] },
+            19: { title: "Cặp số 19", info: "'Nghĩa địa gene' nhưng lại chứa nhiều gene liên quan đến chuyển hóa Cholesterol.", tags: ["Cholesterol"] },
+            21: { title: "Cặp số 21 (Nhỏ nhất)", info: "Hội chứng Down (Ba nhiễm sắc thể 21). Đây là ví dụ kinh điển nhất về đột biến số lượng NST lớp 12.", tags: ["Hội chứng Down", "Trisomy 21"] },
+            23: { title: "Cặp số 23 (Giới tính XY/XX)", info: "NST X: Chứa gene gây bệnh Máu khó đông (Hemophilia) và Mù màu (Di truyền liên kết giới tính). NST Y: Quyết định giới tính nam, chứa gene SRY.", tags: ["X-linked", "SRY Gene"] }
         };
 
         // --- 1. DNA Animation ---
@@ -279,7 +283,7 @@
             detail.classList.remove('hidden');
             document.getElementById('detail-title').innerText = data.title;
             document.getElementById('detail-info').innerText = data.info;
-            document.getElementById('detail-tags').innerHTML = data.tags.map(t => `<span class="px-3 py-1 bg-cyan-400/10 text-cyan-400 text-[10px] rounded-full border border-cyan-400/20">${t}</span>`).join('');
+            document.getElementById('detail-tags').innerHTML = (data.tags || []).map(t => `<span class="px-3 py-1 bg-cyan-400/10 text-cyan-400 text-[10px] rounded-full border border-cyan-400/20">${t}</span>`).join('');
             
             detail.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
@@ -310,6 +314,7 @@
                 if(items[id-1]) {
                     items[id-1].style.borderColor = "#00f2ff";
                     items[id-1].style.background = "rgba(0, 242, 255, 0.2)";
+                    items[id-1].classList.add('active');
                 }
             }, 500);
         }
