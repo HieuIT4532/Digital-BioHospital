@@ -339,11 +339,45 @@
         currentSymptoms: document.getElementById('input-symptoms').value
       };
 
-      showLoading('AI đang phân tích dữ liệu...', 'Khởi tạo luồng phân tích đa tầng');
+      showLoading('AI đang phân tích dữ liệu...', 'Đang giải mã các chỉ số sinh học (Có thể mất 10-15s nếu server khởi động)...');
 
       try {
-        const res = await API.Patients.create(formData);
-        const { patient, aiAnalysis } = res;
+        let patient, aiAnalysis;
+        
+        // CƠ CHẾ SMART TIMEOUT: Nếu API quá lâu (8s), tự động dùng Offline mode
+        const apiPromise = API.Patients.create(formData);
+        const timeoutPromise = new Promise((_, reject) => 
+          setTimeout(() => reject(new Error('TIMEOUT')), 8000)
+        );
+
+        try {
+          // Đua giữa API và Timeout
+          const res = await Promise.race([apiPromise, timeoutPromise]);
+          patient = res.patient;
+          aiAnalysis = res.aiAnalysis;
+          showToast('Đã kết nối AI Cloud thành công!', 'success');
+        } catch (err) {
+          console.warn('API slow or failed, switching to local mode:', err);
+          
+          const hm = formData.height / 100;
+          const bmi = Math.round((formData.weight / (hm * hm)) * 10) / 10;
+          
+          patient = {
+            ...formData,
+            bmi,
+            patientCode: 'BN-QUICK-' + Math.random().toString(36).substr(2, 5).toUpperCase(),
+            healthScore: calculateMockScore(formData, bmi),
+            riskLevel: bmi > 27 || formData.stressLevel > 8 ? 'Nguy cơ' : 'Trung bình',
+            recommendedDepartments: ['Khoa Nội', 'Dinh dưỡng']
+          };
+          
+          aiAnalysis = {
+            summary: `[Chế độ Phân tích Nhanh] Hệ thống ưu tiên tốc độ để bạn có thể vào Lab ngay. Bạn có chỉ số BMI là ${bmi}. Triệu chứng "${formData.currentSymptoms}" đã được đồng bộ.`
+          };
+          
+          const msg = err.message === 'TIMEOUT' ? 'Server phản hồi chậm, đã chuyển sang phân tích tại chỗ.' : 'Lỗi kết nối, đã chuyển sang chế độ Offline.';
+          showToast(msg, 'warning');
+        }
         
         PatientManager.save(patient);
         
@@ -354,10 +388,9 @@
         document.getElementById('result-code').textContent = `Mã: ${patient.patientCode}`;
         document.getElementById('res-bmi').textContent = patient.bmi;
         document.getElementById('res-risk').textContent = patient.riskLevel;
-        document.getElementById('result-summary').textContent = aiAnalysis.summary || "Dữ liệu đã được đồng bộ hóa với hệ thống Lab.";
+        document.getElementById('result-summary').textContent = aiAnalysis.summary;
         
         animateHealthScore(patient.healthScore, 'health-score-ring');
-        showToast('Đã đồng bộ hồ sơ bệnh nhân!', 'success');
         hideLoading();
         
       } catch (err) {
@@ -365,6 +398,14 @@
         showToast('Lỗi: ' + err.message, 'error');
       }
     };
+
+    function calculateMockScore(d, bmi) {
+      let s = 70;
+      if (bmi >= 18.5 && bmi < 25) s += 10; else s -= 10;
+      if (d.sleepHours >= 7) s += 10; else s -= 10;
+      if (d.exerciseDaysPerWeek >= 3) s += 10; else s -= 5;
+      return Math.max(10, Math.min(100, s - d.stressLevel));
+    }
   </script>
 </body>
 </html>

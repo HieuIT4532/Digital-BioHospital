@@ -13,7 +13,7 @@ router.post('/', async (req, res) => {
       name, age, gender, height, weight,
       sleepHours, exerciseDaysPerWeek,
       smokingStatus, alcoholStatus, stressLevel,
-      medicalHistory
+      medicalHistory, currentSymptoms
     } = req.body;
 
     // Tính BMI trước
@@ -35,18 +35,22 @@ router.post('/', async (req, res) => {
       smokingStatus: smokingStatus || 'Không hút',
       alcoholStatus: alcoholStatus || 'Không uống',
       stressLevel: Number(stressLevel) || 5,
-      medicalHistory: medicalHistory || []
+      medicalHistory: medicalHistory || [],
+      currentSymptoms: currentSymptoms || ''
     };
 
     const systemCtx = buildMedicalContext(patientData);
 
     const aiResult = await askGeminiJSON(`${systemCtx}
+    
+Triệu chứng hiện tại của bệnh nhân: "${currentSymptoms}"
 
-Hãy phân tích sức khỏe toàn diện của bệnh nhân này và trả về JSON với cấu trúc sau:
+Hãy phân tích sức khỏe toàn diện của bệnh nhân này. ĐẶC BIỆT chú ý mối liên hệ giữa triệu chứng hiện tại và các chỉ số sinh học/tiền sử.
+Trả về JSON với cấu trúc sau:
 {
   "healthScore": <số từ 0-100>,
   "riskLevel": <"Tốt" hoặc "Trung bình" hoặc "Nguy cơ">,
-  "summary": "<tóm tắt 2-3 câu về tình trạng sức khỏe>",
+  "summary": "<tóm tắt 2-3 câu về tình trạng sức khỏe, có nhắc đến triệu chứng>",
   "strengths": ["<điểm mạnh 1>", "<điểm mạnh 2>"],
   "concerns": ["<vấn đề cần chú ý 1>", "<vấn đề cần chú ý 2>"],
   "recommendedDepartments": ["<khoa nên khám 1>", "<khoa nên khám 2>"],
