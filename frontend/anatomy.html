@@ -45,185 +45,13 @@
     </div>
 
     <div class="container">
-    <!-- PREMIUM ANATOMY MODEL SECTION -->
-    <div class="anatomy-model-container">
-      <header id="model-header" style="padding: 1rem 0; text-align: center;">
-        <nav id="main-nav" style="display: flex; justify-content: center; gap: 0.5rem; flex-wrap: wrap;">
-            <button class="nav-btn active" data-system="all" id="nav-all">🧬 Tất cả</button>
-            <button class="nav-btn" data-system="skeletal" id="nav-skeletal">🦴 Xương</button>
-            <button class="nav-btn" data-system="organs" id="nav-organs">🫀 Nội tạng</button>
-            <button class="nav-btn" data-system="circulatory" id="nav-circulatory">🩸 Tuần hoàn</button>
-            <button class="nav-btn" data-system="nervous" id="nav-nervous">⚡ Thần kinh</button>
-        </nav>
-      </header>
-
-      <div id="main-content">
-        <!-- Left Panel - Info -->
-        <aside id="info-panel" class="glass-panel">
-            <div class="panel-header">
-                <h2 id="info-title">Cơ Thể Người</h2>
-                <div class="pulse-dot"></div>
-            </div>
-            <div id="info-content" class="panel-body">
-                <p class="info-intro">Nhấn vào các bộ phận trên mô hình để xem thông tin chi tiết.</p>
-                <div class="info-stats">
-                    <div class="stat-item"><span class="stat-value">206</span><span class="stat-label">Xương</span></div>
-                    <div class="stat-item"><span class="stat-value">78</span><span class="stat-label">Cơ quan</span></div>
-                    <div class="stat-item"><span class="stat-value">11</span><span class="stat-label">Hệ cơ quan</span></div>
-                </div>
-            </div>
-        </aside>
-
-        <!-- Center - Body Model -->
-        <section id="body-container">
-            <div class="model-wrapper" id="model-wrapper">
-                <svg id="human-body-svg" viewBox="0 0 500 900" xmlns="http://www.w3.org/2000/svg">
-                    <defs>
-                        <!-- Gradients -->
-                        <linearGradient id="bodyOutlineGrad" x1="0" y1="0" x2="1" y2="1">
-                            <stop offset="0%" stop-color="#1a3a5c" stop-opacity="0.6"/>
-                            <stop offset="100%" stop-color="#0d1f33" stop-opacity="0.4"/>
-                        </linearGradient>
-                        <linearGradient id="brainGrad" x1="0" y1="0" x2="1" y2="1">
-                            <stop offset="0%" stop-color="#ffcc00"/><stop offset="100%" stop-color="#ff9900"/>
-                        </linearGradient>
-                        <linearGradient id="heartGrad" x1="0" y1="0" x2="1" y2="1">
-                            <stop offset="0%" stop-color="#ff3366"/><stop offset="100%" stop-color="#cc0033"/>
-                        </linearGradient>
-                        <linearGradient id="lungGrad" x1="0" y1="0" x2="1" y2="1">
-                            <stop offset="0%" stop-color="#ff6b6b"/><stop offset="100%" stop-color="#c44569"/>
-                        </linearGradient>
-                        <linearGradient id="liverGrad" x1="0" y1="0" x2="1" y2="1">
-                            <stop offset="0%" stop-color="#8b4513"/><stop offset="100%" stop-color="#a0522d"/>
-                        </linearGradient>
-                        <linearGradient id="stomachGrad" x1="0" y1="0" x2="1" y2="1">
-                            <stop offset="0%" stop-color="#ff8c42"/><stop offset="100%" stop-color="#e67e22"/>
-                        </linearGradient>
-                        <linearGradient id="intestineGrad" x1="0" y1="0" x2="1" y2="1">
-                            <stop offset="0%" stop-color="#f4a460"/><stop offset="100%" stop-color="#daa520"/>
-                        </linearGradient>
-                        <linearGradient id="kidneyGrad" x1="0" y1="0" x2="1" y2="1">
-                            <stop offset="0%" stop-color="#cd5c5c"/><stop offset="100%" stop-color="#8b0000"/>
-                        </linearGradient>
-                        <linearGradient id="arteryGrad" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stop-color="#ff0000"/><stop offset="100%" stop-color="#cc0000"/>
-                        </linearGradient>
-                        <linearGradient id="veinGrad" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stop-color="#4444ff"/><stop offset="100%" stop-color="#2222aa"/>
-                        </linearGradient>
-                        <linearGradient id="nerveGrad" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stop-color="#ffff00"/><stop offset="100%" stop-color="#cccc00"/>
-                        </linearGradient>
-                        <linearGradient id="boneGrad" x1="0" y1="0" x2="1" y2="1">
-                            <stop offset="0%" stop-color="#e8e0d0"/><stop offset="100%" stop-color="#c8bfaf"/>
-                        </linearGradient>
-                        <!-- Filters -->
-                        <filter id="organGlow" x="-50%" y="-50%" width="200%" height="200%">
-                            <feGaussianBlur stdDeviation="4" result="blur"/>
-                            <feComposite in="SourceGraphic" in2="blur" operator="over"/>
-                        </filter>
-                        <filter id="softGlow" x="-30%" y="-30%" width="160%" height="160%">
-                            <feGaussianBlur stdDeviation="2" result="blur"/>
-                            <feComposite in="SourceGraphic" in2="blur" operator="over"/>
-                        </filter>
-                    </defs>
-
-                    <!-- BODY OUTLINE -->
-                    <g id="body-outline" class="body-layer">
-                        <ellipse cx="250" cy="75" rx="48" ry="58" fill="url(#bodyOutlineGrad)" stroke="#2a6090" stroke-width="1.5" opacity="0.7"/>
-                        <rect x="232" y="130" width="36" height="30" rx="8" fill="url(#bodyOutlineGrad)" stroke="#2a6090" stroke-width="1" opacity="0.6"/>
-                        <path d="M185 160 Q180 160 170 180 L155 300 Q150 360 160 420 L175 500 Q180 510 200 515 L300 515 Q320 510 325 500 L340 420 Q350 360 345 300 L330 180 Q320 160 315 160 Z" fill="url(#bodyOutlineGrad)" stroke="#2a6090" stroke-width="1.5" opacity="0.6"/>
-                        <path d="M170 175 Q140 180 120 200 L90 290 Q80 320 75 350 L65 420 Q60 440 65 450 L75 460 Q85 465 90 455 L100 400 Q105 380 110 350 L130 280 Q140 260 155 245" fill="url(#bodyOutlineGrad)" stroke="#2a6090" stroke-width="1.5" opacity="0.5"/>
-                        <path d="M330 175 Q360 180 380 200 L410 290 Q420 320 425 350 L435 420 Q440 440 435 450 L425 460 Q415 465 410 455 L400 400 Q395 380 390 350 L370 280 Q360 260 345 245" fill="url(#bodyOutlineGrad)" stroke="#2a6090" stroke-width="1.5" opacity="0.5"/>
-                        <path d="M195 510 Q185 520 180 540 L170 620 Q165 680 168 720 L172 780 Q175 810 178 840 Q180 860 185 870 L195 875 Q200 870 200 860 L198 840 Q195 810 193 780 L190 720 Q188 680 190 640 L195 560" fill="url(#bodyOutlineGrad)" stroke="#2a6090" stroke-width="1.5" opacity="0.5"/>
-                        <path d="M305 510 Q315 520 320 540 L330 620 Q335 680 332 720 L328 780 Q325 810 322 840 Q320 860 315 870 L305 875 Q300 870 300 860 L302 840 Q305 810 307 780 L310 720 Q312 680 310 640 L305 560" fill="url(#bodyOutlineGrad)" stroke="#2a6090" stroke-width="1.5" opacity="0.5"/>
-                    </g>
-
-                    <!-- SKELETAL SYSTEM -->
-                    <g id="skeletal-system" class="body-layer system-layer" data-system="skeletal">
-                        <g id="bone-skull" class="interactive-part" data-part="skull">
-                            <ellipse cx="250" cy="65" rx="40" ry="50" fill="none" stroke="#d8d0c0" stroke-width="2" opacity="0.6"/>
-                        </g>
-                        <g id="bone-spine" class="interactive-part" data-part="spine">
-                            <rect x="234" y="305" width="32" height="9" rx="4" fill="rgba(200,191,175,0.25)" stroke="#c8bfaf" stroke-width="1" opacity="0.4"/>
-                        </g>
-                        <g id="bone-humerus" class="interactive-part" data-part="humerus">
-                            <line x1="178" y1="178" x2="135" y2="300" stroke="#d0c8b8" stroke-width="4" opacity="0.4" stroke-linecap="round"/>
-                            <line x1="322" y1="178" x2="365" y2="300" stroke="#d0c8b8" stroke-width="4" opacity="0.4" stroke-linecap="round"/>
-                        </g>
-                        <g id="bone-femur" class="interactive-part" data-part="femur">
-                            <line x1="210" y1="480" x2="195" y2="660" stroke="#d0c8b8" stroke-width="5" opacity="0.4" stroke-linecap="round"/>
-                            <line x1="290" y1="480" x2="305" y2="660" stroke="#d0c8b8" stroke-width="5" opacity="0.4" stroke-linecap="round"/>
-                        </g>
-                    </g>
-
-                    <!-- CIRCULATORY SYSTEM -->
-                    <g id="circulatory-system" class="body-layer system-layer" data-system="circulatory">
-                        <g id="circ-aorta" class="interactive-part" data-part="aorta">
-                            <path d="M255 290 Q260 270 260 260 Q260 245 250 240" fill="none" stroke="url(#arteryGrad)" stroke-width="3.5" opacity="0.75"/>
-                        </g>
-                    </g>
-
-                    <!-- NERVOUS SYSTEM -->
-                    <g id="nervous-system" class="body-layer system-layer" data-system="nervous">
-                        <g id="nerve-spinal" class="interactive-part" data-part="spinal-cord">
-                            <line x1="250" y1="115" x2="250" y2="500" stroke="url(#nerveGrad)" stroke-width="3" opacity="0.55"/>
-                        </g>
-                    </g>
-
-                    <!-- ORGANS -->
-                    <g id="organs-system" class="body-layer system-layer" data-system="organs">
-                        <g id="organ-brain" class="organ interactive-part" data-part="brain">
-                            <ellipse cx="250" cy="62" rx="30" ry="24" fill="url(#brainGrad)" opacity="0.85" filter="url(#softGlow)"/>
-                        </g>
-                        <g id="organ-lungs" class="organ interactive-part" data-part="lungs">
-                            <path d="M200 200 Q185 210 180 240 Q178 270 182 300 Q188 320 200 330 Z" fill="url(#lungGrad)" opacity="0.75" filter="url(#softGlow)"/>
-                            <path d="M300 200 Q315 210 320 240 Q322 270 318 300 Q312 320 300 330 Z" fill="url(#lungGrad)" opacity="0.75" filter="url(#softGlow)"/>
-                        </g>
-                        <g id="organ-heart" class="organ interactive-part" data-part="heart">
-                            <path d="M237 275 Q230 260 235 248 Q240 240 250 240 Q260 240 265 248 Q270 260 263 275 Q258 288 250 298 Q242 288 237 275 Z" fill="url(#heartGrad)" opacity="0.9" filter="url(#organGlow)"/>
-                        </g>
-                        <g id="organ-liver" class="organ interactive-part" data-part="liver">
-                            <path d="M270 330 Q310 325 330 340 Q340 355 335 370 Q325 385 300 388 Q275 390 260 380 Q250 370 255 355 Q260 340 270 330 Z" fill="url(#liverGrad)" opacity="0.8" filter="url(#softGlow)"/>
-                        </g>
-                        <g id="organ-stomach" class="organ interactive-part" data-part="stomach">
-                            <path d="M218 340 Q200 345 195 365 Q192 385 200 400 Q210 415 230 418 Q248 418 255 405 Q260 390 255 370 Q250 350 240 340 Q230 335 218 340 Z" fill="url(#stomachGrad)" opacity="0.8" filter="url(#softGlow)"/>
-                        </g>
-                        <g id="organ-kidneys" class="organ interactive-part" data-part="kidneys">
-                            <ellipse cx="200" cy="390" rx="16" ry="22" fill="url(#kidneyGrad)" opacity="0.8" transform="rotate(-10 200 390)"/>
-                            <ellipse cx="300" cy="385" rx="16" ry="22" fill="url(#kidneyGrad)" opacity="0.8" transform="rotate(10 300 385)"/>
-                        </g>
-                    </g>
-                </svg>
-
-                <div id="organ-tooltip" class="organ-tooltip"><span id="tooltip-text"></span></div>
-            </div>
-
-            <!-- Zoom controls -->
-            <div id="zoom-controls" class="zoom-controls">
-                <button id="zoom-in" class="zoom-btn">+</button>
-                <button id="zoom-reset" class="zoom-btn">⟲</button>
-                <button id="zoom-out" class="zoom-btn">−</button>
-            </div>
-        </section>
-
-        <!-- Right Panel - Legend -->
-        <aside id="legend-panel" class="glass-panel">
-            <div class="panel-header"><h2>Chú Thích</h2></div>
-            <div class="panel-body">
-                <div class="legend-section">
-                    <h3>Nội Tạng</h3>
-                    <div class="legend-item" data-target="brain"><span class="legend-color" style="background: #ffcc00;"></span><span>Não</span></div>
-                    <div class="legend-item" data-target="lungs"><span class="legend-color" style="background: #ff6b6b;"></span><span>Phổi</span></div>
-                    <div class="legend-item" data-target="heart"><span class="legend-color" style="background: #ff3366;"></span><span>Tim</span></div>
-                    <div class="legend-item" data-target="liver"><span class="legend-color" style="background: #8b4513;"></span><span>Gan</span></div>
-                    <div class="legend-item" data-target="stomach"><span class="legend-color" style="background: #ff8c42;"></span><span>Dạ dày</span></div>
-                    <div class="legend-item" data-target="kidneys"><span class="legend-color" style="background: #cd5c5c;"></span><span>Thận</span></div>
-                </div>
-            </div>
-        </aside>
-      </div>
+    <!-- 3D ANATOMY MODEL SECTION (SKETCHFAB) -->
+    <div class="sketchfab-embed-wrapper" style="width: 100%; height: 70vh; min-height: 500px; background: rgba(255,255,255,0.02); border-radius: 1.5rem; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.05);"> 
+      <iframe title="Human Internal Organs Anatomy" style="width: 100%; height: 100%; border: none;" frameborder="0" allowfullscreen mozallowfullscreen="true" webkitallowfullscreen="true" allow="autoplay; fullscreen; xr-spatial-tracking" xr-spatial-tracking execution-while-out-of-viewport execution-while-not-rendered web-share src="https://sketchfab.com/models/8a43f3a308994699a4000b17004d5220/embed?autostart=1&preload=1&ui_theme=dark"> </iframe> 
     </div>
+    <p style="font-size: 13px; font-weight: normal; margin-top: 10px; text-align: center; color: rgba(255,255,255,0.5);"> 
+      <a href="https://sketchfab.com/3d-models/human-internal-organs-anatomy-8a43f3a308994699a4000b17004d5220?utm_medium=embed&utm_campaign=share-popup&utm_content=8a43f3a308994699a4000b17004d5220" target="_blank" rel="nofollow" style="font-weight: bold; color: var(--color-primary-light); text-decoration: none;"> Human Internal Organs Anatomy </a> by <a href="https://sketchfab.com/3D4SCI?utm_medium=embed&utm_campaign=share-popup&utm_content=8a43f3a308994699a4000b17004d5220" target="_blank" rel="nofollow" style="font-weight: bold; color: var(--color-primary-light); text-decoration: none;"> 3D4SCI </a> on <a href="https://sketchfab.com?utm_medium=embed&utm_campaign=share-popup&utm_content=8a43f3a308994699a4000b17004d5220" target="_blank" rel="nofollow" style="font-weight: bold; color: var(--color-primary-light); text-decoration: none;">Sketchfab</a>
+    </p>
     </div>
 
     <div class="container" style="margin-top: 2rem; margin-bottom: 4rem;">
@@ -237,37 +65,7 @@
     </div>
   </main>
 
-    <!-- POPUP MODAL -->
-    <div id="popup-overlay" class="popup-overlay">
-        <div id="popup-modal" class="popup-modal">
-            <button id="popup-close" class="popup-close" title="Đóng">✕</button>
-            <div class="popup-scroll">
-                <div class="popup-header">
-                    <div class="popup-icon" id="popup-icon">🫀</div>
-                    <h2 class="popup-title" id="popup-title">Tim</h2>
-                    <span class="popup-system-tag" id="popup-system-tag">Hệ tuần hoàn</span>
-                </div>
-                <div class="popup-ai-section">
-                    <div class="popup-ai-header">
-                        <span class="ai-badge">🤖 AI Giải Thích</span>
-                        <span class="ai-tag">AI</span>
-                    </div>
-                    <p class="popup-ai-text" id="popup-ai-text">Nội dung AI...</p>
-                </div>
-                <div class="popup-functions">
-                    <h3 class="popup-section-title">CHỨC NĂNG CHÍNH</h3>
-                    <ul id="popup-functions-list" class="popup-func-list"></ul>
-                </div>
-                <div class="popup-diseases">
-                    <h3 class="popup-section-title">BỆNH LIÊN QUAN</h3>
-                    <div id="popup-diseases-tags" class="popup-tags"></div>
-                </div>
-                <button class="popup-action-btn" id="popup-action-btn">
-                    <span>🔬</span> Tìm hiểu thêm
-                </button>
-            </div>
-        </div>
-    </div>
+
 
   <footer>
     <div class="container">
@@ -277,6 +75,8 @@
 
   <script src="js/api.js"></script>
   <script src="js/patient.js"></script>
-  <script src="js/anatomy-model.js"></script>
+  <script>
+    // Xóa anatomy-model.js cũ đi vì đã thay bằng 3D Model từ Sketchfab
+  </script>
 </body>
 </html>
