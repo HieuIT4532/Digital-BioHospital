@@ -3,284 +3,321 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trung Tâm Giải Mã Gene AI - A1K50</title>
+    <title>Trung Tâm Giải Mã Gene AI - Digital BioHospital</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@100;300;400;600&display=swap');
+        :root { --primary: #00f2ff; --bg-dark: #050a10; }
+        body { background-color: var(--bg-dark); color: #ffffff; font-family: 'Be Vietnam Pro', sans-serif; overflow-x: hidden; }
+        
+        .glass-panel { background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(10px); border: 1px solid rgba(0, 242, 255, 0.1); border-radius: 1.5rem; }
+        .section-tag { font-size: 0.7rem; color: var(--primary); border: 1px solid rgba(0, 242, 255, 0.3); padding: 0.2rem 0.75rem; border-radius: 999px; text-transform: uppercase; letter-spacing: 0.1em; display: inline-block; margin-bottom: 1rem; }
 
-        :root {
-            --primary: #00f2ff;
-            --bg-dark: #050a10;
-        }
+        /* DNA 3D */
+        .dna-container { perspective: 1000px; height: 300px; width: 60px; margin: 0 auto; }
+        .dna-strand { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; animation: rotateDNA 15s linear infinite; }
+        @keyframes rotateDNA { from { transform: rotateY(0deg); } to { transform: rotateY(360deg); } }
+        .base-pair { position: absolute; width: 60px; height: 4px; background: linear-gradient(90deg, var(--primary), #ffffff, var(--primary)); left: 0; }
 
-        body {
-            background-color: var(--bg-dark);
-            color: #ffffff;
-            font-family: 'Be Vietnam Pro', sans-serif;
-            overflow: hidden;
-        }
-
-        /* Hiệu ứng xoắn DNA 3D */
-        .dna-container { perspective: 1000px; height: 500px; width: 60px; }
-        .dna-strand {
-            position: relative; width: 100%; height: 100%;
-            transform-style: preserve-3d;
-            animation: rotateDNA 15s linear infinite;
-        }
-        @keyframes rotateDNA {
-            from { transform: rotateY(0deg); }
-            to { transform: rotateY(360deg); }
-        }
-        .base-pair {
-            position: absolute; width: 60px; height: 4px;
-            background: linear-gradient(90deg, var(--primary), #ffffff, var(--primary));
-            left: 0;
-        }
-
-        /* Giao diện Glassmorphism */
-        .glass-panel {
-            background: rgba(255, 255, 255, 0.02);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(0, 242, 255, 0.1);
-            border-radius: 1rem;
-        }
-
-        .nst-grid-item {
-            transition: all 0.3s ease; cursor: pointer; border: 1px solid rgba(0, 242, 255, 0.1);
-        }
-        .nst-grid-item:hover {
-            background: rgba(0, 242, 255, 0.1); border-color: var(--primary); transform: translateY(-2px);
-        }
-        .nst-grid-item.active {
-            background: var(--primary); color: #000; font-weight: bold; box-shadow: 0 0 20px var(--primary);
-        }
-
-        /* Cảnh báo rủi ro */
+        /* Karyotype Grid */
+        .nst-grid-item { transition: all 0.3s ease; cursor: pointer; border: 1px solid rgba(0, 242, 255, 0.1); border-radius: 0.75rem; background: rgba(255,255,255,0.03); }
+        .nst-grid-item:hover { background: rgba(0, 242, 255, 0.1); border-color: var(--primary); transform: translateY(-3px); }
+        .nst-grid-item.active { background: var(--primary); color: #000; font-weight: bold; box-shadow: 0 0 20px var(--primary); }
         .risk-alert { animation: pulse-red 2s infinite; }
-        @keyframes pulse-red {
-            0% { border-color: rgba(0, 242, 255, 0.1); }
-            50% { border-color: #ff4444; box-shadow: 0 0 10px #ff4444; }
-            100% { border-color: rgba(0, 242, 255, 0.1); }
-        }
+        @keyframes pulse-red { 0% { border-color: rgba(255,255,255,0.1); } 50% { border-color: #ff4444; box-shadow: 0 0 10px #ff4444; } 100% { border-color: rgba(255,255,255,0.1); } }
+
+        /* Dice Simulation */
+        .dice { font-size: 4rem; cursor: pointer; transition: 0.3s; }
+        .dice:hover { transform: scale(1.1) rotate(10deg); }
+        @keyframes shake { 0% { transform: translate(1px, 1px) rotate(0deg); } 20% { transform: translate(-3px, 0px) rotate(-1deg); } 40% { transform: translate(1px, -1px) rotate(1deg); } 60% { transform: translate(-1px, 1px) rotate(-1deg); } 100% { transform: translate(1px, -2px) rotate(-1deg); } }
 
         ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
-        
-        @keyframes pulse-green {
-            0% { box-shadow: 0 0 0 0 rgba(0, 242, 255, 0.4); }
-            70% { box-shadow: 0 0 0 10px rgba(0, 242, 255, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(0, 242, 255, 0); }
-        }
     </style>
 </head>
-<body class="h-screen flex flex-col p-6">
+<body class="p-6">
 
-    <header class="flex justify-between items-center mb-8 border-b border-white/10 pb-4">
+    <header class="flex justify-between items-center mb-8 border-b border-white/10 pb-6">
         <div>
-            <h1 class="text-2xl font-bold tracking-widest text-cyan-400">GENE DECODING CENTER</h1>
+            <h1 class="text-3xl font-bold tracking-widest text-cyan-400">GENE DECODING CENTER</h1>
             <p class="text-xs text-white/50 uppercase tracking-[0.3em]">Hệ sinh thái Digital Bio-Hospital - A1K50</p>
         </div>
         <div class="flex gap-4">
-            <a href="reception.html" class="px-4 py-2 border border-white/20 text-[10px] hover:bg-white hover:text-black transition uppercase">Phòng Tiếp Nhận</a>
-            <a href="index.html" class="px-4 py-2 border border-cyan-400 text-cyan-400 text-[10px] hover:bg-cyan-400 hover:text-black transition uppercase">Trở về Trang chủ</a>
+            <a href="index.html" class="px-6 py-2 border border-cyan-400 text-cyan-400 text-xs hover:bg-cyan-400 hover:text-black transition uppercase font-bold">Trang chủ</a>
         </div>
     </header>
 
-    <main class="flex-grow grid grid-cols-12 gap-6 overflow-hidden">
+    <main class="grid grid-cols-12 gap-8">
         
-        <!-- CỘT 1: BẢN ĐỒ NST -->
-        <section class="col-span-4 glass-panel p-6 flex flex-col">
-            <h2 class="text-sm font-semibold text-cyan-400 mb-4 uppercase tracking-widest">Bản đồ Nhiễm sắc thể (Karyotype)</h2>
-            <div id="nst-container" class="grid grid-cols-4 gap-3 overflow-y-auto pr-2">
-                <!-- NST items populated by JS -->
-            </div>
-            <div class="mt-6 pt-4 border-t border-white/10 flex flex-wrap gap-4 text-[10px]">
-                <div class="flex items-center gap-1"><span class="w-2 h-2 bg-cyan-400"></span> Bình thường</div>
-                <div class="flex items-center gap-1"><span class="w-2 h-2 bg-red-500 animate-pulse"></span> Đột biến SGK</div>
-                <div class="flex items-center gap-1"><span class="w-2 h-2 bg-yellow-400"></span> AI Recommendation</div>
-            </div>
-        </section>
-
-        <!-- CỘT 2: MÔ HÌNH DNA 3D -->
-        <section class="col-span-4 glass-panel relative flex flex-col items-center justify-center">
-            <div class="dna-container" id="dna-strand"></div>
-            <div class="absolute top-6 left-6 text-[10px] text-white/30 font-mono">
-                SEQ_DECODE_MODE: ON<br/>
-                HIEU_IT_4532_SECURE
-            </div>
-            <p class="absolute bottom-6 text-[10px] tracking-widest text-cyan-400 uppercase">Phân tích chuỗi xoắn kép 3D (Helical Model)</p>
-        </section>
-
-        <!-- CỘT 3: SYNC & DETAIL -->
-        <section class="col-span-4 flex flex-col gap-6">
+        <!-- MODULE 1: GENETIC FINGERPRINTING -->
+        <section class="col-span-12 lg:col-span-4 glass-panel p-8 flex flex-col items-center">
+            <div class="section-tag">Module 01</div>
+            <h2 class="text-xl font-bold mb-2">Dấu Vân Tay Di Truyền</h2>
+            <p class="text-xs text-white/40 mb-8 text-center uppercase tracking-widest">Giải mã trình tự Nucleotide</p>
             
-            <!-- ĐỐI SOÁT PHÒNG KHÁM -->
-            <div class="glass-panel p-6">
-                <h2 class="text-xs font-bold text-cyan-400 mb-4 uppercase">Đối soát phòng khám (Real-time Sync)</h2>
-                <div id="patient-sync-box" class="bg-white/5 p-4 rounded border-l-2 border-cyan-500 mb-3">
-                    <div id="patient-info-header" class="flex justify-between items-center mb-2">
-                        <p class="text-[10px] opacity-50 uppercase">Dữ liệu bệnh án:</p>
-                        <span id="patient-tag" class="text-[8px] bg-cyan-400/20 text-cyan-400 px-2 py-0.5 rounded">A1K50 SECURE</span>
-                    </div>
-                    <p id="clinic-symptoms" class="text-xs italic text-yellow-300 leading-relaxed">Đang quét hồ sơ...</p>
-                    <div id="clinic-warning-box" class="mt-3 pt-3 border-t border-white/5">
-                        <p id="clinic-warning" class="text-[10px] text-red-400 font-bold">Hệ thống AI đang phân tích rủi ro...</p>
-                    </div>
+            <div class="dna-container" id="dna-strand"></div>
+            
+            <div id="scan-result" class="mt-8 w-full bg-black/40 p-4 rounded-lg border border-white/10 font-mono text-[10px] hidden">
+                <p class="text-cyan-400 mb-2">[AI SCANNING COMPLETE]</p>
+                <div id="dna-sequence" class="break-all opacity-70"></div>
+                <div id="mutation-alert" class="mt-2 text-red-500 font-bold hidden">⚠️ PHÁT HIỆN ĐỘT BIẾN ĐIỂM</div>
+            </div>
+
+            <button onclick="startDnaScan()" id="btn-scan" class="mt-auto w-full py-3 bg-cyan-400 text-black font-bold rounded-lg hover:shadow-[0_0_20px_#00f2ff] transition">BẮT ĐẦU QUÉT GENE</button>
+        </section>
+
+        <!-- MODULE 2: XÚC XẮC DI TRUYỀN (MENDEL) -->
+        <section class="col-span-12 lg:col-span-4 glass-panel p-8 flex flex-col items-center">
+            <div class="section-tag">Module 02</div>
+            <h2 class="text-xl font-bold mb-2">Xúc Xắc Di Truyền</h2>
+            <p class="text-xs text-white/40 mb-8 text-center uppercase tracking-widest">Dự báo xác suất đời con (F1)</p>
+            
+            <div class="flex gap-8 mb-8 w-full">
+                <div class="flex-1">
+                    <label class="block text-[10px] opacity-40 mb-2 font-bold">GENE BỐ</label>
+                    <select id="dad-gen" class="w-full bg-white/5 border border-white/10 rounded p-2 text-sm outline-none focus:border-cyan-400">
+                        <option value="AA">AA (Trội)</option>
+                        <option value="Aa">Aa (Dị hợp)</option>
+                        <option value="aa">aa (Lặn)</option>
+                    </select>
+                </div>
+                <div class="flex-1">
+                    <label class="block text-[10px] opacity-40 mb-2 font-bold">GENE MẸ</label>
+                    <select id="mom-gen" class="w-full bg-white/5 border border-white/10 rounded p-2 text-sm outline-none focus:border-cyan-400">
+                        <option value="AA">AA (Trội)</option>
+                        <option value="Aa">Aa (Dị hợp)</option>
+                        <option value="aa">aa (Lặn)</option>
+                    </select>
                 </div>
             </div>
 
-            <!-- CHI TIẾT GIẢI MÃ -->
-            <div class="glass-panel p-6 flex-grow overflow-y-auto">
-                <div id="info-content" class="flex items-center justify-center h-full opacity-30 text-center flex-col">
-                    <div class="text-4xl mb-4">🧬</div>
-                    <p class="text-xs uppercase tracking-widest leading-loose">Chọn một cặp nhiễm sắc thể<br/>để bắt đầu giải mã chi tiết</p>
+            <div id="dice-container" class="my-4">
+                <div class="dice" id="dice-btn" onclick="rollDice()">🎲</div>
+            </div>
+
+            <div id="predict-result" class="mt-4 w-full grid grid-cols-2 gap-4 hidden">
+                <div class="bg-cyan-400/10 p-4 rounded-lg border border-cyan-400/20 text-center">
+                    <div class="text-2xl font-bold text-cyan-400" id="res-healthy">--%</div>
+                    <div class="text-[9px] opacity-50 uppercase mt-1">Bình thường</div>
+                </div>
+                <div class="bg-red-500/10 p-4 rounded-lg border border-red-500/20 text-center">
+                    <div class="text-2xl font-bold text-red-500" id="res-sick">--%</div>
+                    <div class="text-[9px] opacity-50 uppercase mt-1">Biểu hiện bệnh</div>
+                </div>
+            </div>
+
+            <p class="text-[10px] opacity-30 mt-auto text-center italic">Quy luật Men-đen: Phân ly & Phân ly độc lập</p>
+        </section>
+
+        <!-- MODULE 3: SYNC BỆNH ÁN A1K50 -->
+        <section class="col-span-12 lg:col-span-4 glass-panel p-8">
+            <div class="section-tag">Module 03</div>
+            <h2 class="text-xl font-bold mb-4">Đối Soát Bệnh Án</h2>
+            
+            <div class="bg-cyan-400/5 border-l-4 border-cyan-400 p-4 rounded-r-lg mb-6">
+                <p class="text-[10px] uppercase opacity-40 mb-1">Dữ liệu từ Phòng Lab 10:</p>
+                <p id="sync-symptoms" class="text-sm italic text-yellow-300">Đang chờ kết nối hồ sơ...</p>
+                <div class="mt-3 flex items-center gap-2">
+                    <span class="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
+                    <p id="sync-warning" class="text-[10px] text-red-400 font-bold">AI đang phân rã dữ liệu di truyền...</p>
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                <div class="flex items-center justify-between text-xs">
+                    <span class="opacity-50">Độ tin cậy giải mã:</span>
+                    <span class="text-cyan-400 font-bold">99.98%</span>
+                </div>
+                <div class="w-full bg-white/5 h-1 rounded-full overflow-hidden">
+                    <div class="bg-cyan-400 h-full w-[99%]"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- BẢN ĐỒ 23 NST ĐẦY ĐỦ -->
+        <section class="col-span-12 glass-panel p-10">
+            <div class="flex justify-between items-end mb-8">
+                <div>
+                    <div class="section-tag">Genome Map</div>
+                    <h2 class="text-2xl font-bold">Bản Đồ 23 Nhiễm Sắc Thể Người</h2>
+                    <p class="text-xs text-white/40 uppercase tracking-widest mt-2">Chọn một cặp NST để giải mã kiến thức Sinh học 12</p>
+                </div>
+                <div class="flex gap-4 text-[10px]">
+                    <div class="flex items-center gap-2"><span class="w-3 h-3 bg-white/10 rounded border border-white/20"></span> Thường</div>
+                    <div class="flex items-center gap-2"><span class="w-3 h-3 bg-red-500/40 rounded border border-red-500"></span> Đột biến</div>
+                    <div class="flex items-center gap-2"><span class="w-3 h-3 bg-cyan-400 rounded"></span> Đang chọn</div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4" id="nst-grid">
+                <!-- NST items populated by JS -->
+            </div>
+
+            <div id="nst-detail" class="mt-12 bg-white/5 p-8 rounded-2xl border border-white/10 hidden animate-fadeIn">
+                <div class="flex gap-8 items-start">
+                    <div class="text-6xl" id="detail-icon">🧬</div>
+                    <div class="flex-1">
+                        <h3 class="text-3xl font-bold text-cyan-400 mb-4" id="detail-title">NST SỐ --</h3>
+                        <p class="text-lg leading-relaxed text-white/80 mb-6" id="detail-info">Vui lòng chọn một cặp NST để xem thông tin chi tiết.</p>
+                        <div id="detail-tags" class="flex gap-3"></div>
+                    </div>
                 </div>
             </div>
         </section>
     </main>
 
+    <footer class="mt-12 text-center text-[10px] opacity-20 border-t border-white/5 pt-8 pb-4">
+        &copy; 2024 Digital BioHospital - Lab 12 Genome Project - A1K50 Kiến Tạo Sức Sống
+    </footer>
+
     <script src="js/patient.js"></script>
     <script>
-        // Dữ liệu Kiến thức Sinh 12 Đầy đủ 23 cặp
         const genomeData = {
-            1: { title: "Cặp số 1 (Lớn nhất)", bio12: "Chứa hơn 3000 gene. Đột biến tại đây liên quan đến bệnh tăng nhãn áp (Glaucoma) và một số dạng ung thư tuyến tiền liệt.", tags: ["Lớn nhất", "Cấu trúc"] },
-            2: { title: "Cặp số 2", bio12: "Lớn thứ hai, chứa các gene liên quan đến hệ thống miễn dịch và sự phát triển não bộ phức tạp ở người.", tags: ["Não bộ", "Miễn dịch"] },
-            3: { title: "Cặp số 3", bio12: "Chứa cụm gene nhận diện mùi vị. Đột biến ở đây có liên quan đến các bệnh ung thư phổi di truyền.", tags: ["Vị giác", "Ung thư"] },
-            4: { title: "Cặp số 4", bio12: "Địa chỉ của gene HD gây bệnh Huntington - một bệnh thoái hóa thần kinh di truyền trội.", tags: ["Huntington", "Thần kinh"] },
-            5: { title: "Cặp số 5", bio12: "Liên quan đến Hội chứng Cri-du-chat (Tiếng mèo kêu) do đột biến cấu trúc NST: Mất đoạn cánh ngắn cặp số 5.", tags: ["Cri-du-chat", "Mất đoạn"] },
-            6: { title: "Cặp số 6", bio12: "Chứa phức hợp MHC (HLA) - 'Chứng minh thư' của tế bào. Đột biến gây ra các bệnh tự miễn và dị ứng màng mạnh.", tags: ["MHC", "Dị ứng"] },
-            7: { title: "Cặp số 7", bio12: "Chứa gene CFTR. Đột biến gây bệnh Xơ nang (Cystic Fibrosis) làm tích tụ dịch nhầy ở phổi.", tags: ["Xơ nang", "Phổi"] },
-            9: { title: "Cặp số 9", bio12: "Quyết định nhóm máu hệ ABO (Di truyền đa allele). Đột biến tại đây liên quan đến bệnh Bạch cầu dòng tủy.", tags: ["Nhóm máu ABO"] },
-            11: { title: "Cặp số 11", bio12: "Chứa gene mã hóa Hemoglobin và Insulin. Đột biến điểm (thay thế T-A bằng A-T) gây bệnh Hồng cầu hình liềm.", tags: ["Hồng cầu liềm", "Insulin"] },
-            12: { title: "Cặp số 12", bio12: "Liên quan đến bệnh Phenylketonuria (PKU) do thiếu hụt enzyme chuyển hóa phenylalanine (Đột biến gene lặn).", tags: ["Bệnh PKU"] },
-            13: { title: "Cặp số 13", bio12: "Hội chứng Patau: Đột biến số lượng NST (Thể ba nhiễm - Trisomy 13) gây dị tật bẩm sinh nặng.", tags: ["Patau", "Thể ba"] },
-            16: { title: "Cặp số 16", bio12: "Liên quan đến bệnh Thalassemia (Tan máu bẩm sinh) do khiếm khuyết chuỗi globin.", tags: ["Thalassemia"] },
-            18: { title: "Cặp số 18", bio12: "Hội chứng Edwards: Thể ba nhiễm (Trisomy 18) dẫn đến chậm phát triển nghiêm trọng.", tags: ["Edwards", "Thể ba"] },
-            19: { title: "Cặp số 19", bio12: "Chứa các gene điều khiển chuyển hóa Lipid. Liên quan đến chứng mỏi cơ và rối loạn Cholesterol.", tags: ["Chuyển hóa"] },
-            21: { title: "Cặp số 21 (Nhỏ nhất)", bio12: "Hội chứng Down: Thể ba nhiễm sắc thể 21. Là ví dụ điển hình nhất trong SGK Sinh học 12 về đột biến số lượng NST.", tags: ["Down", "Trisomy 21"] },
-            22: { title: "Cặp số 22", bio12: "Đột biến cấu trúc: Chuyển đoạn giữa NST 9 và 22 tạo ra 'NST Philadelphia' gây bệnh ung thư máu.", tags: ["Philadelphia"] },
-            23: { title: "Cặp số 23 (Giới tính)", bio12: "NST X mang gene bệnh Máu khó đông, Mù màu (Di truyền liên kết giới tính). NST Y chứa gene SRY quyết định giới tính Nam.", tags: ["Liên kết giới tính", "Hemophilia"] }
+            1: { title: "Cặp số 1 (Lớn nhất)", info: "Chứa hơn 3000 gene. Đột biến liên quan đến Glaucoma và Ung thư tuyến tiền liệt. Là NST lớn nhất trong bộ đơn bội người.", tags: ["Lớn nhất", "Hơn 3000 gene"] },
+            5: { title: "Cặp số 5", info: "Hội chứng Cri-du-chat (Tiếng mèo kêu): Do đột biến cấu trúc NST (mất đoạn cánh ngắn NST số 5). Kiến thức trọng tâm Sinh 12.", tags: ["Mất đoạn", "Cri-du-chat"] },
+            6: { title: "Cặp số 6", info: "Chứa phức hợp MHC quan trọng cho miễn dịch. Đột biến liên quan đến các bệnh tự miễn và dị ứng màng.", tags: ["Hệ MHC", "Dị ứng"] },
+            9: { title: "Cặp số 9", info: "Quyết định nhóm máu hệ ABO (Di truyền đa allele). Liên quan đến bệnh Bạch cầu dòng tủy.", tags: ["Nhóm máu ABO"] },
+            11: { title: "Cặp số 11", info: "Chứa gene Hemoglobin. Đột biến điểm gây bệnh Hồng cầu hình liềm. Cũng chứa gene Insulin.", tags: ["Hồng cầu liềm", "Insulin"] },
+            12: { title: "Cặp số 12", info: "Bệnh Phenylketonuria (PKU) do đột biến gene mã hóa enzyme chuyển hóa Phenylalanine.", tags: ["Bệnh PKU"] },
+            13: { title: "Cặp số 13", info: "Hội chứng Patau (Trisomy 13): Đột biến số lượng NST gây dị tật bẩm sinh đa cơ quan.", tags: ["Patau", "Thể ba"] },
+            16: { title: "Cặp số 16", info: "Bệnh Thalassemia (Tan máu bẩm sinh). Phổ biến ở các quốc gia vùng Đông Nam Á.", tags: ["Thalassemia"] },
+            18: { title: "Cặp số 18", info: "Hội chứng Edwards (Trisomy 18): Trẻ sinh ra thường có các dị tật nghiêm trọng ở tim và thận.", tags: ["Edwards", "Thể ba"] },
+            21: { title: "Cặp số 21 (Nhỏ nhất)", info: "Hội chứng Down (Trisomy 21): Đột biến số lượng NST phổ biến nhất. Gây chậm phát triển trí tuệ.", tags: ["Down", "Trisomy 21"] },
+            23: { title: "Cặp số 23 (Giới tính)", info: "X mang gene bệnh Mù màu, Máu khó đông (Hemophilia). Y mang gene SRY quyết định giới tính Nam.", tags: ["Mù màu", "Máu khó đông"] }
         };
 
-        // Hàm ĐỒNG BỘ DỮ LIỆU CHUYÊN SÂU
-        function syncClinicData() {
-            const a1k50Data = JSON.parse(localStorage.getItem('benhAnA1K50'));
-            const patient = PatientManager.get();
-            const symptomEl = document.getElementById('clinic-symptoms');
-            const warningEl = document.getElementById('clinic-warning');
-
-            if (a1k50Data) {
-                symptomEl.innerText = `"${a1k50Data.trieuChung}"`;
-                warningEl.innerText = `⚠️ AI Phân tích: ${a1k50Data.canhBao}`;
-                document.getElementById('patient-tag').innerText = `DATA SYNC: ${a1k50Data.fromLab || 'A1K50'}`;
-                
-                // Highlight NST gợi ý
-                if (a1k50Data.canhBao.includes('11')) highlightNST(11);
-                if (a1k50Data.canhBao.includes('6')) highlightNST(6);
-            } else if (patient) {
-                symptomEl.innerText = `"${patient.currentSymptoms || 'Đang chờ triệu chứng...'}"`;
-                warningEl.innerText = "Hệ thống đang đối soát dữ liệu lâm sàng...";
-                
-                // Logic đối soát cơ bản
-                const symptoms = (patient.currentSymptoms || "").toLowerCase();
-                if (symptoms.includes('mệt mỏi') || symptoms.includes('khó thở')) highlightNST([11, 16, 7]);
-                if (symptoms.includes('dị ứng')) highlightNST(6);
-            } else {
-                symptomEl.innerText = "Không có bệnh án đầu vào. Vui lòng bắt đầu tại Phòng khám.";
-            }
-        }
-
-        function highlightNST(ids) {
-            if (!Array.isArray(ids)) ids = [ids];
-            setTimeout(() => {
-                const items = document.querySelectorAll('.nst-grid-item');
-                ids.forEach(id => {
-                    if (items[id-1]) {
-                        items[id-1].classList.add('risk-alert');
-                        items[id-1].style.animation = 'pulse-green 2s infinite';
-                        items[id-1].style.borderColor = 'var(--primary)';
-                    }
-                });
-            }, 500);
-        }
-
-        // Tạo 23 ô Nhiễm sắc thể
-        function initNST() {
-            const container = document.getElementById('nst-container');
-            for (let i = 1; i <= 23; i++) {
-                const label = i === 23 ? "XY" : i;
-                const div = document.createElement('div');
-                
-                // Các cặp NST quan trọng trong SGK
-                const isSgkImportant = (i === 5 || i === 9 || i === 11 || i === 21 || i === 23);
-                const pulseClass = isSgkImportant ? 'border-red-500/30' : '';
-                
-                div.className = `nst-grid-item p-3 text-center rounded bg-white/5 text-xs ${pulseClass}`;
-                div.innerHTML = `<span class="opacity-30 block text-[8px] mb-1">CẶP</span> ${label}`;
-                div.onclick = () => selectNST(i, div);
-                container.appendChild(div);
-            }
-        }
-
-        // Tạo hiệu ứng DNA
+        // --- 1. DNA Animation ---
         function initDNA() {
             const strand = document.getElementById('dna-strand');
-            const strandWrapper = document.createElement('div');
-            strandWrapper.className = 'dna-strand';
-            strand.appendChild(strandWrapper);
-
-            for (let i = 0; i < 25; i++) {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'dna-strand';
+            strand.appendChild(wrapper);
+            for (let i = 0; i < 15; i++) {
                 const pair = document.createElement('div');
                 pair.className = 'base-pair';
                 pair.style.top = `${i * 20}px`;
-                pair.style.transform = `rotateY(${i * 18}deg)`;
-                pair.innerHTML = `
-                    <div style="position:absolute; left:-4px; top:-2px; width:8px; height:8px; background:var(--primary); border-radius:50%; box-shadow:0 0 10px var(--primary)"></div>
-                    <div style="position:absolute; right:-4px; top:-2px; width:8px; height:8px; background:#fff; border-radius:50%; box-shadow:0 0 10px #fff"></div>
-                `;
-                strandWrapper.appendChild(pair);
+                pair.style.transform = `rotateY(${i * 24}deg)`;
+                wrapper.appendChild(pair);
             }
         }
 
-        // Xử lý khi click vào 1 NST
-        function selectNST(id, element) {
-            document.querySelectorAll('.nst-grid-item').forEach(el => el.classList.remove('active'));
-            element.classList.add('active');
-
-            const data = genomeData[id] || { 
-                title: `Nhiễm sắc thể số ${id}`, 
-                bio12: "Dữ liệu gene đang được cập nhật. Cặp NST này chứa các gene điều hòa chức năng sống cơ bản và sự biệt hóa tế bào.",
-                tags: ["Đang cập nhật"]
-            };
+        function startDnaScan() {
+            const btn = document.getElementById('btn-scan');
+            const res = document.getElementById('scan-result');
+            const seq = document.getElementById('dna-sequence');
+            const alert = document.getElementById('mutation-alert');
+            const patient = PatientManager.get();
             
-            document.getElementById('info-content').innerHTML = `
-                <div class="text-left w-full animate-fadeIn">
-                    <h3 class="text-cyan-400 font-bold text-lg mb-2 uppercase">${data.title}</h3>
-                    <div class="h-1 w-12 bg-cyan-400 mb-4"></div>
-                    
-                    <h4 class="text-[10px] text-white/40 tracking-widest mb-2 uppercase">Kiến thức Sinh học 12 Trọng tâm</h4>
-                    <p class="text-sm leading-relaxed mb-6 text-white/80">${data.bio12}</p>
-                    
-                    <div class="flex flex-wrap gap-2 mb-8">
-                        ${(data.tags || []).map(t => `<span class="text-[9px] border border-cyan-400/30 px-2 py-1 rounded text-cyan-400">${t}</span>`).join('')}
-                    </div>
+            btn.disabled = true;
+            btn.innerText = "⌛ ĐANG GIẢI MÃ...";
+            res.classList.add('hidden');
+            
+            setTimeout(() => {
+                res.classList.remove('hidden');
+                const raw = "ATGCTGTAGCGCTAATGCTTAGCGCTAATGCTTAGC";
+                const isSick = (patient?.currentSymptoms || "").toLowerCase().includes('máu') || (patient?.currentSymptoms || "").toLowerCase().includes('tiểu đường');
+                
+                seq.innerHTML = isSick ? raw.replace("GCT", "<span class='text-red-500'>GTT</span>") : raw;
+                if(isSick) alert.classList.remove('hidden');
+                
+                btn.disabled = false;
+                btn.innerText = "✅ HOÀN TẤT";
+            }, 2000);
+        }
 
-                    <div class="space-y-3">
-                        <button class="w-full py-2 bg-cyan-400 text-black font-bold text-[10px] hover:bg-white transition uppercase rounded">Quét đột biến điểm (SNP)</button>
-                        <button class="w-full py-2 border border-white/10 text-[10px] hover:bg-white hover:text-black transition uppercase rounded">Tải báo cáo Di truyền</button>
-                    </div>
-                </div>
-            `;
-            document.getElementById('info-content').classList.remove('opacity-30');
-            document.getElementById('info-content').classList.remove('items-center');
-            document.getElementById('info-content').classList.remove('justify-center');
+        // --- 2. Dice Simulator (Mendel) ---
+        function rollDice() {
+            const dice = document.getElementById('dice-btn');
+            const res = document.getElementById('predict-result');
+            const g1 = document.getElementById('dad-gen').value;
+            const g2 = document.getElementById('mom-gen').value;
+
+            dice.style.animation = "shake 0.5s infinite";
+            res.classList.add('hidden');
+
+            setTimeout(() => {
+                dice.style.animation = "none";
+                res.classList.remove('hidden');
+                
+                // Probabilities Calculation
+                const a1 = g1.split('');
+                const a2 = g2.split('');
+                let outcomes = [];
+                a1.forEach(x => a2.forEach(y => outcomes.push([x, y].sort().join(''))));
+                
+                const total = outcomes.length;
+                const sickCount = outcomes.filter(o => o === 'aa').length;
+                const healthyPercent = ((total - sickCount) / total) * 100;
+                const sickPercent = (sickCount / total) * 100;
+
+                document.getElementById('res-healthy').innerText = healthyPercent + "%";
+                document.getElementById('res-sick').innerText = sickPercent + "%";
+            }, 1000);
+        }
+
+        // --- 3. Genome Grid ---
+        function initGrid() {
+            const grid = document.getElementById('nst-grid');
+            for (let i = 1; i <= 23; i++) {
+                const label = i === 23 ? "XY" : i;
+                const div = document.createElement('div');
+                const isImportant = genomeData[i] ? 'risk-alert' : '';
+                div.className = `nst-grid-item p-4 text-center ${isImportant}`;
+                div.innerHTML = `<span class="opacity-30 block text-[8px] mb-1">CẶP</span> ${label}`;
+                div.onclick = () => showDetail(i, div);
+                grid.appendChild(div);
+            }
+        }
+
+        function showDetail(id, el) {
+            document.querySelectorAll('.nst-grid-item').forEach(x => x.classList.remove('active'));
+            el.classList.add('active');
+            
+            const detail = document.getElementById('nst-detail');
+            const data = genomeData[id] || { title: `Cặp số ${id}`, info: "Hệ thống đang cập nhật dữ liệu gene chuyên sâu cho cặp NST này. Chứa các gene mã hóa protein cấu trúc và enzym chuyển hóa.", tags: ["Đang cập nhật"] };
+            
+            detail.classList.remove('hidden');
+            document.getElementById('detail-title').innerText = data.title;
+            document.getElementById('detail-info').innerText = data.info;
+            document.getElementById('detail-tags').innerHTML = data.tags.map(t => `<span class="px-3 py-1 bg-cyan-400/10 text-cyan-400 text-[10px] rounded-full border border-cyan-400/20">${t}</span>`).join('');
+            
+            detail.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        // --- 4. Sync A1K50 ---
+        function syncA1K50() {
+            const data = JSON.parse(localStorage.getItem('benhAnA1K50'));
+            const patient = PatientManager.get();
+            const symptomEl = document.getElementById('sync-symptoms');
+            const warningEl = document.getElementById('sync-warning');
+
+            if (data) {
+                symptomEl.innerText = `"${data.trieuChung}"`;
+                warningEl.innerText = `⚠️ AI Phân tích: ${data.canhBao}`;
+                if (data.canhBao.includes('11')) highlight(11);
+                if (data.canhBao.includes('6')) highlight(6);
+            } else if (patient) {
+                symptomEl.innerText = `"${patient.currentSymptoms || 'Dữ liệu lâm sàng ổn định.'}"`;
+                const s = (patient.currentSymptoms || "").toLowerCase();
+                if (s.includes('máu')) highlight(11);
+                if (s.includes('dị ứng')) highlight(6);
+            }
+        }
+
+        function highlight(id) {
+            setTimeout(() => {
+                const items = document.querySelectorAll('.nst-grid-item');
+                if(items[id-1]) {
+                    items[id-1].style.borderColor = "#00f2ff";
+                    items[id-1].style.background = "rgba(0, 242, 255, 0.2)";
+                }
+            }, 500);
         }
 
         window.onload = () => {
-            initNST();
             initDNA();
-            syncClinicData();
+            initGrid();
+            syncA1K50();
         };
     </script>
 </body>
