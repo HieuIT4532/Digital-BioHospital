@@ -1,11 +1,11 @@
-import { MockFirebase } from './firebase-config.js';
+import { BioDB } from './firebase-config.js';
 
 window.BioAuth = {
   currentUser: null,
   currentDoc: null,
 
   async init() {
-    MockFirebase.onAuthStateChanged(async (user) => {
+    BioDB.onAuthStateChanged(async (user) => {
       this.currentUser = user;
       
       const loginBtn = document.getElementById('nav-login-btn');
@@ -13,7 +13,7 @@ window.BioAuth = {
 
       if (user) {
         // Lấy document
-        this.currentDoc = await MockFirebase.getUserDoc(user.uid);
+        this.currentDoc = await BioDB.getUserDoc(user.uid);
         
         // Cập nhật giao diện Navbar
         if (loginBtn) loginBtn.style.display = 'none';
@@ -37,7 +37,7 @@ window.BioAuth = {
       loginBtn.addEventListener('click', async (e) => {
         e.preventDefault();
         try {
-          await MockFirebase.signInWithGoogle();
+          await BioDB.signInWithGoogle();
           alert('Đăng nhập mô phỏng thành công!');
           // Reload để refresh trạng thái (hoặc dùng observer)
           window.location.reload();
@@ -52,7 +52,7 @@ window.BioAuth = {
     if (logoutBtn) {
       logoutBtn.addEventListener('click', async (e) => {
         e.preventDefault();
-        await MockFirebase.signOut();
+        await BioDB.signOut();
         window.location.replace('index.html');
       });
     }
@@ -60,18 +60,18 @@ window.BioAuth = {
 
   async addKnowledge(level, knowledgeItem) {
     if (!this.currentUser) return;
-    const doc = await MockFirebase.getUserDoc(this.currentUser.uid);
+    const doc = await BioDB.getUserDoc(this.currentUser.uid);
     if (!doc.unlockedKnowledge[level].includes(knowledgeItem)) {
        doc.unlockedKnowledge[level].push(knowledgeItem);
-       await MockFirebase.updateUserDoc(this.currentUser.uid, { unlockedKnowledge: doc.unlockedKnowledge });
+       await BioDB.updateUserDoc(this.currentUser.uid, { unlockedKnowledge: doc.unlockedKnowledge });
     }
   },
 
   async updateDigitalTwin(organData) {
     if (!this.currentUser) return;
-    const doc = await MockFirebase.getUserDoc(this.currentUser.uid);
+    const doc = await BioDB.getUserDoc(this.currentUser.uid);
     const newTwinState = { ...doc.digitalTwinState, ...organData };
-    await MockFirebase.updateUserDoc(this.currentUser.uid, { digitalTwinState: newTwinState });
+    await BioDB.updateUserDoc(this.currentUser.uid, { digitalTwinState: newTwinState });
   }
 };
 

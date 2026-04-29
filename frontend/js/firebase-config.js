@@ -1,145 +1,119 @@
-// Cấu hình Firebase (Template)
-// Yêu cầu: Tạo project Firebase, bật Authentication (Google) và Firestore.
-// Tham khảo: https://firebase.google.com/docs/web/setup
-
+// Cấu hình Firebase
 // TODO: Thay thế bằng config thật từ Firebase Console
 const firebaseConfig = {
-  apiKey: "AIza...TODO",
-  authDomain: "biohospital-...firebaseapp.com",
-  projectId: "biohospital-...",
-  storageBucket: "biohospital-....appspot.com",
-  messagingSenderId: "123456789",
-  appId: "1:1234567:web:abcde",
-  measurementId: "G-XXXXX"
+  apiKey: "TODO_API_KEY",
+  authDomain: "TODO_PROJECT.firebaseapp.com",
+  projectId: "TODO_PROJECT",
+  storageBucket: "TODO_PROJECT.appspot.com",
+  messagingSenderId: "TODO_SENDER_ID",
+  appId: "TODO_APP_ID",
+  measurementId: "TODO_MEASUREMENT_ID"
 };
 
-/* 
-// Code khởi tạo thật (bỏ comment khi có cấu hình thật + đã cài firebase SDK qua CDN)
+// Khởi tạo Firebase SDK qua CDN
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-import { getFirestore, doc, setDoc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged as firebaseOnAuthStateChanged, signOut as firebaseSignOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import { getFirestore, doc, setDoc, getDoc, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 const provider = new GoogleAuthProvider();
 
-export { auth, db, provider, signInWithPopup, onAuthStateChanged, signOut, doc, setDoc, getDoc, updateDoc };
-*/
-
 // ============================================
-// MOCK FIREBASE (Dành cho giai đoạn phát triển Prototype)
-// Dùng LocalStorage để giả lập Database.
+// BIO DB WRAPPER (Real Firebase)
 // ============================================
-
-const MOCK_STORAGE_KEY = 'bio_hospital_mock_db';
-
-export const MockFirebase = {
-  initMock() {
-    if (!localStorage.getItem(MOCK_STORAGE_KEY)) {
-      localStorage.setItem(MOCK_STORAGE_KEY, JSON.stringify({ users: {} }));
-    }
-  },
-  
+export const BioDB = {
   async signInWithGoogle() {
-    // Trả về mock user
-    const mockUser = {
-      uid: 'user_' + Math.random().toString(36).substring(7),
-      displayName: 'Học sinh Sinh học',
-      email: 'student@example.com',
-      photoURL: 'https://api.dicebear.com/7.x/bottts/svg?seed=student'
-    };
-    
-    // Lưu session hiện tại
-    localStorage.setItem('bio_mock_session', JSON.stringify(mockUser));
-    
-    // Khởi tạo Document giả lập nếu chưa có
-    await this.initUserDoc(mockUser);
-    return { user: mockUser };
+    try {
+      const result = await signInWithPopup(auth, provider);
+      await this.initUserDoc(result.user);
+      return result;
+    } catch (error) {
+      console.error("Lỗi đăng nhập Google:", error);
+      throw error;
+    }
   },
 
   async signOut() {
-    localStorage.removeItem('bio_mock_session');
+    return firebaseSignOut(auth);
   },
 
   onAuthStateChanged(callback) {
-    const session = localStorage.getItem('bio_mock_session');
-    if (session) {
-      callback(JSON.parse(session));
-    } else {
-      callback(null);
-    }
+    firebaseOnAuthStateChanged(auth, callback);
   },
 
   async initUserDoc(user) {
-    const db = JSON.parse(localStorage.getItem(MOCK_STORAGE_KEY));
-    if (!db.users[user.uid]) {
-      db.users[user.uid] = {
+    const userRef = doc(db, "users", user.uid);
+    const userSnap = await getDoc(userRef);
+    
+    if (!userSnap.exists()) {
+      await setDoc(userRef, {
         uid: user.uid,
         displayName: user.displayName,
         email: user.email,
         digitalTwinState: { heart: 100, liver: 100, brain: 100, lungs: 100, stomach: 100 },
+        unlockedOrgans: [],
         unlockedKnowledge: {
           biology10: [],
           biology11: [],
           biology12: []
         },
         createdAt: new Date().toISOString()
-      };
-      localStorage.setItem(MOCK_STORAGE_KEY, JSON.stringify(db));
+      });
     }
   },
 
   async getUserDoc(uid) {
-    const db = JSON.parse(localStorage.getItem(MOCK_STORAGE_KEY));
-    return db.users[uid];
+    const userRef = doc(db, "users", uid);
+    const userSnap = await getDoc(userRef);
+    if (userSnap.exists()) {
+      return userSnap.data();
+    }
+    return null;
   },
 
   async updateUserDoc(uid, dataToMerge) {
-    const db = JSON.parse(localStorage.getItem(MOCK_STORAGE_KEY));
-    if (db.users[uid]) {
-      db.users[uid] = { ...db.users[uid], ...dataToMerge };
-      localStorage.setItem(MOCK_STORAGE_KEY, JSON.stringify(db));
-    }
+    const userRef = doc(db, "users", uid);
+    await updateDoc(userRef, dataToMerge);
   },
 
   async saveUnlockedKnowledge(uid, organs, grade10, grade11, grade12) {
-    const db = JSON.parse(localStorage.getItem(MOCK_STORAGE_KEY));
-    if (db.users[uid]) {
-      const user = db.users[uid];
-      if (!user.unlockedOrgans) user.unlockedOrgans = [];
-      
-      organs.forEach(o => {
-         if(!user.unlockedOrgans.includes(o)) user.unlockedOrgans.push(o);
-      });
+    const userRef = doc(db, "users", uid);
+    const updates = {};
+    
+    if (organs && organs.length > 0) {
+      // Vì arrayUnion không nhận mảng mà nhận spread, ta lặp qua hoặc ghi đè (ở đây là merge ở component gọi)
+      // Dùng updateDoc bình thường vì arrayUnion cho nhiều phần tử hơi phức tạp.
+      // Giải pháp tốt nhất là fetch mảng hiện tại rồi merge.
+      const docSnap = await getDoc(userRef);
+      if(docSnap.exists()) {
+        const data = docSnap.data();
+        let currentOrgans = data.unlockedOrgans || [];
+        organs.forEach(o => { if(!currentOrgans.includes(o)) currentOrgans.push(o); });
+        updates.unlockedOrgans = currentOrgans;
+      }
+    }
 
-      if (grade10 && !user.unlockedKnowledge.biology10.includes(grade10)) {
-         user.unlockedKnowledge.biology10.push(grade10);
-      }
-      if (grade11 && !user.unlockedKnowledge.biology11.includes(grade11)) {
-         user.unlockedKnowledge.biology11.push(grade11);
-      }
-      if (grade12 && !user.unlockedKnowledge.biology12.includes(grade12)) {
-         user.unlockedKnowledge.biology12.push(grade12);
-      }
+    if (grade10) updates["unlockedKnowledge.biology10"] = arrayUnion(grade10);
+    if (grade11) updates["unlockedKnowledge.biology11"] = arrayUnion(grade11);
+    if (grade12) updates["unlockedKnowledge.biology12"] = arrayUnion(grade12);
 
-      localStorage.setItem(MOCK_STORAGE_KEY, JSON.stringify(db));
+    if (Object.keys(updates).length > 0) {
+      await updateDoc(userRef, updates);
     }
   }
 };
 
-// Global function để các trang có thể gọi nhanh
 window.saveUnlockedKnowledge = async (organs, type) => {
-   const session = localStorage.getItem('bio_mock_session');
-   if (session) {
-      const user = JSON.parse(session);
-      // Giả lập lưu tag kiến thức dựa trên type hoặc random
+   const user = auth.currentUser;
+   if (user) {
       const g10 = "Hô hấp tế bào";
       const g11 = "Cân bằng nội môi";
       const g12 = "Đột biến gen";
-      await MockFirebase.saveUnlockedKnowledge(user.uid, organs, g10, g11, g12);
-      console.log('Đã lưu Bio-Map:', organs);
+      await BioDB.saveUnlockedKnowledge(user.uid, organs, g10, g11, g12);
+      console.log('Đã lưu Bio-Map vào Firebase:', organs);
+   } else {
+      console.warn("Chưa đăng nhập, không thể lưu Bio-Map vào Firebase!");
    }
 };
-
-MockFirebase.initMock();
