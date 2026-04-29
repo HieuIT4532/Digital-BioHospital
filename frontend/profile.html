@@ -153,9 +153,13 @@
 
         <!-- RIGHT: Unlocked Knowledge -->
         <div>
-           <div class="card" style="margin-bottom: 2rem;">
+           <div class="card" style="margin-bottom: 2rem; position: relative; overflow: hidden;">
+             <div style="position: absolute; top: 0; right: 0; padding: 1rem; background: rgba(124,58,237,0.1); border-bottom-left-radius: 1rem; border-left: 1px solid rgba(167,139,250,0.2); border-bottom: 1px solid rgba(167,139,250,0.2);">
+                <div style="font-size: 0.65rem; color: rgba(255,255,255,0.4); text-transform: uppercase; margin-bottom: 0.2rem;">Cấp bậc</div>
+                <div id="doctor-rank" style="font-weight: 700; color: var(--color-primary-light); font-size: 0.9rem;">Bác sĩ thực tập</div>
+             </div>
              <h3>Chào, <span id="profile-name">Bạn</span>!</h3>
-             <p style="font-size: 0.9rem; color: rgba(255,255,255,0.6)">Hành trình thu thập kiến thức của bạn. Khám các chuyên khoa để thắp sáng thêm trí tuệ.</p>
+             <p style="font-size: 0.9rem; color: rgba(255,255,255,0.6); max-width: 80%;">Hành trình thu thập kiến thức của bạn. Khám các chuyên khoa để thắp sáng thêm trí tuệ.</p>
            </div>
            
            <div class="knowledge-grid">
@@ -179,7 +183,7 @@
   </main>
 
   <script type="module">
-    import { MockFirebase } from './js/firebase-config.js';
+    import { BioDB } from './js/firebase-config.js';
 
     window.addEventListener('load', async () => {
       // Chờ init
@@ -208,6 +212,23 @@
             if (orgLower.includes('gan')) document.getElementById('map-liver')?.classList.add('unlocked');
             if (orgLower.includes('dạ dày') || orgLower.includes('ruột')) document.getElementById('map-stomach')?.classList.add('unlocked');
          });
+
+         // Tính toán Cấp bậc Bác sĩ
+         const rankEl = document.getElementById('doctor-rank');
+         const organCount = unlockedOrgans.length;
+         if (organCount >= 6) {
+           rankEl.textContent = 'Trưởng khoa (Head of Dept)';
+           rankEl.style.color = '#F59E0B';
+         } else if (organCount >= 4) {
+           rankEl.textContent = 'Bác sĩ chuyên khoa';
+           rankEl.style.color = '#EC4899';
+         } else if (organCount >= 2) {
+           rankEl.textContent = 'Bác sĩ nội trú';
+           rankEl.style.color = '#A78BFA';
+         } else {
+           rankEl.textContent = 'Bác sĩ thực tập';
+           rankEl.style.color = '#6EE7B7';
+         }
 
          const renderList = (id, items, className) => {
              const div = document.getElementById(id);

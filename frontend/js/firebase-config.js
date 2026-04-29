@@ -1,13 +1,13 @@
 // Cấu hình Firebase
 // TODO: Thay thế bằng config thật từ Firebase Console
 const firebaseConfig = {
-  apiKey: "TODO_API_KEY",
-  authDomain: "TODO_PROJECT.firebaseapp.com",
-  projectId: "TODO_PROJECT",
-  storageBucket: "TODO_PROJECT.appspot.com",
-  messagingSenderId: "TODO_SENDER_ID",
-  appId: "TODO_APP_ID",
-  measurementId: "TODO_MEASUREMENT_ID"
+  apiKey: "AIzaSyC43kz_bzcrmbmHV5Zv_87yLfbfEFdW7Yc",
+  authDomain: "biohospital-77aaf.firebaseapp.com",
+  databaseURL: "https://biohospital-77aaf-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "biohospital-77aaf",
+  storageBucket: "biohospital-77aaf.firebasestorage.app",
+  messagingSenderId: "719575895164",
+  appId: "1:719575895164:web:e0ad6986cdca23b15dcdf9"
 };
 
 // Khởi tạo Firebase SDK qua CDN
@@ -46,7 +46,7 @@ export const BioDB = {
   async initUserDoc(user) {
     const userRef = doc(db, "users", user.uid);
     const userSnap = await getDoc(userRef);
-    
+
     if (!userSnap.exists()) {
       await setDoc(userRef, {
         uid: user.uid,
@@ -81,16 +81,16 @@ export const BioDB = {
   async saveUnlockedKnowledge(uid, organs, grade10, grade11, grade12) {
     const userRef = doc(db, "users", uid);
     const updates = {};
-    
+
     if (organs && organs.length > 0) {
       // Vì arrayUnion không nhận mảng mà nhận spread, ta lặp qua hoặc ghi đè (ở đây là merge ở component gọi)
       // Dùng updateDoc bình thường vì arrayUnion cho nhiều phần tử hơi phức tạp.
       // Giải pháp tốt nhất là fetch mảng hiện tại rồi merge.
       const docSnap = await getDoc(userRef);
-      if(docSnap.exists()) {
+      if (docSnap.exists()) {
         const data = docSnap.data();
         let currentOrgans = data.unlockedOrgans || [];
-        organs.forEach(o => { if(!currentOrgans.includes(o)) currentOrgans.push(o); });
+        organs.forEach(o => { if (!currentOrgans.includes(o)) currentOrgans.push(o); });
         updates.unlockedOrgans = currentOrgans;
       }
     }
@@ -106,14 +106,14 @@ export const BioDB = {
 };
 
 window.saveUnlockedKnowledge = async (organs, type) => {
-   const user = auth.currentUser;
-   if (user) {
-      const g10 = "Hô hấp tế bào";
-      const g11 = "Cân bằng nội môi";
-      const g12 = "Đột biến gen";
-      await BioDB.saveUnlockedKnowledge(user.uid, organs, g10, g11, g12);
-      console.log('Đã lưu Bio-Map vào Firebase:', organs);
-   } else {
-      console.warn("Chưa đăng nhập, không thể lưu Bio-Map vào Firebase!");
-   }
+  const user = auth.currentUser;
+  if (user) {
+    const g10 = "Hô hấp tế bào";
+    const g11 = "Cân bằng nội môi";
+    const g12 = "Đột biến gen";
+    await BioDB.saveUnlockedKnowledge(user.uid, organs, g10, g11, g12);
+    console.log('Đã lưu Bio-Map vào Firebase:', organs);
+  } else {
+    console.warn("Chưa đăng nhập, không thể lưu Bio-Map vào Firebase!");
+  }
 };

@@ -555,14 +555,11 @@
              document.getElementById('level3-card').scrollIntoView({behavior: 'smooth'});
              
              // Ghi nhận mở khóa Bio-Map (sẽ hoàn thiện ở bước Firebase)
-             if(window.MockFirebase) {
-                const user = JSON.parse(localStorage.getItem('bio_mock_session'));
-                if (user) {
-                   window.MockFirebase.updateUserDoc(user.uid, {
-                       // Tạm thời mô phỏng việc lưu
-                       lastUnlocked: new Date().toISOString()
-                   });
-                }
+             // Ghi nhận mở khóa Bio-Map vào Firebase
+             if(window.saveUnlockedKnowledge) {
+                // Ta có thể trích xuất các cơ quan bị ảnh hưởng từ AI (a.level1_macro.affectedOrgans)
+                const affectedOrgans = a.level1_macro?.affectedOrgans || [];
+                window.saveUnlockedKnowledge(affectedOrgans, "level12");
              }
            }, 800);
         };

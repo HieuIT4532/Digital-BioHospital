@@ -904,6 +904,11 @@
         hideLoading();
         showToast('Phân tích hoàn tất — xem sơ đồ highlight ở trên!', 'success');
 
+        // Ghi nhận vào Bio-Map
+        if(window.saveUnlockedKnowledge && affectedOrgans.length > 0) {
+           window.saveUnlockedKnowledge(affectedOrgans, "lifestyle");
+        }
+
       } catch (err) {
         hideLoading();
         showToast('Lỗi: ' + err.message, 'error');

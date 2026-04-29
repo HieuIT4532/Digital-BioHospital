@@ -338,22 +338,16 @@
         setOrganHealth('liver', organs.liver);
         setOrganHealth('stomach', organs.stomach);
 
-        // Lưu trạng thái vào MockFirebase (tuỳ chọn)
-        if(window.MockFirebase) {
-           const session = localStorage.getItem('bio_mock_session');
-           if (session) {
-              const user = JSON.parse(session);
-              window.MockFirebase.updateUserDoc(user.uid, {
-                 digitalTwinState: {
-                    brain: organs.brain?.health || 100,
-                    heart: organs.heart?.health || 100,
-                    lungs: organs.lungs?.health || 100,
-                    liver: organs.liver?.health || 100,
-                    stomach: organs.stomach?.health || 100,
-                 },
-                 lastCheckInDate: new Date().toISOString()
-              });
-           }
+        // Lưu trạng thái vào Firebase
+        if(window.BioAuth && window.BioAuth.currentUser) {
+           window.BioAuth.updateDigitalTwin({
+              brain: organs.brain?.health || 100,
+              heart: organs.heart?.health || 100,
+              lungs: organs.lungs?.health || 100,
+              liver: organs.liver?.health || 100,
+              stomach: organs.stomach?.health || 100,
+              lastCheckInDate: new Date().toISOString()
+           });
         }
 
         hideLoading();

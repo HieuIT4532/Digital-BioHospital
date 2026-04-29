@@ -5,6 +5,9 @@ const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const path = require('path');
 
+// Khởi tạo Firebase Admin
+require('./utils/firebaseAdmin');
+
 const app = express();
 const PORT = process.env.PORT || 5000;
 

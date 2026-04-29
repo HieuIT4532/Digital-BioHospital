@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const { askGeminiJSON, buildMedicalContext } = require('../utils/gemini');
+const { db } = require('../utils/firebaseAdmin');
 
-// Local in-memory DB since Firebase was removed
-const patientsDB = [];
+// Collection reference
+const patientsRef = db.collection('patients');
 
 // POST /api/patients — Tạo hồ sơ bệnh nhân mới + AI phân tích
 router.post('/', async (req, res) => {
@@ -61,9 +62,20 @@ Hãy phân tích sức khỏe toàn diện của bệnh nhân này và trả v�
     // Tạo mã bệnh nhân (BN + hash short)
     const patientCode = 'BN' + Date.now().toString(36).toUpperCase();
 
-    // Lưu vào array tạm
+    // Lưu vào Firestore
+    const docRef = await patientsRef.add({
+      ...patientData,
+      patientCode,
+      healthScore,
+      riskLevel: aiResult.riskLevel || 'Trung bình',
+      recommendedDepartments: aiResult.recommendedDepartments || [],
+      aiSummary: aiResult.summary || '',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    });
+
     const newPatient = {
-      id: "local_" + Date.now().toString(36) + Math.random().toString(36).substr(2, 5),
+      id: docRef.id,
       ...patientData,
       patientCode,
       healthScore,
@@ -73,8 +85,6 @@ Hãy phân tích sức khỏe toàn diện của bệnh nhân này và trả v�
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     };
-
-    patientsDB.push(newPatient);
     
     res.status(201).json({
       success: true,
@@ -91,13 +101,13 @@ Hãy phân tích sức khỏe toàn diện của bệnh nhân này và trả v�
 // GET /api/patients/:id — Lấy hồ sơ bệnh nhân
 router.get('/:id', async (req, res) => {
   try {
-    const doc = patientsDB.find(p => p.id === req.params.id);
+    const doc = await patientsRef.doc(req.params.id).get();
     
-    if (!doc) {
+    if (!doc.exists) {
       return res.status(404).json({ error: 'Không tìm thấy hồ sơ bệnh nhân' });
     }
     
-    res.json({ success: true, patient: doc });
+    res.json({ success: true, patient: { id: doc.id, ...doc.data() } });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -106,13 +116,14 @@ router.get('/:id', async (req, res) => {
 // GET /api/patients/code/:code — Tìm bằng mã bệnh nhân
 router.get('/code/:code', async (req, res) => {
   try {
-    const doc = patientsDB.find(p => p.patientCode === req.params.code.toUpperCase());
+    const snapshot = await patientsRef.where('patientCode', '==', req.params.code.toUpperCase()).limit(1).get();
     
-    if (!doc) {
+    if (snapshot.empty) {
       return res.status(404).json({ error: 'Không tìm thấy hồ sơ' });
     }
     
-    res.json({ success: true, patient: doc });
+    const doc = snapshot.docs[0];
+    res.json({ success: true, patient: { id: doc.id, ...doc.data() } });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
