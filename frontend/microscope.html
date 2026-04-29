@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Kính Hiển Vi Đa Kịch Bản – Digital BioHospital</title>
+  <title>Kính Hiển Vi Thông Minh AI – Digital BioHospital</title>
   <link rel="stylesheet" href="css/global.css" />
   <link rel="stylesheet" href="css/components.css" />
   <link rel="stylesheet" href="css/animations.css" />
@@ -28,27 +28,28 @@
       width: 500px; height: 500px;
       margin: 0 auto;
       border-radius: 50%;
-      border: 15px solid #1a1a2e;
-      background: #000;
+      border: 20px solid #1a1a2e;
+      background: #111; /* Dark gray fallback instead of pure black */
       position: relative;
       overflow: hidden;
-      box-shadow: inset 0 0 100px rgba(99, 102, 241, 0.4);
+      box-shadow: inset 0 0 100px rgba(99, 102, 241, 0.4), 0 0 50px rgba(0,0,0,0.5);
     }
 
-    .specimen-img {
+    #specimen-img {
       width: 100%; height: 100%;
       object-fit: cover;
-      transition: all 0.5s ease;
-      filter: blur(20px);
-      transform: scale(1);
+      transition: filter 0.5s, transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      filter: blur(8px); /* Lower initial blur so it's not pitch black */
+      display: block;
+      opacity: 0.9;
     }
 
-    /* Overlays */
     .annotation-layer {
       position: absolute;
       top: 0; left: 0; width: 100%; height: 100%;
       pointer-events: none;
-      display: none;
+      opacity: 0;
+      transition: opacity 0.5s;
       z-index: 10;
     }
 
@@ -71,10 +72,6 @@
       margin-top: 2.5rem;
     }
 
-    .control-knob {
-      text-align: center;
-    }
-
     .knob-ui {
       width: 80px; height: 80px;
       background: #1a1a2e;
@@ -83,10 +80,10 @@
       margin: 10px auto;
       position: relative;
       cursor: pointer;
-      transition: transform 0.2s;
+      box-shadow: 0 0 20px rgba(99, 102, 241, 0.2);
     }
 
-    .knob-ui::before {
+    .knob-ui::after {
       content: '';
       position: absolute;
       top: 10px; left: 50%; width: 4px; height: 20px;
@@ -96,15 +93,15 @@
 
     .live-specs {
       position: absolute;
-      bottom: 50px; left: 50px;
+      bottom: 40px; left: 40px;
       font-family: monospace;
       font-size: 0.75rem;
       color: #10B981;
       text-align: left;
-      line-height: 1.5;
       background: rgba(0,0,0,0.6);
       padding: 10px;
       border-radius: 8px;
+      pointer-events: none;
     }
 
   </style>
@@ -115,7 +112,7 @@
     <div class="container navbar-inner">
       <a href="index.html" class="navbar-brand">🏥 <span>Digital BioHospital</span></a>
       <ul class="navbar-nav">
-        <li><a href="index.html">🏠 Trang chủ</a></li>
+        <li><a href="index.html">Trang chủ</a></li>
         <li class="nav-item">
           <a href="#" class="active">🔬 Lab Lớp 10 ▼</a>
           <div class="nav-dropdown flex-col">
@@ -132,28 +129,26 @@
     <div class="container">
       <div class="micro-layout">
         
-        <!-- LEFT: THE SCOPE -->
         <div class="scope-frame">
           <div class="lens-view">
-            <img src="C:\Users\pc\.gemini\antigravity\brain\4f1a7350-1564-4549-93a1-cbc24fb76712\onion_cells_microview_1777451899980.png" id="main-img" class="specimen-img">
+            <img src="https://images.unsplash.com/photo-1576086213369-97a306d36557?auto=format&fit=crop&q=80&w=800" id="specimen-img" alt="Specimen">
             
             <div class="annotation-layer" id="labels">
-              <div class="label-box" style="top: 20%; left: 30%;">Vách tế bào (Cell Wall)</div>
-              <div class="label-box" style="top: 50%; left: 50%;">Nhân tế bào (Nucleus)</div>
-              <div class="label-box" style="top: 70%; left: 20%;">Tế bào chất (Cytoplasm)</div>
+              <div class="label-box" style="top: 25%; left: 35%;">Màng sinh chất (Membrane)</div>
+              <div class="label-box" style="top: 60%; left: 50%;">Tế bào chất (Cytoplasm)</div>
             </div>
 
             <div class="live-specs">
-              MODE: <span id="mode-text">GENERAL_SCAN</span><br>
-              MAGNIFICATION: <span id="mag-text">10x</span><br>
-              FOCUS_LOCK: <span id="focus-text">0%</span>
+              SPECIMEN: <span id="spec-name">AUTO_LOAD</span><br>
+              MAGNIFICATION: <span id="spec-mag">10x</span><br>
+              FOCUS: <span id="spec-focus">0%</span>
             </div>
           </div>
 
           <div class="knob-container">
             <div class="control-knob">
               <label class="form-label">Phóng đại (Zoom)</label>
-              <div class="knob-ui" id="knob-zoom"></div>
+              <div class="knob-ui" id="knob-zoom" onclick="cycleZoom()"></div>
               <div style="font-weight:700" id="val-zoom">10x</div>
             </div>
             <div class="control-knob">
@@ -164,26 +159,25 @@
           </div>
         </div>
 
-        <!-- RIGHT: SCENARIO INFO -->
         <div class="animate-slideRight">
           <div class="card" style="position: sticky; top: 100px;">
-            <div id="patient-mini" style="margin-bottom: 2rem;">
-              <h4 style="font-size: 0.7rem; color: var(--color-primary-light);">📡 ĐANG KẾT NỐI:</h4>
-              <div id="p-name" style="font-size: 1.2rem; font-weight: 800; margin: 5px 0;">--</div>
-              <div id="p-symptoms" style="font-size: 0.8rem; color: #FBBF24;">--</div>
+            <div style="margin-bottom: 2rem;">
+              <h4 style="font-size: 0.7rem; color: var(--color-primary-light);">📡 ĐỒNG BỘ:</h4>
+              <div id="p-name" style="font-size: 1.2rem; font-weight: 800;">--</div>
+              <div id="p-sym" style="font-size: 0.8rem; color: #FBBF24;">--</div>
             </div>
 
-            <div class="card" style="background: rgba(124,58,237,0.05); padding: 1rem; border-color: rgba(124,58,237,0.2);">
-              <h4 style="color: var(--color-primary-light); font-size: 0.8rem;">🤖 AI CHẨN ĐOÁN:</h4>
-              <p id="ai-status" style="font-size: 0.75rem; line-height: 1.5; margin-top: 5px;">
-                Đang chờ đồng bộ triệu chứng từ phòng khám...
+            <div class="card" style="background: rgba(16,185,129,0.05); padding: 1rem;">
+              <h4 style="color: #10B981; font-size: 0.8rem;">🤖 AI LAB ADVICE:</h4>
+              <p id="ai-advice" style="font-size: 0.75rem; margin-top: 5px;">
+                Đang chờ dữ liệu triệu chứng...
               </p>
             </div>
 
-            <div id="result-box" style="display:none; margin-top: 2rem; padding: 1.5rem; border: 1px solid #10B981; border-radius: 1.5rem;">
-              <h4 style="color: #10B981;">📋 KẾT QUẢ SOI:</h4>
-              <p id="result-text" style="font-size: 0.8rem; margin-top: 10px;"></p>
-              <a href="microbiology.html" class="btn btn-primary" style="width:100%; margin-top: 1rem;">Tiến tới Trạm Vi Sinh ➔</a>
+            <div id="report-box" style="display:none; margin-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1.5rem;">
+               <h4 style="color: #10B981;">📋 KẾT QUẢ LAB 10:</h4>
+               <p id="report-text" style="font-size: 0.8rem; margin-top: 10px;"></p>
+               <a href="microbiology.html" class="btn btn-primary" style="width:100%; margin-top:1rem;">Tiến tới Trạm Vi Sinh ➔</a>
             </div>
           </div>
         </div>
@@ -194,37 +188,36 @@
 
   <script src="js/patient.js"></script>
   <script>
-    const img = document.getElementById('main-img');
+    const img = document.getElementById('specimen-img');
     const labels = document.getElementById('labels');
-    const knobZoom = document.getElementById('knob-zoom');
     const knobFocus = document.getElementById('knob-focus');
-
+    
     let currentZoom = 10;
     let currentFocus = 0;
     const TARGET_FOCUS = 80;
-    let scenario = 'default';
+    let currentScenario = 'default';
 
     const SCENARIOS = {
       họng: {
-        img: 'C:\\Users\\pc\\.gemini\\antigravity\\brain\\4f1a7350-1564-4549-93a1-cbc24fb76712\\streptococcus_microview_1777451837184.png',
-        title: 'Mẫu dịch họng',
-        ai: 'Phát hiện các chuỗi cầu khuẩn. Hãy phóng đại 100x và lấy nét để xác nhận Streptococcus.',
-        result: 'Xác nhận sự hiện diện của Streptococcus (Vi khuẩn gây viêm họng). Cần chuyển sang nhuộm Gram.',
-        labels: ['Cầu khuẩn chuỗi', 'Biểu mô họng', 'Dịch nhầy']
+        url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Streptococcus_pyogenes_01.jpg/800px-Streptococcus_pyogenes_01.jpg',
+        name: 'Dịch họng (Streptococcus)',
+        ai: 'Phát hiện cầu khuẩn chuỗi. Hãy phóng đại 100x và lấy nét để quan sát rõ cấu trúc màng.',
+        result: 'Xác nhận vi khuẩn Streptococcus pyogenes (Gram+). Gây viêm họng mủ.',
+        l1: 'Cầu khuẩn chuỗi', l2: 'Tế bào biểu mô'
       },
       nhiễm_trùng: {
-        img: 'https://images.unsplash.com/photo-1576086213369-97a306d36557?auto=format&fit=crop&q=80&w=800',
-        title: 'Mẫu biểu bì nhiễm trùng',
-        ai: 'Phát hiện cụm vi khuẩn hình nho. Nghi ngờ Staphylococcus.',
-        result: 'Xác nhận tụ cầu khuẩn Staphylococcus. Đề xuất kiểm tra kháng sinh đồ.',
-        labels: ['Tụ cầu khuẩn', 'Tế bào biểu bì', 'Bạch cầu']
+        url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Staphylococcus_aureus_Gram.jpg/800px-Staphylococcus_aureus_Gram.jpg',
+        name: 'Mẫu biểu bì nhiễm trùng',
+        ai: 'Nghi ngờ tụ cầu vàng Staphylococcus aureus. Cần kiểm tra độ rõ nét của các cụm khuẩn.',
+        result: 'Phát hiện Tụ cầu khuẩn (Staphylococcus). Nguy cơ nhiễm trùng da cao.',
+        l1: 'Tụ cầu khuẩn', l2: 'Bạch cầu đa nhân'
       },
       default: {
-        img: 'C:\\Users\pc\.gemini\antigravity\brain\4f1a7350-1564-4549-93a1-cbc24fb76712\onion_cells_microview_1777451899980.png',
-        title: 'Tế bào biểu bì hành ta',
-        ai: 'Mẫu vật chuẩn để thực hành soi cấu trúc tế bào nhân thực cơ bản.',
-        result: 'Cấu trúc tế bào hoàn toàn bình thường. Không phát hiện tác nhân ngoại lai.',
-        labels: ['Vách tế bào', 'Nhân', 'Tế bào chất']
+        url: 'https://images.unsplash.com/photo-1509391366360-feaffa648bd5?auto=format&fit=crop&q=80&w=800',
+        name: 'Tế bào biểu bì hành ta',
+        ai: 'Mẫu vật mẫu để thực hành soi tế bào nhân thực. Hãy quan sát nhân và vách tế bào.',
+        result: 'Tế bào bình thường, vách dày, nhân rõ. Không có mầm bệnh.',
+        l1: 'Vách tế bào', l2: 'Nhân tế bào'
       }
     };
 
@@ -232,41 +225,37 @@
       const p = PatientManager.get();
       if(p) {
         document.getElementById('p-name').textContent = p.name;
-        document.getElementById('p-symptoms').textContent = `Triệu chứng: ${p.currentSymptoms || 'Không có'}`;
+        document.getElementById('p-sym').textContent = `Triệu chứng: ${p.currentSymptoms || 'Bình thường'}`;
         
         const sym = (p.currentSymptoms || "").toLowerCase();
-        if(sym.includes('họng') || sym.includes('sốt')) scenario = 'họng';
-        else if(sym.includes('nhiễm trùng') || sym.includes('vết thương')) scenario = 'nhiễm_trùng';
-        else scenario = 'default';
+        if(sym.includes('họng') || sym.includes('sốt')) currentScenario = 'họng';
+        else if(sym.includes('vết thương') || sym.includes('nhiễm trùng')) currentScenario = 'nhiễm_trùng';
+        else currentScenario = 'default';
 
-        const config = SCENARIOS[scenario];
-        img.src = config.img;
-        document.getElementById('ai-status').textContent = config.ai;
-        document.getElementById('mode-text').textContent = config.title.toUpperCase();
+        const config = SCENARIOS[currentScenario];
+        img.src = config.url;
+        document.getElementById('spec-name').textContent = config.name.toUpperCase();
+        document.getElementById('ai-advice').textContent = config.ai;
         
         // Update labels
-        const labelBoxes = labels.querySelectorAll('.label-box');
-        config.labels.forEach((txt, i) => {
-          if(labelBoxes[i]) labelBoxes[i].textContent = txt;
-        });
+        const lbls = labels.querySelectorAll('.label-box');
+        lbls[0].textContent = config.l1;
+        lbls[1].textContent = config.l2;
       }
     });
 
-    // ZOOM LOGIC
-    knobZoom.onclick = () => {
+    function cycleZoom() {
       if(currentZoom === 10) currentZoom = 40;
       else if(currentZoom === 40) currentZoom = 100;
       else currentZoom = 10;
       
-      knobZoom.style.transform = `rotate(${(currentZoom/100) * 360}deg)`;
+      document.getElementById('knob-zoom').style.transform = `rotate(${(currentZoom/100) * 360}deg)`;
       document.getElementById('val-zoom').textContent = currentZoom + 'x';
-      document.getElementById('mag-text').textContent = currentZoom + 'x';
-      
+      document.getElementById('spec-mag').textContent = currentZoom + 'x';
       img.style.transform = `scale(${currentZoom / 10})`;
       checkState();
-    };
+    }
 
-    // FOCUS LOGIC
     let isDragging = false;
     knobFocus.onmousedown = () => isDragging = true;
     window.onmouseup = () => isDragging = false;
@@ -276,28 +265,27 @@
       knobFocus.style.transform = `rotate(${currentFocus * 3.6}deg)`;
       
       const diff = Math.abs(currentFocus - TARGET_FOCUS);
-      img.style.filter = `blur(${diff / 4}px)`;
-      document.getElementById('focus-text').textContent = currentFocus + '%';
+      img.style.filter = `blur(${diff / 6}px)`; // Reduced blur intensity
+      document.getElementById('spec-focus').textContent = currentFocus + '%';
       
       if(diff < 5) {
         document.getElementById('val-focus').textContent = 'RÕ NÉT';
         document.getElementById('val-focus').style.color = '#10B981';
-        labels.style.display = 'block';
+        labels.style.opacity = '1';
         checkState();
       } else {
         document.getElementById('val-focus').textContent = 'Mờ';
         document.getElementById('val-focus').style.color = 'white';
-        labels.style.display = 'none';
+        labels.style.opacity = '0';
       }
     };
 
     function checkState() {
       if(Math.abs(currentFocus - TARGET_FOCUS) < 5 && currentZoom === 100) {
-        document.getElementById('result-box').style.display = 'block';
-        document.getElementById('result-text').textContent = SCENARIOS[scenario].result;
+        document.getElementById('report-box').style.display = 'block';
+        document.getElementById('report-text').textContent = SCENARIOS[currentScenario].result;
       }
     }
-
   </script>
 </body>
 </html>
