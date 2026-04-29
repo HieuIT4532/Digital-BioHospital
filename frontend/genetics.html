@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Bảng Xếp Hạng – Digital BioHospital</title>
+  <title>Bản Đồ Gene – Digital BioHospital</title>
   <meta name="description" content="Bảng xếp hạng Top Bác sĩ Sinh học. Biểu đồ đóng góp học tập kiểu GitHub." />
   <link rel="stylesheet" href="css/global.css" />
   <link rel="stylesheet" href="css/components.css" />
@@ -118,76 +118,23 @@
     </div>
   </nav>
 
+  
   <main id="main">
-    <div class="page-header" style="background:linear-gradient(180deg,rgba(251,191,36,0.08) 0%,transparent 100%);border-bottom:1px solid rgba(255,255,255,0.05);">
+    <div class="page-header" style="background:linear-gradient(180deg,rgba(124,58,237,0.08) 0%,transparent 100%);border-bottom:1px solid rgba(255,255,255,0.05);">
       <div class="container">
-        <div class="section-tag animate-fadeInUp" style="color:#FBBF24;border-color:rgba(251,191,36,0.3)">🏆 Gamification</div>
-        <h1 class="animate-fadeInUp delay-100">Bảng Xếp Hạng Bác Sĩ</h1>
-        <p class="animate-fadeInUp delay-200">Biểu đồ đóng góp học tập & Top bác sĩ xuất sắc nhất</p>
+        <div class="section-tag animate-fadeInUp">Phòng Lab & Viện Di Truyền</div>
+        <h1 class="animate-fadeInUp delay-100">🧬 Bản Đồ Gene</h1>
+        <p class="animate-fadeInUp delay-200">Khám phá bí ẩn di truyền, phân tích tiền sử bệnh và đột biến (Lớp 12).</p>
       </div>
     </div>
 
-    <div class="container">
-      <!-- MY STATS -->
-      <div class="my-stats animate-fadeInUp" id="my-stats-section" style="display:none;">
-        <div class="my-stat">
-          <div class="my-stat-value" style="color:#FBBF24;" id="my-exp">0</div>
-          <div class="my-stat-label">Tổng EXP</div>
-          <div id="my-rank-name" style="font-size:0.8rem;color:var(--color-primary-light);margin-top:0.3rem;font-weight:700;">🩺 Thực tập</div>
-          <div class="exp-progress-wrap" style="margin-top:0.5rem;">
-            <div class="exp-progress-fill" id="my-exp-bar" style="width:0%"></div>
-          </div>
-          <div id="my-next-rank" style="font-size:0.68rem;color:rgba(255,255,255,0.3);margin-top:0.3rem;"></div>
-        </div>
-        <div class="my-stat">
-          <div class="my-stat-value streak-fire" style="color:#FB923C;" id="my-streak">0</div>
-          <div class="my-stat-label">🔥 Streak</div>
-        </div>
-        <div class="my-stat">
-          <div class="my-stat-value" style="color:#A78BFA;" id="my-diagnoses">0</div>
-          <div class="my-stat-label">Ca chẩn đoán</div>
-        </div>
-        <div class="my-stat">
-          <div class="my-stat-value" style="color:#10B981;" id="my-active-days">0</div>
-          <div class="my-stat-label">Ngày hoạt động</div>
-        </div>
-      </div>
-
-      <div class="lb-layout">
-        <!-- LEFT: Contribution Graph -->
-        <div>
-          <div class="contrib-card animate-fadeInUp">
-            <h3 style="margin-bottom:0.5rem;font-size:1rem;">📊 Biểu Đồ Hoạt Động Học Tập</h3>
-            <p style="font-size:0.8rem;color:rgba(255,255,255,0.4);margin-bottom:1.25rem;">90 ngày gần nhất — mỗi ô = 1 ngày check-in</p>
-            <div class="contrib-grid" id="contrib-grid"></div>
-            <div class="contrib-legend">
-              Ít <div class="contrib-legend-cell" style="background:rgba(255,255,255,0.06)"></div>
-              <div class="contrib-legend-cell" style="background:rgba(16,185,129,0.25)"></div>
-              <div class="contrib-legend-cell" style="background:rgba(16,185,129,0.5)"></div>
-              <div class="contrib-legend-cell" style="background:rgba(16,185,129,0.75)"></div>
-              <div class="contrib-legend-cell" style="background:#10B981"></div> Nhiều
-            </div>
-          </div>
-
-          <!-- Not logged in state -->
-          <div class="card" id="not-logged-in" style="margin-top:1.5rem;text-align:center;padding:3rem;">
-            <div style="font-size:3rem;margin-bottom:1rem;">🔐</div>
-            <h3>Đăng nhập để xem biểu đồ của bạn</h3>
-            <p style="color:rgba(255,255,255,0.5);margin-bottom:1.5rem;">Đăng nhập bằng Google để bắt đầu tích lũy EXP và thăng cấp Bác sĩ.</p>
-            <a href="#" class="btn btn-primary btn-lg" id="lb-login-btn">🔑 Đăng nhập Google</a>
-          </div>
-        </div>
-
-        <!-- RIGHT: Top Doctors -->
-        <div>
-          <div class="top-card animate-fadeInUp delay-200">
-            <h3 style="margin-bottom:1rem;font-size:1rem;">🥇 Top Bác Sĩ Xuất Sắc</h3>
-            <div id="top-doctors-list">
-              <div style="text-align:center;padding:2rem;color:rgba(255,255,255,0.4);">Đang tải...</div>
-            </div>
-          </div>
-        </div>
-      </div>
+    <div class="container" style="text-align: center; padding: 6rem 0;">
+      <div style="font-size: 5rem; margin-bottom: 1.5rem; animation: float 3s ease-in-out infinite;">🛠️</div>
+      <h2>Tính năng đang được phát triển</h2>
+      <p style="color: rgba(255,255,255,0.5); margin-top: 1rem; max-width: 600px; margin-left: auto; margin-right: auto;">
+        Phân hệ này đang trong quá trình xây dựng và sẽ sớm ra mắt trong các phiên bản cập nhật tiếp theo của Bệnh Viện Sinh Học Thông Minh.
+      </p>
+      <a href="index.html" class="btn btn-primary" style="margin-top: 2rem;">Về Trang Chủ</a>
     </div>
   </main>
 

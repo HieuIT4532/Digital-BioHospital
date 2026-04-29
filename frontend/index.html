@@ -275,15 +275,39 @@
       </a>
 
       <ul class="navbar-nav" role="list">
-        <li><a href="index.html"        class="active"  id="nav-home">🏠 Trang chủ</a></li>
-        <li><a href="departments.html"              id="nav-dept">🏥 Chuyên khoa</a></li>
-        <li><a href="anatomy.html"                  id="nav-anatomy">🧬 Giải phẫu</a></li>
-        <li><a href="analysis.html"                 id="nav-analysis">🔬 Phân tích</a></li>
-        <li><a href="prediction.html"               id="nav-predict">🔮 Dự đoán</a></li>
-        <li><a href="personalize.html"              id="nav-personal">🌱 Kế hoạch</a></li>
-        <li><a href="library.html"                  id="nav-lib">📚 Thư viện</a></li>
-        <li><a href="chatbot.html"                  id="nav-chatbot">🤖 Tư vấn AI</a></li>
-        <li><a href="leaderboard.html"              id="nav-leaderboard">🏆 Xếp hạng</a></li>
+        <li><a href="index.html" id="nav-home">🏠 Trang chủ</a></li>
+        <li class="nav-item">
+          <a href="#" style="cursor:default;">🏥 Lâm Sàng (Lớp 11) ▼</a>
+          <div class="nav-dropdown flex-col">
+            <a href="reception.html">📋 Phòng Tiếp nhận</a>
+            <a href="departments.html">🏥 Khám Chuyên khoa</a>
+            <a href="anatomy.html">🧬 Giải phẫu 3D</a>
+          </div>
+        </li>
+        <li class="nav-item">
+          <a href="#" style="cursor:default;">🔬 Phòng Lab (Lớp 10) ▼</a>
+          <div class="nav-dropdown flex-col">
+            <a href="microscope.html">🔬 Soi Kính Hiển Vi</a>
+            <a href="metabolism.html">⚡ Chuyển Hóa & Năng Lượng</a>
+            <a href="microbiology.html">🦠 Vi Sinh & Miễn Dịch</a>
+          </div>
+        </li>
+        <li class="nav-item">
+          <a href="#" style="cursor:default;">🧬 Di Truyền Học (Lớp 12) ▼</a>
+          <div class="nav-dropdown flex-col">
+            <a href="genetics.html">🧬 Bản Đồ Gene</a>
+            <a href="prediction.html">🔮 Dự Báo Tương Lai</a>
+          </div>
+        </li>
+        <li class="nav-item">
+          <a href="#" style="cursor:default;">🏆 Hồ Sơ & Thành Tựu ▼</a>
+          <div class="nav-dropdown flex-col">
+            <a href="profile.html">👤 Hộ Chiếu Sức Khỏe</a>
+            <a href="personalize.html">🌱 Kế Hoạch Cá Nhân</a>
+            <a href="leaderboard.html">🏆 Bảng Xếp Hạng</a>
+            <a href="library.html">📚 Thư Viện Y Khoa</a>
+          </div>
+        </li>
       </ul>
 
       <div style="display:flex;align-items:center;gap:0.75rem;">
@@ -646,5 +670,7 @@
       API.checkHealth();
     });
   </script>
+  <!-- Floating Chatbot Button -->
+  <a href="chatbot.html" class="floating-chat-btn" title="Tư vấn AI">🤖</a>
 </body>
 </html>
