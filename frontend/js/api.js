@@ -125,14 +125,14 @@ const PredictAPI = {
 
 const PersonalizeAPI = {
   /**
-   * Tạo kế hoạch 7 ngày cá nhân hóa
+   * Cập nhật Bản Sao Số (Digital Twin)
    * @param {Object} patientData
-   * @param {string[]} goals - Mục tiêu sức khoẻ
+   * @param {string[]} dailyHabits
    */
-  async plan(patientData, goals) {
-    return apiFetch('/api/personalize/plan', {
+  async updateTwin(patientData, dailyHabits) {
+    return apiFetch('/api/personalize/twin', {
       method: 'POST',
-      body: JSON.stringify({ patientData, goals })
+      body: JSON.stringify({ patientData, dailyHabits })
     });
   }
 };

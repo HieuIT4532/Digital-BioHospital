@@ -23,17 +23,29 @@ router.post('/department', async (req, res) => {
 Chuyên khoa: ${department} — Lĩnh vực: ${departmentPrompts[department] || department}
 Triệu chứng người dùng báo cáo: ${symptoms.join(', ')}
 
-Phân tích triệu chứng và trả về JSON:
+Phân tích triệu chứng và trả về ĐÚNG ĐỊNH DẠNG JSON sau để phục vụ tính năng "Gamification Trí tuệ" (Zoom-In 3 Tầng Kiến Thức Sinh Học):
 {
-  "riskLevel": <"Thấp" hoặc "Trung bình" hoặc "Cao" hoặc "Rất cao">,
-  "riskScore": <số 0-100>,
-  "diagnosis": "<chẩn đoán sơ bộ giáo dục, 1-2 câu>",
-  "explanation": "<giải thích chi tiết 3-4 câu về các triệu chứng và cơ chế sinh học>",
-  "affectedOrgans": ["<cơ quan bị ảnh hưởng 1>", "<cơ quan 2>"],
-  "recommendations": ["<khuyến nghị 1>", "<khuyến nghị 2>", "<khuyến nghị 3>"],
-  "urgency": "<Không cần thiết / Nên khám / Cần khám sớm / Khẩn cấp>",
-  "lifestyle": "<1 lời khuyên lối sống cụ thể>",
-  "disclaimer": "Đây là phân tích giáo dục, không thay thế chẩn đoán y tế chuyên nghiệp."
+  "level1_organ": {
+    "grade": "Sinh học 11",
+    "diagnosis": "<chẩn đoán sơ bộ ở cấp độ hệ cơ quan, 1-2 câu>",
+    "explanation": "<giải thích cơ chế ở mức hệ cơ quan, cân bằng nội môi, 2-3 câu>",
+    "affectedOrgans": ["<tên cơ quan tiếng Việt, VD: Não, Tim, Phổi, Dạ dày, Gan, Thận, Ruột>"],
+    "riskLevel": "<Thấp/Trung bình/Cao>",
+    "recommendations": ["<khuyến nghị 1>", "<khuyến nghị 2>"]
+  },
+  "level2_cell": {
+    "grade": "Sinh học 10",
+    "mechanism": "<giải thích sâu về cơ chế ở cấp độ tế bào, bào quan, hô hấp tế bào, phân giải chất, enzym... 2-3 câu>",
+    "quiz_to_unlock": {
+      "question": "<1 câu hỏi trắc nghiệm kiến thức Sinh 10 để kiểm tra người dùng, liên quan mật thiết đến cơ chế tế bào của bệnh này>",
+      "options": ["<đáp án 1>", "<đáp án 2>", "<đáp án 3>", "<đáp án 4>"],
+      "answer": "<đáp án đúng, phải khớp 100% với 1 trong 4 options trên>"
+    }
+  },
+  "level3_genetics": {
+    "grade": "Sinh học 12",
+    "mechanism": "<giải thích nguyên nhân ở mức độ phân tử, di truyền, đột biến gene, biểu hiện gene hoặc yếu tố tiền sử gia đình của triệu chứng này, 2-3 câu>"
+  }
 }`;
 
     const result = await askGeminiJSON(prompt);

@@ -98,11 +98,48 @@ export const MockFirebase = {
   async updateUserDoc(uid, dataToMerge) {
     const db = JSON.parse(localStorage.getItem(MOCK_STORAGE_KEY));
     if (db.users[uid]) {
-      // Merge deep for digitalTwinState and unlockedKnowledge... (simplified mock)
       db.users[uid] = { ...db.users[uid], ...dataToMerge };
       localStorage.setItem(MOCK_STORAGE_KEY, JSON.stringify(db));
     }
+  },
+
+  async saveUnlockedKnowledge(uid, organs, grade10, grade11, grade12) {
+    const db = JSON.parse(localStorage.getItem(MOCK_STORAGE_KEY));
+    if (db.users[uid]) {
+      const user = db.users[uid];
+      if (!user.unlockedOrgans) user.unlockedOrgans = [];
+      
+      organs.forEach(o => {
+         if(!user.unlockedOrgans.includes(o)) user.unlockedOrgans.push(o);
+      });
+
+      if (grade10 && !user.unlockedKnowledge.biology10.includes(grade10)) {
+         user.unlockedKnowledge.biology10.push(grade10);
+      }
+      if (grade11 && !user.unlockedKnowledge.biology11.includes(grade11)) {
+         user.unlockedKnowledge.biology11.push(grade11);
+      }
+      if (grade12 && !user.unlockedKnowledge.biology12.includes(grade12)) {
+         user.unlockedKnowledge.biology12.push(grade12);
+      }
+
+      localStorage.setItem(MOCK_STORAGE_KEY, JSON.stringify(db));
+    }
   }
+};
+
+// Global function để các trang có thể gọi nhanh
+window.saveUnlockedKnowledge = async (organs, type) => {
+   const session = localStorage.getItem('bio_mock_session');
+   if (session) {
+      const user = JSON.parse(session);
+      // Giả lập lưu tag kiến thức dựa trên type hoặc random
+      const g10 = "Hô hấp tế bào";
+      const g11 = "Cân bằng nội môi";
+      const g12 = "Đột biến gen";
+      await MockFirebase.saveUnlockedKnowledge(user.uid, organs, g10, g11, g12);
+      console.log('Đã lưu Bio-Map:', organs);
+   }
 };
 
 MockFirebase.initMock();

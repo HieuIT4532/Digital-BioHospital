@@ -344,42 +344,53 @@
           </div>
 
           <div id="dept-result-card" style="display:none" class="analysis-result">
-            <div class="card">
-              <h3 style="margin-bottom:1.25rem" id="result-dept-title">Kết Quả</h3>
-              <div class="risk-indicator">
-                <div class="risk-circle" id="result-risk-circle"><span id="result-risk-text">--</span></div>
-                <div>
-                  <div style="font-size:0.75rem; color:rgba(255,255,255,0.5); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:0.25rem">Mức độ nguy cơ</div>
-                  <div id="result-urgency" class="badge badge-yellow">--</div>
-                </div>
-              </div>
-
+            <!-- Level 1: Hệ cơ quan (Sinh 11) -->
+            <div class="card" id="level1-card" style="margin-bottom: 1rem; border: 2px solid #38BDF8;">
+              <h3 style="margin-bottom:1.25rem; color:#38BDF8;">🌍 Tầng 1: Vĩ mô - Hệ Cơ Quan (Sinh 11)</h3>
+              
               <div class="ai-result" style="margin-bottom:1.25rem">
-                <h4 style="font-size:0.9rem; margin-bottom:0.5rem; color:var(--color-primary-light)">🤖 AI nhận định:</h4>
-                <p id="result-diagnosis" style="font-size:0.9rem; margin-bottom:0.75rem; color:rgba(255,255,255,0.9)">--</p>
-                <p id="result-explanation" style="font-size:0.85rem; color:rgba(255,255,255,0.7)">--</p>
+                <p id="result-diagnosis" style="font-size:0.95rem; font-weight:600; margin-bottom:0.75rem;">--</p>
+                <p id="result-explanation" style="font-size:0.85rem; color:rgba(255,255,255,0.8)">--</p>
               </div>
 
               <div style="margin-bottom:1rem">
-                <h4 style="font-size:0.85rem; font-weight:700; color:rgba(255,255,255,0.5); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:0.5rem">
-                  Cơ quan có thể bị ảnh hưởng
-                </h4>
+                <h4 style="font-size:0.85rem; font-weight:700; color:rgba(255,255,255,0.5); text-transform:uppercase;">Cơ quan ảnh hưởng</h4>
                 <div id="result-organs" class="recommendation-tags"></div>
               </div>
 
               <div style="margin-bottom:1rem">
-                <h4 style="font-size:0.85rem; font-weight:700; color:rgba(255,255,255,0.5); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:0.5rem">
-                  Khuyến nghị
-                </h4>
+                <h4 style="font-size:0.85rem; font-weight:700; color:rgba(255,255,255,0.5); text-transform:uppercase;">Khuyến nghị</h4>
                 <ul id="result-recommendations" class="info-list"></ul>
               </div>
 
-              <div style="padding:0.75rem; background:rgba(245,158,11,0.08); border:1px solid rgba(245,158,11,0.2); border-radius:0.75rem; font-size:0.8rem; color:rgba(255,255,255,0.6)">
-                ⚠️ <em id="result-disclaimer">Đây là phân tích giáo dục, không thay thế chẩn đoán y tế chuyên nghiệp.</em>
+              <!-- Unlock Level 2 Quiz -->
+              <div id="quiz-level2-container" style="margin-top:1.5rem; padding:1.25rem; background:rgba(255,255,255,0.05); border-radius:1rem;">
+                <h4 style="margin-bottom:0.5rem; color:#A78BFA;">🔬 Zoom-in Tầng Tế Bào (Sinh 10)</h4>
+                <p style="font-size:0.85rem; margin-bottom:1rem; color:rgba(255,255,255,0.7);" id="quiz-question">Câu hỏi...</p>
+                <div id="quiz-options" style="display:flex; flex-direction:column; gap:0.5rem;"></div>
+                <p id="quiz-feedback" style="margin-top:0.5rem; font-size:0.85rem; font-weight:600;"></p>
               </div>
+            </div>
 
-              <div style="margin-top:1rem;">
-                <a href="library.html" class="btn btn-outline btn-sm" style="width:100%">📚 Xem Thư Viện Liên Quan</a>
+            <!-- Level 2: Tế bào (Sinh 10) -->
+            <div class="card" id="level2-card" style="display:none; margin-bottom: 1rem; border: 2px solid #A78BFA;">
+              <h3 style="margin-bottom:1.25rem; color:#A78BFA;">🔬 Tầng 2: Vi mô - Tế Bào (Sinh 10)</h3>
+              <p id="result-level2-mechanism" style="font-size:0.9rem; line-height:1.6;">--</p>
+              
+              <div style="margin-top:1.5rem; text-align:center;">
+                <button class="btn btn-outline" id="btn-unlock-level3">🧬 Giải Mã Gốc Rễ Di Truyền (Sinh 12)</button>
+              </div>
+            </div>
+
+            <!-- Level 3: Di truyền (Sinh 12) -->
+            <div class="card" id="level3-card" style="display:none; margin-bottom: 1rem; border: 2px solid #F472B6;">
+              <h3 style="margin-bottom:1.25rem; color:#F472B6;">🧬 Tầng 3: Gốc rễ - Di truyền (Sinh 12)</h3>
+              <p id="result-level3-mechanism" style="font-size:0.9rem; line-height:1.6;">--</p>
+              
+              <div style="margin-top:1.5rem; padding:1rem; background:rgba(16,185,129,0.1); border-radius:1rem; text-align:center;">
+                <h4 style="color:#10B981; margin-bottom:0.5rem;">🎉 Hoàn Thành Hành Trình Phân Tích!</h4>
+                <p style="font-size:0.85rem;">Các thẻ kiến thức và cơ quan liên quan đã được thắp sáng trên Bản Đồ Tri Thức của bạn.</p>
+                <button class="btn btn-primary btn-sm" style="margin-top:1rem;" onclick="window.location.href='profile.html'">Xem Bản Đồ Của Tôi</button>
               </div>
             </div>
           </div>
@@ -465,48 +476,96 @@
         const res = await API.Analyze.byDepartment(patient, currentDept, checkedSymptoms);
         const a = res.analysis;
 
-        // Show result
+        // Show result container, hide empty state
         document.getElementById('dept-empty-card').style.display = 'none';
         document.getElementById('dept-result-card').style.display = 'block';
 
-        document.getElementById('result-dept-title').textContent = `Kết Quả – ${currentDept}`;
-        document.getElementById('result-diagnosis').textContent = a.diagnosis || '--';
-        document.getElementById('result-explanation').textContent = a.explanation || '--';
-        document.getElementById('result-disclaimer').textContent = a.disclaimer || '';
+        // Reset levels visibility
+        document.getElementById('level1-card').style.display = 'block';
+        document.getElementById('level2-card').style.display = 'none';
+        document.getElementById('level3-card').style.display = 'none';
+        document.getElementById('quiz-level2-container').style.display = 'block';
+        document.getElementById('btn-unlock-level3').style.display = 'inline-block';
 
-        // Risk circle
-        const circle = document.getElementById('result-risk-circle');
-        const riskText = document.getElementById('result-risk-text');
-        riskText.textContent = a.riskLevel;
-        circle.className = 'risk-circle ' +
-          (a.riskScore >= 70 ? 'high' : a.riskScore >= 40 ? 'medium' : 'low');
+        // LEVEL 1: Organ
+        const l1 = a.level1_organ || {};
+        document.getElementById('result-diagnosis').textContent = l1.diagnosis || '--';
+        document.getElementById('result-explanation').textContent = l1.explanation || '--';
 
-        // Urgency badge
-        const urgency = document.getElementById('result-urgency');
-        urgency.textContent = a.urgency || '--';
-        urgency.className = 'badge ' +
-          (a.urgency === 'Khẩn cấp' ? 'badge-red' :
-           a.urgency === 'Cần khám sớm' ? 'badge-yellow' :
-           a.urgency === 'Nên khám' ? 'badge-blue' : 'badge-green');
-
-        // Organs
         const orgEls = document.getElementById('result-organs');
         orgEls.innerHTML = '';
-        (a.affectedOrgans || []).forEach(o => {
+        (l1.affectedOrgans || []).forEach(o => {
           const tag = document.createElement('span');
           tag.className = 'badge badge-purple';
           tag.textContent = o;
           orgEls.appendChild(tag);
         });
 
-        // Recommendations
         const recList = document.getElementById('result-recommendations');
         recList.innerHTML = '';
-        (a.recommendations || []).forEach(r => {
+        (l1.recommendations || []).forEach(r => {
           const li = document.createElement('li');
           li.textContent = r;
           recList.appendChild(li);
         });
+
+        // QUIZ TO UNLOCK LEVEL 2
+        const l2 = a.level2_cell || {};
+        const quiz = l2.quiz_to_unlock || {};
+        document.getElementById('quiz-question').textContent = quiz.question || 'Mở khóa tầng tế bào?';
+        const optsContainer = document.getElementById('quiz-options');
+        optsContainer.innerHTML = '';
+        document.getElementById('quiz-feedback').textContent = '';
+        
+        const correctAnswer = quiz.answer;
+        (quiz.options || []).forEach(opt => {
+          const btn = document.createElement('button');
+          btn.className = 'btn btn-outline btn-sm';
+          btn.style.textAlign = 'left';
+          btn.textContent = opt;
+          btn.onclick = () => {
+            if (opt === correctAnswer || (correctAnswer && opt.includes(correctAnswer)) || (correctAnswer && correctAnswer.includes(opt))) {
+              document.getElementById('quiz-feedback').textContent = '✅ Chính xác! Đang phóng to vào Tế bào...';
+              document.getElementById('quiz-feedback').style.color = '#10B981';
+              setTimeout(() => {
+                document.getElementById('quiz-level2-container').style.display = 'none';
+                document.getElementById('level2-card').style.display = 'block';
+                document.getElementById('level2-card').scrollIntoView({behavior: 'smooth'});
+              }, 800);
+            } else {
+              document.getElementById('quiz-feedback').textContent = '❌ Sai rồi, thử lại nhé!';
+              document.getElementById('quiz-feedback').style.color = '#EF4444';
+            }
+          };
+          optsContainer.appendChild(btn);
+        });
+
+        // LEVEL 2 Content
+        document.getElementById('result-level2-mechanism').textContent = l2.mechanism || '--';
+
+        // LEVEL 3 Unlock
+        const l3 = a.level3_genetics || {};
+        document.getElementById('result-level3-mechanism').textContent = l3.mechanism || '--';
+        
+        document.getElementById('btn-unlock-level3').onclick = async () => {
+           document.getElementById('btn-unlock-level3').textContent = 'Đang giải mã...';
+           setTimeout(() => {
+             document.getElementById('btn-unlock-level3').style.display = 'none';
+             document.getElementById('level3-card').style.display = 'block';
+             document.getElementById('level3-card').scrollIntoView({behavior: 'smooth'});
+             
+             // Ghi nhận mở khóa Bio-Map (sẽ hoàn thiện ở bước Firebase)
+             if(window.MockFirebase) {
+                const user = JSON.parse(localStorage.getItem('bio_mock_session'));
+                if (user) {
+                   window.MockFirebase.updateUserDoc(user.uid, {
+                       // Tạm thời mô phỏng việc lưu
+                       lastUnlocked: new Date().toISOString()
+                   });
+                }
+             }
+           }, 800);
+        };
 
         hideLoading();
         showToast('Phân tích hoàn tất!', 'success');

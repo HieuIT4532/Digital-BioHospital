@@ -197,6 +197,17 @@
          const bio10 = doc.unlockedKnowledge?.biology10 || [];
          const bio11 = doc.unlockedKnowledge?.biology11 || [];
          const bio12 = doc.unlockedKnowledge?.biology12 || [];
+         const unlockedOrgans = doc.unlockedOrgans || [];
+
+         // Mở khóa các cơ quan trên Bio-Map
+         unlockedOrgans.forEach(org => {
+            const orgLower = org.toLowerCase();
+            if (orgLower.includes('não') || orgLower.includes('thần kinh')) document.getElementById('map-brain')?.classList.add('unlocked');
+            if (orgLower.includes('tim') || orgLower.includes('mạch máu')) document.getElementById('map-heart')?.classList.add('unlocked');
+            if (orgLower.includes('phổi') || orgLower.includes('hô hấp')) document.getElementById('map-lung')?.classList.add('unlocked');
+            if (orgLower.includes('gan')) document.getElementById('map-liver')?.classList.add('unlocked');
+            if (orgLower.includes('dạ dày') || orgLower.includes('ruột')) document.getElementById('map-stomach')?.classList.add('unlocked');
+         });
 
          const renderList = (id, items, className) => {
              const div = document.getElementById(id);
@@ -209,21 +220,6 @@
                  d.className = `kn-item ${className}`;
                  d.textContent = k;
                  div.appendChild(d);
-                 
-                 // Fake logic để bật organ map nếu chứa một số từ khóa đặc biệt
-                 if(k.toLowerCase().includes('não') || k.toLowerCase().includes('thần kinh') || k.toLowerCase().includes('đầu')) {
-                    document.getElementById('map-brain').classList.add('unlocked');
-                 }
-                 if(k.toLowerCase().includes('tim') || k.toLowerCase().includes('mạch máu')) {
-                    document.getElementById('map-heart').classList.add('unlocked');
-                 }
-                 if(k.toLowerCase().includes('phổi') || k.toLowerCase().includes('hô hấp') || k.toLowerCase().includes('oxy')) {
-                    document.getElementById('map-lung').classList.add('unlocked');
-                 }
-                 if(k.toLowerCase().includes('gan') || k.toLowerCase().includes('tiêu hóa') || k.toLowerCase().includes('dạ dày')) {
-                    document.getElementById('map-liver').classList.add('unlocked');
-                    document.getElementById('map-stomach').classList.add('unlocked');
-                 }
              });
          };
 
