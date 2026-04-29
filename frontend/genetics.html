@@ -386,9 +386,32 @@
 
     // --- 5. Patient Integration ---
     function updatePatientHeader() {
+      // Ưu tiên lấy từ benhAnA1K50 (dữ liệu chuyên sâu từ Lab 10)
+      const a1k50Data = JSON.parse(localStorage.getItem('benhAnA1K50'));
       const patient = PatientManager.get();
+      
+      const displayTitle = document.getElementById('gen-patient-name');
+      const displayMsg = document.getElementById('gen-patient-msg');
+
+      if (a1k50Data) {
+        displayTitle.textContent = `🧬 GIẢI MÃ CHUYÊN SÂU: ${patient ? patient.name : 'Bệnh nhân A1K50'}`;
+        displayMsg.innerHTML = `
+            <div style="background:rgba(0,242,255,0.1); padding:1rem; border-radius:0.75rem; border:1px solid rgba(0,242,255,0.3); margin-top:0.5rem;">
+                <strong style="color:#00f2ff;">[DỮ LIỆU CHUYỂN TUYẾN TỪ ${a1k50Data.fromLab || 'PHÒNG LAB 10'}]:</strong><br/>
+                "${a1k50Data.trieuChung}"<br/>
+                <span style="color:#FBBF24;">⚠️ CẢNH BÁO AI: ${a1k50Data.canhBao}</span>
+            </div>
+        `;
+        
+        // Tự động highlight NST gợi ý
+        if (a1k50Data.canhBao.includes('11')) highlightChromo(11);
+        if (a1k50Data.canhBao.includes('6')) highlightChromo(6);
+        
+        return;
+      }
+
       if (patient) {
-        document.getElementById('gen-patient-name').textContent = `Chào Bác sĩ, đang phân tích hệ gene của ${patient.name}`;
+        displayTitle.textContent = `Chào Bác sĩ, đang phân tích hệ gene của ${patient.name}`;
         const history = patient.medicalHistory || [];
         const symptoms = (patient.currentSymptoms || "").toLowerCase();
         
@@ -418,21 +441,25 @@
         if (suggestions.length > 0) {
           msg += `<br/><span style="color:#10B981; font-weight:700;">[AI RECOMMENDATION]</span> Dựa trên triệu chứng, hãy kiểm tra cặp NST số: <strong>${[...new Set(suggestions)].join(', ')}</strong>.`;
           
-          // Highlight trong grid
-          setTimeout(() => {
-            const gridItems = document.querySelectorAll('.chromosome');
-            suggestions.forEach(id => {
-              if (gridItems[id-1]) {
-                gridItems[id-1].style.borderColor = '#10B981';
-                gridItems[id-1].style.boxShadow = '0 0 15px rgba(16,185,129,0.4)';
-                gridItems[id-1].style.animation = 'pulse-green 2s infinite';
-              }
-            });
-          }, 500);
+          highlightChromo(suggestions);
         }
 
-        document.getElementById('gen-patient-msg').innerHTML = msg;
+        displayMsg.innerHTML = msg;
       }
+    }
+
+    function highlightChromo(ids) {
+        if (!Array.isArray(ids)) ids = [ids];
+        setTimeout(() => {
+            const gridItems = document.querySelectorAll('.chromosome');
+            ids.forEach(id => {
+                if (gridItems[id-1]) {
+                    gridItems[id-1].style.borderColor = '#10B981';
+                    gridItems[id-1].style.boxShadow = '0 0 15px rgba(16,185,129,0.4)';
+                    gridItems[id-1].style.animation = 'pulse-green 2s infinite';
+                }
+            });
+        }, 500);
     }
 
     window.addEventListener('load', () => {
