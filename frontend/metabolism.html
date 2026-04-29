@@ -69,35 +69,30 @@
     }
 
     /* ──── Dây chuyền ATP ──── */
-    .atp-factory-box {
-      background: url('img/labs/mitochondria_3d.png') no-repeat center;
-      background-size: contain;
-      height: 400px;
-      position: relative;
+    .atp-factory {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
       margin: 2rem 0;
-      border-radius: 2rem;
-      box-shadow: inset 0 0 50px rgba(0,0,0,0.5);
+      position: relative;
     }
 
     .factory-stage {
-      background: rgba(14, 14, 20, 0.8);
+      background: rgba(255,255,255,0.05);
       border: 1px solid rgba(255,255,255,0.1);
       border-radius: 1rem;
-      padding: 1rem;
+      padding: 1.5rem;
       text-align: center;
-      position: absolute;
-      width: 150px;
-      backdrop-filter: blur(5px);
+      flex: 1;
+      position: relative;
       transition: all 0.3s;
     }
     
-    #stage-1 { top: 10%; left: 5%; }
-    #stage-2 { top: 40%; left: 50%; transform: translateX(-50%); }
-    #stage-3 { bottom: 10%; right: 5%; }
-
     .factory-stage.active {
-      border-color: #10B981;
-      box-shadow: 0 0 20px rgba(16,185,129,0.3);
+      background: rgba(16,185,129,0.1);
+      border-color: rgba(16,185,129,0.4);
+      box-shadow: 0 0 20px rgba(16,185,129,0.2);
     }
 
     .factory-stage.danger {
@@ -281,29 +276,31 @@
             <div id="o2-status" style="font-size:1.5rem; font-weight:800; color:#3B82F6">100% (Hô hấp hiếu khí)</div>
           </div>
 
-          <div class="atp-factory-box" id="factory-container">
+          <div class="atp-factory" id="factory-container">
             <!-- Stage 1 -->
             <div class="factory-stage active" id="stage-1">
-              <div style="font-size:1.5rem; margin-bottom:0.5rem">🍬</div>
-              <h4 style="color:var(--color-primary-light); font-size:0.85rem;">Đường Phân</h4>
-              <p style="font-size:0.65rem; color:rgba(255,255,255,0.5)">Tế bào chất</p>
-              <div style="font-size:1rem; font-weight:bold; color:#FBBF24; margin-top:0.3rem">+ 2 ATP</div>
+              <div style="font-size:2rem; margin-bottom:0.5rem">🍬</div>
+              <h4 style="color:var(--color-primary-light)">Đường Phân</h4>
+              <p style="font-size:0.75rem; color:rgba(255,255,255,0.5)">Tế bào chất</p>
+              <div style="font-size:1.2rem; font-weight:bold; color:#FBBF24; margin-top:0.5rem">+ 2 ATP</div>
             </div>
+            <div style="font-size:1.5rem; color:rgba(255,255,255,0.2)">➔</div>
             
             <!-- Stage 2 -->
             <div class="factory-stage active" id="stage-2">
-              <div style="font-size:1.5rem; margin-bottom:0.5rem">🔄</div>
-              <h4 style="color:#10B981; font-size:0.85rem;">Chu Trình Krebs</h4>
-              <p style="font-size:0.65rem; color:rgba(255,255,255,0.5)">Chất nền Ti thể</p>
-              <div style="font-size:1rem; font-weight:bold; color:#FBBF24; margin-top:0.3rem">+ 2 ATP</div>
+              <div style="font-size:2rem; margin-bottom:0.5rem">🔄</div>
+              <h4 style="color:#10B981">Chu Trình Krebs</h4>
+              <p style="font-size:0.75rem; color:rgba(255,255,255,0.5)">Chất nền Ti thể</p>
+              <div style="font-size:1.2rem; font-weight:bold; color:#FBBF24; margin-top:0.5rem">+ 2 ATP</div>
             </div>
+            <div style="font-size:1.5rem; color:rgba(255,255,255,0.2)">➔</div>
 
             <!-- Stage 3 -->
             <div class="factory-stage active" id="stage-3">
-              <div style="font-size:1.5rem; margin-bottom:0.5rem">⚡</div>
-              <h4 style="color:#3B82F6; font-size:0.85rem;">Chuỗi Electron</h4>
-              <p style="font-size:0.65rem; color:rgba(255,255,255,0.5)">Màng trong Ti thể</p>
-              <div style="font-size:1rem; font-weight:bold; color:#FBBF24; margin-top:0.3rem" id="etc-atp">+ 34 ATP</div>
+              <div style="font-size:2rem; margin-bottom:0.5rem">⚡</div>
+              <h4 style="color:#3B82F6">Chuỗi Electron</h4>
+              <p style="font-size:0.75rem; color:rgba(255,255,255,0.5)">Màng trong Ti thể</p>
+              <div style="font-size:1.2rem; font-weight:bold; color:#FBBF24; margin-top:0.5rem" id="etc-atp">+ 34 ATP</div>
             </div>
           </div>
 
@@ -316,15 +313,6 @@
           <div style="text-align:center; margin-top:3rem; border-top:1px solid rgba(255,255,255,0.1); padding-top:2rem">
             <div style="font-size:0.85rem; color:rgba(255,255,255,0.5); text-transform:uppercase;">Tổng Sản Lượng Năng Lượng (Từ 1 Glucose)</div>
             <div class="atp-count-display" id="total-atp">38 ATP</div>
-          </div>
-
-          <!-- Nút Chuyển sang Lab 12 -->
-          <div style="text-align: center; margin-top: 40px; padding: 2rem; background: rgba(0, 242, 255, 0.05); border-radius: 1rem; border: 1px dashed rgba(0, 242, 255, 0.3);">
-              <p style="font-size: 0.9rem; color: #00f2ff; margin-bottom: 1.5rem;">Sau khi phân tích vi mô, bạn đã phát hiện dấu hiệu bất thường cấp độ tế bào. <br/>Hãy đưa bệnh án này lên cấp độ phân tử cao nhất để giải mã hệ gene.</p>
-              <button onclick="chuyenSangTrungTamGene()" 
-                      style="background: #00f2ff; color: #000; padding: 15px 30px; font-weight: bold; border: none; border-radius: 5px; cursor: pointer; text-transform: uppercase; transition: all 0.3s; box-shadow: 0 0 20px rgba(0, 242, 255, 0.4);">
-                  Đưa bệnh án vào Trung tâm Giải mã Gene 12
-              </button>
           </div>
         </div>
       </section>
@@ -346,41 +334,20 @@
     let enzymeExpClaimed = false;
     let lacticExpClaimed = false;
 
-    // ── 1. ĐỒNG BỘ BỆNH ÁN & PHÂN TÍCH CHUYỂN HÓA ──
+    // ── 1. ĐỒNG BỘ BỆNH ÁN ──
     window.addEventListener('load', () => {
       const patient = PatientManager.get();
       const display = document.getElementById('patient-data-display');
       
-      if (patient) {
-        // Tính toán BMI và BMR ảo
-        const weight = parseFloat(patient.weight) || 70;
-        const height = (parseFloat(patient.height) || 170) / 100;
-        const bmi = (weight / (height * height)).toFixed(1);
-        const age = parseInt(patient.age) || 25;
-        
-        // Công thức BMR đơn giản: Nam: 10W + 6.25H - 5A + 5 | Nữ: 10W + 6.25H - 5A - 161
-        const bmr = Math.round(10 * weight + 6.25 * (height * 100) - 5 * age + (patient.gender === 'Nam' ? 5 : -161));
-        
+      if (patient && patient.currentSymptoms) {
         display.innerHTML = `
-          <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-            <div>
-              <div style="font-size:1.1rem; font-weight:700; color:#FFF">Bệnh án #${patient.patientCode} - <span style="color:#A78BFA">${patient.name}</span></div>
-              <p style="font-size:0.95rem; color:rgba(255,255,255,0.8); margin-top:0.3rem;">
-                <strong>Triệu chứng:</strong> <span id="clinic-symptom-text" style="color:#FCA5A5; font-style:italic">"${patient.currentSymptoms || 'Không có'}"</span>
-              </p>
-            </div>
-            <div style="text-align:right; background:rgba(255,255,255,0.05); padding:0.5rem 1rem; border-radius:0.75rem;">
-              <div style="font-size:0.7rem; color:rgba(255,255,255,0.5)">CHỈ SỐ SINH HỌC</div>
-              <div style="font-size:1rem; font-weight:700; color:#10B981">BMI: ${bmi} | BMR: ${bmr} kcal</div>
-            </div>
-          </div>
-          <div style="margin-top:1rem; padding:1rem; background:rgba(124,58,237,0.1); border-radius:0.75rem; border-left:4px solid #7C3AED;">
-             <p style="font-size:0.85rem; color:rgba(255,255,255,0.9);">
-                <strong style="color:#A78BFA">💡 Phân tích AI:</strong> 
-                ${bmi > 25 ? 'Chỉ số BMI cao cho thấy cơ thể đang dư thừa năng lượng dự trữ dưới dạng mỡ. ' : 'Chỉ số BMI ổn định. '}
-                Ti thể cần oxy để "đốt" Glucose hiệu quả. Hãy kiểm tra hiệu suất chuỗi chuyền Electron bên dưới.
-             </p>
-          </div>
+          <div style="font-size:1.1rem; font-weight:700; color:#FFF">Bệnh án #${patient.patientCode} - <span style="color:#A78BFA">${patient.name}</span></div>
+          <p style="font-size:0.95rem; color:rgba(255,255,255,0.8); margin-top:0.5rem;">
+            <strong>Triệu chứng Lâm sàng (Sinh 11):</strong> <span id="clinic-symptom-text" style="color:#FCA5A5; font-style:italic">"${patient.currentSymptoms}"</span>
+          </p>
+          <p style="font-size:0.85rem; color:rgba(255,255,255,0.6); margin-top:0.5rem;">
+            Mời Bác sĩ tiến hành các thử nghiệm Vi mô (Sinh 10) bên dưới để tìm gốc rễ vấn đề.
+          </p>
         `;
       } else {
         display.innerHTML = `<p style="color:rgba(255,255,255,0.5)">Không tìm thấy hồ sơ triệu chứng chi tiết. Bạn có thể quay lại <a href="reception.html" style="text-decoration:underline; color:#A78BFA">Phòng Tiếp Nhận</a> để nhập liệu.</p>`;
@@ -510,17 +477,5 @@
   <script type="module" src="js/auth.js"></script>
   <!-- Floating Chatbot Button -->
   <a href="chatbot.html" class="floating-chat-btn" title="Tư vấn AI">🤖</a>
-  <script>
-    function chuyenSangTrungTamGene() {
-        const patient = PatientManager.get() || { name: "Bệnh nhân ẩn danh" };
-        const duLieuBenhAn = {
-            trieuChung: `Bệnh nhân ${patient.name} có biểu hiện thiếu máu trầm trọng, mệt mỏi cơ bắp kéo dài.`,
-            canhBao: "Nghi ngờ di truyền, cần tầm soát NST số 11",
-            fromLab: "Chuyển hóa & Năng lượng"
-        };
-        localStorage.setItem('benhAnA1K50', JSON.stringify(duLieuBenhAn));
-        window.location.href = "genetics.html";
-    }
-  </script>
 </body>
 </html>
